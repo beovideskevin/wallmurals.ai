@@ -1,0 +1,28 @@
+{
+    "artworks": [
+        {
+            "marker": "birds.mind",
+            "video": "birds_mural_01_sm.mp4",
+            "poster": "birds.jpeg",
+            "width": 1920,
+            "height": 1080,
+            "chroma": "null"
+        },
+        {
+            "marker": "birds.mind",
+            "video": "birds_mural_02_sm.mp4",
+            "poster": "birds.jpeg",
+            "width": 720,
+            "height": 480,
+            "chroma": "null"
+        },
+        {
+            "marker": "birds.mind",
+            "video": "birds_mural_03_sm.mp4",
+            "poster": "birds.jpeg",
+            "width": 720,
+            "height": 480,
+            "chroma": "null"
+        }
+    ]
+}

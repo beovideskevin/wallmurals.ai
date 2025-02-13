@@ -1,11 +1,210 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
+<html lang="">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+  <!-- SEO -->
+  <title><%= title %></title>
+  <meta name="keywords" content="<%= keywords %>" />
+  <meta name="description" content="<%= description %>" />
+  <meta name="author" content="<%= author %>" />
+  <link rel="canonical" href="wallmurals.ai/">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/icons/icon-72x72.png">
+
+  <style>
+    html {
+      line-height: 1.5;
+      -webkit-text-size-adjust: 100%;
+      -moz-tab-size: 4;
+      -o-tab-size: 4;
+      tab-size: 4;
+      font-family: Figtree, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", Segoe UI Symbol, "Noto Color Emoji";
+      font-feature-settings: normal;
+      font-variation-settings: normal
+    }
+
+    html,
+    body {
+      position: relative;
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: transparent;
+    }
+
+    #splash {
+      position: absolute;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+
+      width: 100%;
+      height: 100%;
+
+      margin: auto;
+
+      background-image: url('/icons/icon-72x72-round.png');
+      background-repeat: no-repeat;
+      background-position: center;
+
+      background-color: #000000;
+      z-index: 20;
+    }
+
+    @keyframes spin {
+      0% {
+        transform-origin: center;
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform-origin: center;
+        transform: rotate(360deg);
+      }
+    }
+
+    .loader {
+      width: 128px;
+      height: 128px;
+      border-radius: 50%;
+      animation: spin 1s infinite linear;
+      border-top: 2px solid #ffffff;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="splash">
+    <div class="loader">
+    </div>
+  </div>
+
+  <script src="/libs/ar/ar-image-three.prod.js"></script>
+  <script type="module">
+    import { createChromaMaterial } from '/libs/ar/chroma-video.js';
+
+    var mindarThree = null;
+    let targetFound = -1;
+    let artwork = {
+      marker: '/markers/<%= artwork.marker %>',
+      video: '/videos/<%= artwork.video %>',
+      poster: '/posters/<%= artwork.poster %>',
+      width: <%= artwork.width %>,
+      height: <%= artwork.height %>,
+      chroma: <%= artwork.chroma %>,
+      element: null
+    };
+
+    const loadVideo = (path, poster) => {
+      return new Promise((resolve, reject) => {
+        const video = document.createElement("video");
+        video.addEventListener('loadedmetadata', () => {
+          video.setAttribute('loop', '');
+          video.setAttribute('playsinline', '');
+          video.setAttribute('poster', poster);
+          console.log("Finished loading: " + path);
+          resolve(video);
+        });
+        video.src = path;
+        video.preload = "metadata";
+      });
+    }
+
+    const setup = () => {
+      mindarThree = new window.MINDAR.IMAGE.MindARThree({
+        container: document.body,
+        imageTargetSrc: artwork.marker,
+        uiLoading: "no",
+        uiScanning: "yes",
+        uiError: "yes",
+        filterMinCF: 0.0001, //  default: 1   working for me before: 0.0001,
+        filterBeta: 0.001, //   default: 10000  kind of working for me before: 0.001
+        missTolerance: 0, // default 0, working for me before: 3
+        warmupTolerance: 10, // default 0, working for me before: 3
+      });
+
+      let anchor = null;
+      loadVideo(artwork.video, artwork.poster).then((element) => {
+        artwork.element = element;
+        let texture = new window.MINDAR.IMAGE.THREE.VideoTexture(artwork.element);
+        let geometry = new window.MINDAR.IMAGE.THREE.PlaneGeometry(1, artwork.height / artwork.width);
+        let material = artwork.chroma != null
+          ? createChromaMaterial(texture, artwork.chroma)
+          : new window.MINDAR.IMAGE.THREE.MeshBasicMaterial({ map: texture });
+        let plane = new window.MINDAR.IMAGE.THREE.Mesh(geometry, material);
+        anchor = mindarThree.addAnchor(0);
+        anchor.group.add(plane);
+        anchor.onTargetFound = () => {
+          artwork.element.currentTime = 0;
+          artwork.element.muted = true;
+          artwork.element.play();
+        }
+        anchor.onTargetLost = () => {
+          artwork.element.pause();
+          mindarThree.ui.showScanning();
+        }
+        artwork.element.addEventListener("ended", event => {
+          artwork.element.currentTime = 0;
+        });
+      });
+    }
+
+    const start = async () => {
+      if (!mindarThree) {
+        setup();
+      }
+      const { renderer, scene, camera } = mindarThree;
+      await mindarThree.start();
+      renderer.setAnimationLoop(() => {
+        renderer.render(scene, camera);
+      });
+
+      document.getElementById("splash").style.display = "none";
+    }
+
+    const restart = async () => {
+      if (!mindarThree) {
+        return;
+      }
+      document.getElementById("splash").style.display = "flex";
+      await mindarThree.stop();
+      mindarThree.renderer.setAnimationLoop(null);
+      start();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      start();
+    });
+
+    /**
+     * Add event so the AR is restarted when the phone changes orientation
+     */
+    screen.orientation.addEventListener("change", (event) => {
+      restart();
+    });
+
+    /**
+     * If the page is showed reload it
+     */
+    window.addEventListener('pageshow', (event) => {
+      if (event.persisted) {
+          // I need to do this because of the back-forward cache, the videos are not loading when the back button is pressed in the browser
+          restart();
+          // window.location.reload();
+      }
+    });
+  </script>
+</body>
+
 </html>
