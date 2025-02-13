@@ -23,6 +23,14 @@
             "width": 720,
             "height": 480,
             "chroma": "null"
+        },
+        {
+            "marker": "birds.mind",
+            "video": "birds_green_screen_sm.mp4",
+            "poster": "birds.jpeg",
+            "width": 720,
+            "height": 480,
+            "chroma": "#00ff00"
         }
     ]
 }
