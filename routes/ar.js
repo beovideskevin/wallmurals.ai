@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET home page. */
+/* GET AR page. */
 router.get('/', function(req, res, next) {
-  res.render('ar', { title: 'AR' });
+  // res.render('ar', { title: 'AR' });
+  res.send('respond with a resource');
 });
 
 module.exports = router;
