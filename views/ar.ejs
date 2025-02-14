@@ -263,7 +263,6 @@
       }
       document.getElementById("splash").style.display = "flex";
       document.getElementById("arBtnsWrapper").style.display = "none";
-      await mindarThree.pause(false);
       await mindarThree.stop();
       mindarThree.renderer.setAnimationLoop(null);
       start();
@@ -353,7 +352,7 @@
       }
       const data = canvas.toDataURL('image/png');
       const link = document.createElement('a');
-      link.download = photoFileName + '.png';
+      link.download = photoFileName + '.jpg';
       link.href = data;
       link.click();
     });
