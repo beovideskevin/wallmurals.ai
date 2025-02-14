@@ -187,6 +187,7 @@
       width: <%= artwork.width %>,
       height: <%= artwork.height %>,
       chroma: '<%= artwork.chroma %>',
+      tagline: '<%= artwork.tagline %>',
       element: null
     };
     let photoFileName = "";
@@ -373,7 +374,9 @@
 	      if (navigator.canShare && navigator.canShare({files})) {
           navigator.share({
             files: files,
-            title: 'Wall Mural AI',
+            title: artwork.tagline,
+            text: artwork.tagline,
+            url: "https://wallmurals.ai",
           });
 	      }
       });

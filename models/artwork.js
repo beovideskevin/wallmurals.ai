@@ -34,6 +34,10 @@ const artworkSchema = mongoose.Schema(
       type: String,
       required: false,
     },
+    tagline: {
+      type: String,
+      required: false,
+    }
     // user: {
     //   type: mongoose.Schema.Types.ObjectId,
     //   required: true,
