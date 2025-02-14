@@ -94,6 +94,7 @@
   <script type="module">
     import { createChromaMaterial } from '/libs/ar/chroma-video.js';
 
+    window.facingMode = "user";
     var mindarThree = null;
     let targetFound = -1;
     let artwork = {
@@ -134,7 +135,13 @@
         warmupTolerance: 10, // default 0, working for me before: 3
       });
 
-      // MindARThree.switchCamera();
+  //     mindarThree.switchCamera();
+
+  //     switchCamera() {
+  //   this.shouldFaceUser = !this.shouldFaceUser;
+  //   this.stop();
+  //   this.start();
+  // }
 
       let anchor = null;
       loadVideo(artwork.video, artwork.poster).then((element) => {
