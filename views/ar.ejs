@@ -177,7 +177,8 @@
   <script type="module">
     import { createChromaMaterial } from '/ar/chroma-video.js';
 
-    window.facingUser = false;
+    // Declarations
+    window.cameraFacing = false;
     var mindarThree = null;
     let targetFound = -1;
     let artwork = {
@@ -192,6 +193,9 @@
     };
     let photoFileName = "";
 
+    /*
+      Loads the video
+    */
     const loadVideo = (path, poster) => {
       return new Promise((resolve, reject) => {
         const video = document.createElement("video");
@@ -207,6 +211,9 @@
       });
     }
 
+    /*
+      Initial setup
+    */
     const setup = () => {
       mindarThree = new window.MINDAR.IMAGE.MindARThree({
         container: document.body,
@@ -247,6 +254,9 @@
       });
     }
 
+    /*
+      Starts the AR system
+    */
     const start = async () => {
       if (!mindarThree) {
         setup();
@@ -259,6 +269,10 @@
       document.getElementById("splash").style.display = "none";
     }
 
+    /*
+      Very destructive restart, needed because of a bug with the AR system, when you switched cameras 
+      the video didn't go away
+    */
     const restart = async () => {
       if (!mindarThree) {
         return;
@@ -268,11 +282,16 @@
       mindarThree.renderer.setAnimationLoop(null);
       mindarThree.renderer.domElement.remove();
       mindarThree = null;
+      document.querySelectorAll('.mindar-ui-overlay').forEach(e => e.remove());
       start();
     }
 
+    /*
+      This is where everything starts
+    */
     document.addEventListener('DOMContentLoaded', () => {
       window.location.hash = "";
+      window.cameraFacing = localStorage.getItem('cameraFacing');
       start();
     });
 
@@ -287,17 +306,18 @@
     });
 
     /**
-     * If the page is showed reload it
-     */
+      If the page is showed reload it,
+      I need to do this because of the back-forward cache, the videos are not loading when the back button is pressed in the browser (comment from filosofiantigua.es)
+    */
     window.addEventListener('pageshow', (event) => {
       if (event.persisted) {
-          // I need to do this because of the back-forward cache, the videos are not loading when the back button is pressed in the browser
-          // window.location.reload();
-          // But maybe this will work also
-          restart();
+          window.location.reload();
       }
     });
 
+    /*
+      For iphone user we need a click in order to unmute the videos
+    */
     document.getElementById("soundBtn").addEventListener('click', () => {
       artwork.element.muted = false;
       document.getElementById("soundBtn").style.display = "none";
@@ -310,6 +330,9 @@
       document.getElementById("muteBtn").style.display = "none";
     });
 
+    /*
+      Saves the image to a canvas and shows the photo wrapper
+    */
     document.getElementById("photoBtn").addEventListener('click', () => {
       if (!mindarThree) {
         return;
@@ -329,7 +352,6 @@
       const sy = (video.clientHeight - renderCanvas.clientHeight) / 2 * video.videoHeight / video.clientHeight;
       const sw = video.videoWidth - sx * 2; 
       const sh = video.videoHeight - sy * 2; 
-
       context.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
       
       renderer.preserveDrawingBuffer = true;
@@ -346,11 +368,20 @@
       window.location.hash = photoFileName;
     });
 
+    /* 
+      Switches the camera from environment to user. 
+      I had to badly patch the file ar-image-three.prof.js to make this work.
+    */ 
     document.getElementById("switchBtn").addEventListener('click', () => {
-      window.facingUser = !window.facingUser;
+      // If the value is null, the result should be user since the default is environment
+      window.cameraFacing = window.cameraFacing == "user" ? "environment" : "user";
+      localStorage.setItem('cameraFacing', window.cameraFacing);
       restart();
     });
 
+    /* 
+      Downloads the image
+    */ 
     document.getElementById("downloadBtn").addEventListener('click', () => {
       const canvas = document.getElementById("photoCanvas");
       if (!canvas) {
@@ -363,6 +394,9 @@
       link.click();
     });
 
+    /*
+      Shares the photo
+    */
     document.getElementById("shareBtn").addEventListener('click', () => {
       const canvas = document.getElementById("photoCanvas");
       if (!canvas) {
@@ -382,10 +416,16 @@
       });
     });
 
+    /*
+      The back button just goes back in the history, the onhashchange event ius the one that modifies the UI
+    */
     document.getElementById("backBtn").addEventListener('click', () => {
       history.back();
     });
 
+    /*
+      If you go back on the history we need to hide the photo wrapper and the buttons and show the AR system
+    */
     window.onhashchange = function() {
       if (window.location.hash != "") {
         return;
