@@ -118,13 +118,15 @@
 
     #photoWrapper {
       display: none;
+      align-items: center;
+      justify-content: center;
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
       background-color: #000000;
-      z-index: 20;
+      z-index: 10;
     }
 
     #photoWrapper canvas {
@@ -254,7 +256,6 @@
         renderer.render(scene, camera);
       });
       document.getElementById("splash").style.display = "none";
-      document.getElementById("arBtnsWrapper").style.display = "flex";
     }
 
     const restart = async () => {
@@ -262,7 +263,6 @@
         return;
       }
       document.getElementById("splash").style.display = "flex";
-      document.getElementById("arBtnsWrapper").style.display = "none";
       await mindarThree.stop();
       mindarThree.renderer.setAnimationLoop(null);
       start();
@@ -333,7 +333,7 @@
 
       const photoWrapper = document.getElementById("photoWrapper");
       photoWrapper.appendChild(canvas);
-      photoWrapper.style.display = "block";
+      photoWrapper.style.display = "flex";
       document.getElementById("arBtnsWrapper").style.display = "none";
       document.getElementById("photoBtnsWrapper").style.display = "flex";
       photoFileName = Date.now();
