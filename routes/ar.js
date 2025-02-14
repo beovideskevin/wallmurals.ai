@@ -1,16 +1,48 @@
 var express = require('express');
 var router = express.Router();
+var sanitize = require('mongo-sanitize');
+const Artwork = require('../models/artwork')
+
+var fs = require('fs');
+var db = JSON.parse(fs.readFileSync('db.json', 'utf8'));
 
 /* GET AR page. */
-router.get('/:id', function(req, res, next) {
-  let id = req.params.id;
-  res.render('ar', { 
-    title: process.env.title,
-    keywords: process.env.keywords,
-    description: process.env.description,
-    author: process.env.author,
-    artwork: db['artworks'][id]
-  });
+router.get('/:id', async function(req, res, next) {
+  if (req.params.id == 0 || 
+      req.params.id == 1 ||
+      req.params.id == 2 ||
+      req.params.id == 3) 
+  {
+    res.render('ar', { 
+      title: process.env.TITLE,
+      keywords: process.env.KEYWORDS,
+      description: process.env.DESCRIPTION,
+      author: process.env.AUTHOR,
+      artwork: db.artworks[req.params.id]
+    });
+    return;
+  }
+
+  let id = sanitize(req.params.id);
+  try {
+    const artwork = await Artwork.findById(id);
+    if (!artwork || artwork == []) {
+      res.redirect('/');
+      return;
+    }
+    
+    res.render('ar', { 
+      title: process.env.TITLE,
+      keywords: process.env.KEYWORDS,
+      description: process.env.DESCRIPTION,
+      author: process.env.AUTHOR,
+      artwork: artwork
+    });
+  }
+  catch (error) {
+    console.log(error);
+    res.redirect('/');
+  }
 });
 
 module.exports = router;
