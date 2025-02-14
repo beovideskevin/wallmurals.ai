@@ -134,6 +134,8 @@
         warmupTolerance: 10, // default 0, working for me before: 3
       });
 
+      MindARThree.switchCamera();
+
       let anchor = null;
       loadVideo(artwork.video, artwork.poster).then((element) => {
         artwork.element = element;
