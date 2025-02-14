@@ -86,9 +86,9 @@
     </div>
   </div>
 
-  <script src="/libs/ar/ar-image-three.prod.js"></script>
+  <script src="/ar/ar-image-three.prod.js"></script>
   <script type="module">
-    import { createChromaMaterial } from '/libs/ar/chroma-video.js';
+    import { createChromaMaterial } from '/ar/chroma-video.js';
 
     window.facingUser = false;
     var mindarThree = null;
@@ -203,7 +203,7 @@
       }
     });
 
-    switchCamera() {
+    function switchCamera() {
       window.facingUser = !window.facingUser;
       restart();
     }
