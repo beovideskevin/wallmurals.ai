@@ -263,8 +263,10 @@
         return;
       }
       document.getElementById("splash").style.display = "flex";
-      await mindarThree.stop();
+      mindarThree.stop();
       mindarThree.renderer.setAnimationLoop(null);
+      mindarThree.renderer.domElement.remove();
+      mindarThree = null;
       start();
     }
 
@@ -277,7 +279,10 @@
      * Add event so the AR is restarted when the phone changes orientation
      */
     screen.orientation.addEventListener("change", (event) => {
-      restart();
+      if (!mindarThree) {
+        return;
+      }
+      mindarThree.resize();
     });
 
     /**
