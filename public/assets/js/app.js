@@ -64,55 +64,55 @@ try {
 /*********************/
 /*   Menu Collapse   */
 /*********************/
-const toggleCollapse = (elementId, show = true) => {
-  const collapseEl = document.getElementById(elementId);
-  if (show) {
-    collapseEl.classList.remove("hidden");
-  } else {
-    collapseEl.classList.add("hidden");
-  }
-};
+// const toggleCollapse = (elementId, show = true) => {
+//   const collapseEl = document.getElementById(elementId);
+//   if (show) {
+//     collapseEl.classList.remove("hidden");
+//   } else {
+//     collapseEl.classList.add("hidden");
+//   }
+// };
 
-document.addEventListener("DOMContentLoaded", () => {
-  // Toggle target elements using [data-collapse]
-  document
-    .querySelectorAll("[data-collapse]")
-    .forEach(function (collapseToggleEl) {
-      var collapseId = collapseToggleEl.getAttribute("data-collapse");
+// document.addEventListener("DOMContentLoaded", () => {
+//   // Toggle target elements using [data-collapse]
+//   document
+//     .querySelectorAll("[data-collapse]")
+//     .forEach(function (collapseToggleEl) {
+//       var collapseId = collapseToggleEl.getAttribute("data-collapse");
 
-      collapseToggleEl.addEventListener("click", function () {
-        toggleCollapse(
-          collapseId,
-          document.getElementById(collapseId).classList.contains("hidden")
-        );
-      });
-    });
-});
+//       collapseToggleEl.addEventListener("click", function () {
+//         toggleCollapse(
+//           collapseId,
+//           document.getElementById(collapseId).classList.contains("hidden")
+//         );
+//       });
+//     });
+// });
 
-window.toggleCollapse = toggleCollapse;
+// window.toggleCollapse = toggleCollapse;
 
 /*********************/
 /*   Back To Top     */
 /*********************/
-var mybutton = document.getElementById("back-to-top");
-window.onscroll = function () {
-  scrollFunction();
-};
+// var mybutton = document.getElementById("back-to-top");
+// window.onscroll = function () {
+//   scrollFunction();
+// };
 
-function scrollFunction() {
-  if(mybutton!=null){
-    if (document.body.scrollTop > 500 || document.documentElement.scrollTop > 500) {
-      mybutton.style.display = "inline-flex";
-    } else {
-      mybutton.style.display = "none";
-    }
-  }
-}
+// function scrollFunction() {
+//   if(mybutton!=null){
+//     if (document.body.scrollTop > 500 || document.documentElement.scrollTop > 500) {
+//       mybutton.style.display = "inline-flex";
+//     } else {
+//       mybutton.style.display = "none";
+//     }
+//   }
+// }
 
-function topFunction() {
-  document.body.scrollTop = 0;
-  document.documentElement.scrollTop = 0;
-}
+// function topFunction() {
+//   document.body.scrollTop = 0;
+//   document.documentElement.scrollTop = 0;
+// }
 
 /*********************/
 /*   Accordions      */
