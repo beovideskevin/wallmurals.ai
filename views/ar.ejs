@@ -191,7 +191,8 @@
       tagline: '<%= artwork.tagline %>',
       element: null
     };
-    let photoFileName = "";
+    let hashLocation = "";
+    const shutter = new Audio('/sound/shutter.mp3');
 
     /*
       Loads the video
@@ -338,6 +339,8 @@
         return;
       }
 
+      shutter.play();
+
       const {video, renderer, scene, camera} = mindarThree;
       const renderCanvas = renderer.domElement;
 
@@ -364,8 +367,8 @@
       photoWrapper.style.display = "flex";
       document.getElementById("arBtnsWrapper").style.display = "none";
       document.getElementById("photoBtnsWrapper").style.display = "flex";
-      photoFileName = Date.now();
-      window.location.hash = photoFileName;
+      hashLocation = Date.now();
+      window.location.hash = hashLocation;
     });
 
     /* 
@@ -389,7 +392,9 @@
       }
       const data = canvas.toDataURL("image/jpeg", 1.0)
       const link = document.createElement('a');
-      link.download = photoFileName + '.jpg';
+      const filename = artwork.tagline + " " + hashLocation + '.jpg'
+      const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
+      link.download = sanitized;
       link.href = data;
       link.click();
     });
