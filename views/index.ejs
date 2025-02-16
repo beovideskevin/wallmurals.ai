@@ -764,32 +764,32 @@
                             </div>
                         </div>
 
-                        <form onsubmit="return false">
+                        <form onsubmit="return false" id="contactForm">
                             <div class="grid sm:grid-cols-2 gap-6">
                                 <div>
                                     <label for="formFirstName" class="block text-sm/normal font-semibold text-black mb-2">First Name</label>
-                                    <input type="text" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" id="formFirstName" placeholder="Your first name..." required="">
+                                    <input type="text" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="formFirstName" id="formFirstName" placeholder="Your first name..." required="">
                                 </div>
 
                                 <div>
                                     <label for="formLastName" class="block text-sm/normal font-semibold text-black mb-2">Last Name</label>
-                                    <input type="text" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" id="formLastName" placeholder="Last first name..." required="">
+                                    <input type="text" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="formLastName" id="formLastName" placeholder="Last first name..." required="">
                                 </div>
 
                                 <div>
                                     <label for="formEmail" class="block text-sm/normal font-semibold text-black mb-2">Email Address</label>
-                                    <input type="email" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" id="formEmail" placeholder="Your email..." required="">
+                                    <input type="email" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="formEmail" id="formEmail" placeholder="Your email..." required="">
                                 </div>
 
                                 <div>
                                     <label for="formPhone" class="block text-sm/normal font-semibold text-black mb-2">Phone Number</label>
-                                    <input type="text" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" id="formPhone" placeholder="Type phone number..." required="">
+                                    <input type="text" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="formPhone" id="formPhone" placeholder="Type phone number..." required="">
                                 </div>
 
                                 <div class="sm:col-span-2">
                                     <div class="mb-4">
                                         <label for="formMessage" class="block text-sm/normal font-semibold text-black mb-2">Message</label>
-                                        <textarea class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" id="formMessage" rows="4" placeholder="Type message..." required=""></textarea>
+                                        <textarea class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="formMessage" id="formMessage" rows="4" placeholder="Type message..." required=""></textarea>
                                     </div>
                                 </div>
 
@@ -870,13 +870,15 @@
         document.addEventListener("DOMContentLoaded", function() {
             submitBtn = document.getElementById("sendEmail");
             submitBtn.addEventListener("click", async function() {
-                const firstName = document.getElementById("formFirstName").value;
-                const lastName = document.getElementById("formLastName").value;
-                const email = document.getElementById("formEmail").value;
-                const phone = document.getElementById("formPhone").value;
-                const message = document.getElementById("formMessage").value;
+                const contactForm = document.getElementById("contactForm");
+                const turnstile = contactForm.elements["cf-turnstile-response"].value;
+                const firstName = contactForm.elements["formFirstName"].value;
+                const lastName = contactForm.elements["formLastName"].value;
+                const email = contactForm.elements["formEmail"].value;
+                const phone = contactForm.elements["formPhone"].value;
+                const message = contactForm.elements["formMessage"].value;
+                
                 const emailSuccess = document.getElementById("emailSuccess");
-                const turnstile = document.getElementById("cf-chl-widget-4c6w6_response");
                 emailSuccess.setAttribute('style', 'display:none !important');
                 const emailError = document.getElementById("emailError");
                 emailError.setAttribute('style', 'display:none !important');
