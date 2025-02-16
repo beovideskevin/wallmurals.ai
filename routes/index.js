@@ -36,11 +36,11 @@ router.post('/contact', async function(req, res, next) {
       return;
   }
 
-  let text = `name: ${body.firstName} ${body.lastName} -- email: ${body.email} -- phone: ${body.phone} -- ${body.message}`; 
+  let text = `name: ${body.firstName} ${body.lastName} -- email: ${body.email} -- phone: ${body.phone} \n ${body.message}`; 
   let mailOptions = {
     from: 'info@wallmurals.ai',
     to: 'thisisupperwestsidemurals@gmail.com',
-    cc: 'beovideskevin@gmail.com',
+    cc: 'kevinbcasas@gmail.com',
     subject: "Contact Email From WallMurals.ai",
     text: text
   };
