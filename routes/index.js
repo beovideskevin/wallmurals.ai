@@ -36,7 +36,7 @@ router.post('/contact', async function(req, res, next) {
       return;
   }
 
-  let text = `name: ${body.firstName} ${body.lastName} -- email: ${body.email} -- phone: ${body.phone} \n ${body.message}`; 
+  let text = `name: ${body.firstName} ${body.lastName} -- email: ${body.email} -- phone: ${body.phone}\n\n\n${body.message}`; 
   let mailOptions = {
     from: 'info@wallmurals.ai',
     to: 'thisisupperwestsidemurals@gmail.com',
