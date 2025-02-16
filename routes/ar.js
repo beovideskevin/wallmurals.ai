@@ -26,7 +26,9 @@ router.get('/:id', async function(req, res, next) {
 
   let id = sanitize(req.params.id);
   try {
+    console.log(id);
     const artwork = await Artwork.findById(id);
+    console.log(artwork);
     if (!artwork || artwork == []) {
       console.log("not found");
       res.redirect('/');
@@ -42,7 +44,7 @@ router.get('/:id', async function(req, res, next) {
     });
   }
   catch (error) {
-    console.log(error);
+    console.log("ERROR: " + error);
     res.redirect('/');
   }
 });
