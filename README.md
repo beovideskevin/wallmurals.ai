@@ -1,1 +1,1 @@
-# WallMurals
+# Wall Murals AI
