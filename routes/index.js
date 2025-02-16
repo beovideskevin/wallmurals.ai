@@ -28,7 +28,8 @@ router.post('/contact', async function(req, res, next) {
       body.email == "" || 
       body.phone == "" || 
       body.message == "" ||
-      body.nothing != "") 
+      body.nothing != "" ||
+      body['cf-turnstile-response'] == "") 
   {
       res.status(200);
       res.json({success: false});

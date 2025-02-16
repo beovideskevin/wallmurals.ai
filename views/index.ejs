@@ -764,6 +764,16 @@
                             </div>
                         </div>
 
+                        <div id="emailWarning" class="flex items-center p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300" role="alert">
+                            <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                              <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                            </svg>
+                            <span class="sr-only">Info</span>
+                            <div>
+                              <span class="font-medium">Warning.</span> Please fill all the fields and solve the captcha.
+                            </div>
+                        </div>
+
                         <form action="/contact/#contact" method="POST" id="contactForm">
                             <div class="grid sm:grid-cols-2 gap-6">
                                 <div>
@@ -793,8 +803,8 @@
                                     </div>
                                 </div>
 
-                                <div class="cf-turnstile" data-sitekey="0x4AAAAAAA88HXbtlaYr4Fst"></div>
                                 <input type="hidden" name="nothing" value="">
+                                <div class="cf-turnstile" data-sitekey="0x4AAAAAAA88HXbtlaYr4Fst"></div>
                             </div>
                             <div class="mt-4">
                                 <button id="sendEmail" type="submit" class="py-2 px-6 rounded-md text-baseitems-center justify-center border border-primary text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium">Send Messages <i class="mdi mdi-send ms-1"></i></button>
@@ -872,18 +882,30 @@
             contactForm.addEventListener("submit", async function(event) {
                 event.preventDefault();
 
-                const cfTurnstileResponse = this.elements["cf-turnstile-response"].value;
                 const firstName = this.elements["formFirstName"].value;
                 const lastName = this.elements["formLastName"].value;
                 const email = this.elements["formEmail"].value;
                 const phone = this.elements["formPhone"].value;
                 const message = this.elements["formMessage"].value;
                 const nothing = this.elements["nothing"].value;
+                const cfTurnstileResponse = this.elements["cf-turnstile-response"].value;
 
                 const emailSuccess = document.getElementById("emailSuccess");
                 emailSuccess.setAttribute('style', 'display:none !important');
+                const emailWarning = document.getElementById("emailWarning");
+                emailWarning.setAttribute('style', 'display:none !important');
                 const emailError = document.getElementById("emailError");
                 emailError.setAttribute('style', 'display:none !important');
+
+                if (firstName == "" || 
+                    lastName == "" || 
+                    email == "" || 
+                    phone == "" || 
+                    message == "" ||
+                    cfTurnstileResponse == "") 
+                {
+                    emailWarning.setAttribute('style', 'display:flex !important'); 
+                }
 
                 try {
                     const response = await fetch("/contact", {
@@ -902,7 +924,6 @@
                         headers: {
                             'Accept': 'application/json',
                             'Content-Type': 'application/json',
-                            // 'CF-Connecting-IP': '123.123.123.123'
                         },
                     });
                     if (!response.ok || response.status != 200) {

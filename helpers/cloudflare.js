@@ -7,13 +7,7 @@ var cloudFlare = async function (request) {
 
   // Get the secret key from the .env
   const SECRET_KEY = process.env.CLOUDFLARE_SECRET_KEY;
-
-  console.log(JSON.stringify({
-    secret: SECRET_KEY,
-    response: token,
-    remoteip: ip
-  }));
-  
+ 
   // Validate the token by calling the "/siteverify" API endpoint.
   const url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
   const result = await fetch(url, {
