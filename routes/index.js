@@ -50,6 +50,7 @@ router.post('/contact', async function(req, res, next) {
       console.log(error);
       res.status(200);
       res.json({success: false});
+      return;
     } 
     else {
       console.log('Email sent: ' + info.response);
