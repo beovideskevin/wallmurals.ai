@@ -15,6 +15,7 @@ router.get('/', function(req, res, next) {
   });
 });
 
+/* POST contact form */
 router.post('/contact', async function(req, res, next) {
   turnstile = await cloudFlare(req)
   if (!turnstile) {
@@ -54,7 +55,7 @@ router.post('/contact', async function(req, res, next) {
       return;
     } 
     else {
-      console.log('Email sent: ' + info.response);
+      console.log('CONTACT EMAIL SENT: ' + info.response + ' TEXT: ' + text);
     }
   });  
   

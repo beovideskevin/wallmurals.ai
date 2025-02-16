@@ -7,7 +7,7 @@ var fs = require('fs');
 var db = JSON.parse(fs.readFileSync('db.json', 'utf8'));
 
 /* GET AR page. */
-router.get('/:id', function(req, res, next) {
+router.get('/:id', async function(req, res, next) {
   if (req.params.id == 0 || 
       req.params.id == 1 ||
       req.params.id == 2 ||
@@ -26,30 +26,24 @@ router.get('/:id', function(req, res, next) {
 
   let id = sanitize(req.params.id);
   try {
-    Artwork.findById(id, function (err, artwork) {
-      if (err) {
-        console.log(err);
-        res.redirect('/');
-      }
-      else {
-        if (!artwork || artwork == []) {
-          console.log("not found");
-          res.redirect('/');
-          return;
-        }
-        
-        res.render('ar', { 
-          title: process.env.TITLE,
-          keywords: process.env.KEYWORDS,
-          description: process.env.DESCRIPTION,
-          author: process.env.AUTHOR,
-          artwork: artwork
-        });
-      }
+    const artwork = await Artwork.findById(id);
+    if (!artwork || artwork == []) {
+      console.log("NOT FOUND ID: " + req.params.id);
+      res.redirect('/');
+      return;
+    }
+    
+    res.render('ar', { 
+      site: process.env.SITE,
+      title: process.env.TITLE,
+      keywords: process.env.KEYWORDS,
+      description: process.env.DESCRIPTION,
+      author: process.env.AUTHOR,
+      artwork: artwork
     });
   }
   catch (error) {
-    console.log("ERROR: " + error);
+    console.log("AR ROUTE ERROR: " + error + " ID: " + req.params.id);
     res.redirect('/');
   }
 });
