@@ -1,5 +1,4 @@
 var express = require('express');
-var nodemailer = require('nodemailer');
 var cloudFlare = require('../helpers/cloudflare');
 var gmail = require('../helpers/gmail');
 
@@ -16,23 +15,40 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/contact', async function(req, res, next) {
-  console.log(req.body);
-  console.log(req.headers);
-  console.log(await cloudFlare(req));
-  res.status(200);
-  res.json(
-    {
-      success: true
-    }
-  );
+  turnstile = await cloudFlare(req)
+  if (!turnstile) {
+    res.status(200);
+    res.json({success: false});
+    return;
+  }
 
-  // //
-  // let text = `${req.params.name} ${req.params.email} ${req.params.phone} ${req.params.message}`; 
+  let body = req.body;
+  if (body.firstName == "" || 
+      body.lastName == "" || 
+      body.email == "" || 
+      body.phone == "" || 
+      body.message == "" ||
+      body.nothing != "") 
+  {
+      res.status(200);
+      res.json({success: false});
+      return;
+  }
+
+  let text = `name: ${body.firstName} ${body.lastName} -- email: ${body.email} -- phone: ${body.phone} -- ${body.message}`; 
+
+  console.log(text);
+
+  res.status(200);
+  res.json({success: true});
+
+
+  // 
   // let mailOptions = {
   //   from: 'info@wallmurals.ai',
   //   to: 'thisisupperwestsidemurals@gmail.com',
   //   cc: 'beovideskevin@gmail.com',
-  //   subject: req.params.subject,
+  //   subject: "Contact Email From WallMurals.ai",
   //   text: text
   // };
   

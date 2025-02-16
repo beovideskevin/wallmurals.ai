@@ -46,8 +46,8 @@
     <!-- Jarallax Css -->
     <link href="assets/libs/jarallax/jarallax.min.css" rel="stylesheet">
 
-    <!-- Swiper Css
-    <link href="assets/libs/swiper/swiper-bundle.min.css" rel="stylesheet">  -->
+    <!-- Swiper Css -->
+    <link href="assets/libs/swiper/swiper-bundle.min.css" rel="stylesheet">  
 
     <!-- Main Css -->
     <link href="assets/css/style.css" rel="stylesheet" type="text/css">
@@ -764,7 +764,7 @@
                             </div>
                         </div>
 
-                        <form onsubmit="return false" id="contactForm">
+                        <form action="/contact/#contact" method="POST" id="contactForm">
                             <div class="grid sm:grid-cols-2 gap-6">
                                 <div>
                                     <label for="formFirstName" class="block text-sm/normal font-semibold text-black mb-2">First Name</label>
@@ -794,7 +794,7 @@
                                 </div>
 
                                 <div class="cf-turnstile" data-sitekey="0x4AAAAAAA88HXbtlaYr4Fst"></div>
-                                <input type="hidden" name="nothing">
+                                <input type="hidden" name="nothing" value="">
                             </div>
                             <div class="mt-4">
                                 <button id="sendEmail" type="submit" class="py-2 px-6 rounded-md text-baseitems-center justify-center border border-primary text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium">Send Messages <i class="mdi mdi-send ms-1"></i></button>
@@ -831,8 +831,8 @@
     </footer>
     <!-- Footer End -->
 
-    <!-- Preline Js 
-    <script src="assets/libs/preline/preline.js" ></script> -->
+    <!-- Preline Js -->
+    <script src="assets/libs/preline/preline.js" ></script> 
 
     <!-- Lucide Js -->
     <script src="assets/libs/lucide/umd/lucide.min.js"></script>
@@ -844,10 +844,10 @@
     <script src="assets/libs/jarallax/jarallax.min.js"></script> 
 
     <!-- Swiper Bundle Js 
-    <script src="assets/libs/swiper/swiper-bundle.min.js"></script> -->
+    <script src="assets/libs/swiper/swiper-bundle.min.js"></script>  -->
 
     <!-- Swiper Js 
-    <script src="assets/js/swiper.js"></script> -->
+    <script src="assets/js/swiper.js"></script>  -->
 
     <!-- Main App Js -->
     <script src="assets/js/app.js" ></script>
@@ -868,16 +868,18 @@
     <!-- Send email -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            submitBtn = document.getElementById("sendEmail");
-            submitBtn.addEventListener("click", async function() {
-                const contactForm = document.getElementById("contactForm");
-                const turnstile = contactForm.elements["cf-turnstile-response"].value;
-                const firstName = contactForm.elements["formFirstName"].value;
-                const lastName = contactForm.elements["formLastName"].value;
-                const email = contactForm.elements["formEmail"].value;
-                const phone = contactForm.elements["formPhone"].value;
-                const message = contactForm.elements["formMessage"].value;
-                
+            contactForm = document.getElementById("contactForm");
+            contactForm.addEventListener("submit", async function(event) {
+                event.preventDefault();
+
+                const cfTurnstileResponse = this.elements["cf-turnstile-response"].value;
+                const firstName = this.elements["formFirstName"].value;
+                const lastName = this.elements["formLastName"].value;
+                const email = this.elements["formEmail"].value;
+                const phone = this.elements["formPhone"].value;
+                const message = this.elements["formMessage"].value;
+                const nothing = this.elements["nothing"].value;
+
                 const emailSuccess = document.getElementById("emailSuccess");
                 emailSuccess.setAttribute('style', 'display:none !important');
                 const emailError = document.getElementById("emailError");
@@ -893,7 +895,8 @@
                                 email: email,
                                 phone: phone,
                                 message: message,
-                                'cf-turnstile-response': turnstile
+                                nothing: nothing,
+                                'cf-turnstile-response': cfTurnstileResponse
                             }
                         ),
                         headers: {
@@ -914,7 +917,10 @@
                 catch (error) {
                     console.error("Error:", error);
                     emailError.setAttribute('style', 'display:flex !important'); 
-                }  
+                }
+                finally {
+                    turnstile.reset();
+                }
             })
         })
     </script>
