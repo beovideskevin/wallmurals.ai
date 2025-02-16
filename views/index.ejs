@@ -876,6 +876,7 @@
                 const phone = document.getElementById("formPhone").value;
                 const message = document.getElementById("formMessage").value;
                 const emailSuccess = document.getElementById("emailSuccess");
+                const turnstile = document.getElementById("cf-chl-widget-4c6w6_response");
                 emailSuccess.setAttribute('style', 'display:none !important');
                 const emailError = document.getElementById("emailError");
                 emailError.setAttribute('style', 'display:none !important');
@@ -889,12 +890,14 @@
                                 lastName: lastName,
                                 email: email,
                                 phone: phone,
-                                message: message
+                                message: message,
+                                'cf-turnstile-response': turnstile
                             }
                         ),
                         headers: {
                             'Accept': 'application/json',
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            // 'CF-Connecting-IP': '123.123.123.123'
                         },
                     });
                     if (!response.ok || response.status != 200) {
