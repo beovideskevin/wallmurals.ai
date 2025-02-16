@@ -743,7 +743,6 @@
                 </div>
                 <div class="lg:col-span-2 lg:ms-24">
                     <div class="p-6 md:p-12 rounded-md shadow-lg bg-white">
-
                         <div id="emailSuccess" class="flex items-center p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 hidden" role="alert">
                             <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                               <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
@@ -753,7 +752,6 @@
                               <span class="font-medium">Success!</span> Your email was sent. We will get in touch.
                             </div>
                         </div>
-
                         <div id="emailError" class="flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 hidden" role="alert">
                             <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                               <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
@@ -763,8 +761,7 @@
                               <span class="font-medium">Error!</span> Your email was not sent. Please, try again.
                             </div>
                         </div>
-
-                        <div id="emailWarning" class="flex items-center p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300" role="alert">
+                        <div id="emailWarning" class="flex items-center p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300 hidden" role="alert">
                             <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                               <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
                             </svg>
@@ -774,7 +771,7 @@
                             </div>
                         </div>
 
-                        <form action="/contact/#contact" method="POST" id="contactForm">
+                        <form id="contactForm">
                             <div class="grid sm:grid-cols-2 gap-6">
                                 <div>
                                     <label for="formFirstName" class="block text-sm/normal font-semibold text-black mb-2">First Name</label>
@@ -905,6 +902,7 @@
                     cfTurnstileResponse == "") 
                 {
                     emailWarning.setAttribute('style', 'display:flex !important'); 
+                    return false;
                 }
 
                 try {
@@ -942,6 +940,7 @@
                 finally {
                     turnstile.reset();
                 }
+                return false;
             })
         })
     </script>

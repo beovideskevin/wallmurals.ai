@@ -37,29 +37,27 @@ router.post('/contact', async function(req, res, next) {
   }
 
   let text = `name: ${body.firstName} ${body.lastName} -- email: ${body.email} -- phone: ${body.phone} -- ${body.message}`; 
-
-  console.log(text);
-
+  let mailOptions = {
+    from: 'info@wallmurals.ai',
+    to: 'thisisupperwestsidemurals@gmail.com',
+    cc: 'beovideskevin@gmail.com',
+    subject: "Contact Email From WallMurals.ai",
+    text: text
+  };
+  
+  gmail.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+      res.status(200);
+      res.json({success: false});
+    } 
+    else {
+      console.log('Email sent: ' + info.response);
+    }
+  });  
+  
   res.status(200);
   res.json({success: true});
-
-
-  // 
-  // let mailOptions = {
-  //   from: 'info@wallmurals.ai',
-  //   to: 'thisisupperwestsidemurals@gmail.com',
-  //   cc: 'beovideskevin@gmail.com',
-  //   subject: "Contact Email From WallMurals.ai",
-  //   text: text
-  // };
-  
-  // gmail.sendMail(mailOptions, function(error, info){
-  //   if (error) {
-  //     console.log(error);
-  //   } else {
-  //     console.log('Email sent: ' + info.response);
-  //   }
-  // });
 });
 
 module.exports = router;
