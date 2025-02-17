@@ -238,9 +238,15 @@
     }
 
     /*
-      Initial setup
+      Starts the AR system
     */
-    const setup = () => {
+    const start = async () => {
+      // Loads video, but only the first time
+      if (!artwork.element) {
+        artwork.element = await loadVideo(artwork.video, artwork.poster);
+      }
+
+      // Set up the AR system
       mindarThree = new window.MINDAR.IMAGE.MindARThree({
         container: document.body,
         imageTargetSrc: artwork.marker,
@@ -252,41 +258,28 @@
         missTolerance: 0, // default 0, working for me before: 3
         warmupTolerance: 10, // default 0, working for me before: 3
       });
+      let texture = new window.MINDAR.IMAGE.THREE.VideoTexture(artwork.element);
+      let geometry = new window.MINDAR.IMAGE.THREE.PlaneGeometry(1, artwork.height / artwork.width);
+      let material = artwork.chroma == null || artwork.chroma == 'null'
+        ? new window.MINDAR.IMAGE.THREE.MeshBasicMaterial({ map: texture })
+        : createChromaMaterial(texture, artwork.chroma);
+      let plane = new window.MINDAR.IMAGE.THREE.Mesh(geometry, material);
+      let anchor = mindarThree.addAnchor(0);
+      anchor.group.add(plane);
 
-      let anchor = null;
-      loadVideo(artwork.video, artwork.poster).then((element) => {
-        artwork.element = element;
-        let texture = new window.MINDAR.IMAGE.THREE.VideoTexture(artwork.element);
-        let geometry = new window.MINDAR.IMAGE.THREE.PlaneGeometry(1, artwork.height / artwork.width);
-        let material = artwork.chroma == null || artwork.chroma == 'null'
-          ? new window.MINDAR.IMAGE.THREE.MeshBasicMaterial({ map: texture })
-          : createChromaMaterial(texture, artwork.chroma);
-        let plane = new window.MINDAR.IMAGE.THREE.Mesh(geometry, material);
-        anchor = mindarThree.addAnchor(0);
-        anchor.group.add(plane);
-        anchor.onTargetFound = () => {
-          artwork.element.currentTime = 0;
-          artwork.element.muted = true;
-          artwork.element.play();
-        }
-        anchor.onTargetLost = () => {
-          artwork.element.pause();
-          artwork.element.muted = true;
-          mindarThree.ui.showScanning();
-        }
-        artwork.element.addEventListener("ended", event => {
-          artwork.element.currentTime = 0;
-        });
-      });
-    }
-
-    /*
-      Starts the AR system
-    */
-    const start = async () => {
-      if (!mindarThree) {
-        setup();
+      // Set the events
+      anchor.onTargetFound = () => {
+        artwork.element.currentTime = 0;
+        artwork.element.muted = true;
+        artwork.element.play();
       }
+      anchor.onTargetLost = () => {
+        artwork.element.pause();
+        artwork.element.muted = true;
+        mindarThree.ui.showScanning();
+      }
+      
+      // Start the AR system
       const { renderer, scene, camera } = mindarThree;
       await mindarThree.start();
       renderer.setAnimationLoop(() => {
@@ -304,12 +297,13 @@
         return;
       }
       document.getElementById("splash").style.display = "flex";
-      mindarThree.stop();
-      mindarThree.renderer.setAnimationLoop(null);
+      await mindarThree.stop();
+      /* mindarThree.renderer.setAnimationLoop(null);
       mindarThree.renderer.domElement.remove();
       mindarThree = null;
-      document.querySelectorAll('.mindar-ui-overlay').forEach(e => e.remove());
-      start();
+      document.querySelectorAll('.mindar-ui-overlay').forEach(e => e.remove()); */
+      await mindarThree.start();
+      document.getElementById("splash").style.display = "none";
     }
 
     /*
@@ -329,6 +323,7 @@
         return;
       }
       // window.location.reload();
+      restart();
     });
 
     /**
