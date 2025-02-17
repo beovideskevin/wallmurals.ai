@@ -298,9 +298,9 @@
       }
       document.getElementById("splash").style.display = "flex";
       await mindarThree.stop();
-      /* mindarThree.renderer.setAnimationLoop(null);
+      mindarThree.renderer.setAnimationLoop(null);
       mindarThree.renderer.domElement.remove();
-      mindarThree = null;
+     /*  mindarThree = null;
       document.querySelectorAll('.mindar-ui-overlay').forEach(e => e.remove()); */
       await mindarThree.start();
       document.getElementById("splash").style.display = "none";
