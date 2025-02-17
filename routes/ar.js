@@ -14,11 +14,6 @@ router.get('/:id', async function(req, res, next) {
       req.params.id == 3) 
   {
     res.render('ar', { 
-      site: process.env.SITE,
-      title: process.env.TITLE,
-      keywords: process.env.KEYWORDS,
-      description: process.env.DESCRIPTION,
-      author: process.env.AUTHOR,
       artwork: db.artworks[req.params.id]
     });
     return;
@@ -34,11 +29,6 @@ router.get('/:id', async function(req, res, next) {
     }
     
     res.render('ar', { 
-      site: process.env.SITE,
-      title: process.env.TITLE,
-      keywords: process.env.KEYWORDS,
-      description: process.env.DESCRIPTION,
-      author: process.env.AUTHOR,
       artwork: artwork
     });
   }

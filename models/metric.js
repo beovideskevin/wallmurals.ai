@@ -21,4 +21,4 @@ const metricSchema = mongoose.Schema(
   }
 )
 
-module.exports = mongoose.model('Metric', artworkSchema)
+module.exports = mongoose.model('Metric', metricSchema)

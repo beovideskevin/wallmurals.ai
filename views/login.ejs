@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es-ES" class="h-full bg-white"> 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title><%= title %></title>
+    <meta name="description" content="<%= description %>"/>
+    <meta name="keywords" content="<%= keywords %>"/>
+    <meta name="author" content="<%= author %>"/>
+    <link rel="canonical" href="https://www.wallmurals.ai/">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
+    <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="<%= title %>" />
+    <meta property="og:description" content="<%= description %>" />
+    <meta property="og:site_name" content="<%= site %>" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:url" content="https://www.wallmurals.ai" />
+    <meta property="og:image" content="/posters/default.jpeg"/>
+    <!-- <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="480" />
+    <meta property="og:image:height" content="640" /> -->
+    <meta property="article:publisher" content="<%= author %>" />
+    <meta property="article:author" content="<%= author %>" />
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="<%= site %>" />
+    <meta name="twitter:url" content="https://www.wallmurals.ai" />
+    <meta name="twitter:title" content="<%= title %>" />
+    <meta name="twitter:description" content="<%= description %>" />
+    <meta name="twitter:image" content="/posters/default.jpeg" />
+    
+    <meta itemprop="name" content="<%= site %>" />
+    <meta itemprop="description" content="<%= description %>" />
+    <meta itemprop="image" content="/posters/default.jpeg" />
+    
+    <!-- favicon -->
+    <link href="/assets/images/favicon.ico" rel="shortcut icon">
+
+    <!-- Main Css -->
+    <link href="/assets/css/style.css" rel="stylesheet" type="text/css">
+
+    <style>
+    </style>
+</head>
+<body class="h-full bg-white">
+    <div class="flex justify-center items-center min-h-full">
+        <div class="flex min-h-full flex-col justify-center px-6 lg:px-8 w-full">
+            <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+              <img class="mx-auto h-10 w-auto" src="/assets/images/logo.png" alt="Wall Murals AI">
+              <!-- h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">Sign in to your account</h2 -->
+            </div>
+          
+            <div class="mt-6 sm:mx-auto sm:w-full sm:max-w-sm">
+              <form class="space-y-6" action="/users/login" method="POST">
+                <div>
+                  <label for="email" class="block text-sm/normal font-semibold text-black mb-2">Email address</label>
+                  <div class="mt-2">
+                    <input type="email" name="email" id="email" autocomplete="email" required class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" placeholder="Your email address...">
+                  </div>
+                </div>
+          
+                <div>
+                  <div class="flex items-center justify-between"> 
+                    <label for="password" class="block text-sm/normal font-semibold text-black mb-2">Password</label>
+                  </div>
+                  <div class="mt-2">
+                    <input type="password" name="password" id="password" autocomplete="current-password" required class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" placeholder="Your password...">
+                  </div>
+                </div>
+          
+                <% if (error) { %>
+                <div id="emailError" class="flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                  <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                  </svg>
+                  <span class="sr-only">Info</span>
+                  <div>
+                    <span class="font-medium">Error!</span> Wrong email or password. Please try again.
+                  </div>
+                </div>
+                <% } %>
+
+                <div>
+                  <button type="submit" class="w-full py-2 px-6 rounded-md text-baseitems-center justify-center border border-primary text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium">Sign in</button>
+                </div>
+              </form>
+          
+            </div>
+        </div>
+    </div>
+</body>
+</html>

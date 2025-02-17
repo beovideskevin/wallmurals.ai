@@ -6,13 +6,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { 
-    site: process.env.SITE,
-    title: process.env.TITLE,
-    keywords: process.env.KEYWORDS,
-    description: process.env.DESCRIPTION,
-    author: process.env.AUTHOR,
-  });
+  res.render('index', {});
 });
 
 /* POST contact form */

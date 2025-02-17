@@ -7,12 +7,12 @@ const userSchema = mongoose.Schema(
       required: [true, 'Please add a name value'],
     },
     phone: {
-        type: String,
-        required: [true, 'Please add a phone value'],
+      type: String,
+      required: [true, 'Please add a phone value'],
     },
     dba: {
-        type: String,
-        required: false,
+      type: String,
+      required: false,
     },
     email: {
       type: String,
@@ -26,6 +26,7 @@ const userSchema = mongoose.Schema(
     active: {
       type: Boolean,
       required: false,
+      default: true,
     },
   },
   {
@@ -33,4 +34,4 @@ const userSchema = mongoose.Schema(
   }
 )
 
-module.exports = mongoose.model('User', artworkSchema)
+module.exports = mongoose.model('User', userSchema)
