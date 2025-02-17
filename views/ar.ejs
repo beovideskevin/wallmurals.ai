@@ -297,13 +297,10 @@
       document.getElementById("splash").style.display = "flex";
       await mindarThree.stop();
 
-      // const element = mindarThree.renderer.domElement;
-      // const clone = element.cloneNode(true);
-      // element.parentNode.replaceChild(clone, element);
-
-      // mindarThree.renderer.setAnimationLoop(null);
-      // mindarThree = null;
-      // document.querySelectorAll('.mindar-ui-overlay').forEach(e => e.remove()); 
+      for (let i = 0; i < mindarThree.anchors.length; i++) {
+        mindarThree.anchors[i].group.visible=false;
+        mindarThree.anchors[i].group.updateWorldMatrix(null);
+      }
 
       await mindarThree.start();
       document.getElementById("splash").style.display = "none";
