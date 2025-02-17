@@ -353,7 +353,7 @@
       document.getElementById("soundBtn").style.display = "block";
       document.getElementById("muteBtn").style.display = "none";
     });
-
+    
     /*
       Saves the image to a canvas and shows the photo wrapper
     */
@@ -361,8 +361,6 @@
       if (!mindarThree) {
         return;
       }
-
-      shutter.play();
 
       const {video, renderer, scene, camera} = mindarThree;
       const renderCanvas = renderer.domElement;
@@ -392,6 +390,7 @@
       document.getElementById("photoBtnsWrapper").style.display = "flex";
       hashLocation = Date.now();
       window.location.hash = hashLocation;
+      shutter.play();
     });
 
     /* 
