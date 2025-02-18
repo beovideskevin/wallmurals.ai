@@ -241,11 +241,6 @@
       Starts the AR system
     */
     const start = async () => {
-      // Loads video, but only the first time
-      if (!artwork.element) {
-        artwork.element = await loadVideo(artwork.video, artwork.poster);
-      }
-
       // Set up the AR system
       mindarThree = new window.MINDAR.IMAGE.MindARThree({
         container: document.body,
@@ -258,6 +253,7 @@
         missTolerance: 0, // default 0, working for me before: 3
         warmupTolerance: 10, // default 0, working for me before: 3
       });
+      artwork.element = await loadVideo(artwork.video, artwork.poster);
       let texture = new window.MINDAR.IMAGE.THREE.VideoTexture(artwork.element);
       let geometry = new window.MINDAR.IMAGE.THREE.PlaneGeometry(1, artwork.height / artwork.width);
       let material = artwork.chroma == null || artwork.chroma == 'null'
