@@ -13,6 +13,7 @@ router.get('/:id', async function(req, res, next) {
       req.params.id == 2 ||
       req.params.id == 3) 
   {
+    res.set('Cache-Control', 'no-cache'); // Set custom header
     res.render('ar', { 
       artwork: db.artworks[req.params.id]
     });
