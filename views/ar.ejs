@@ -102,44 +102,6 @@
       border-top: 2px solid #ffffff;
     }
 
-    #photoBtnsWrapper, #arBtnsWrapper {
-      display: flex;
-      align-items: center;
-      justify-content: space-around;
-      position: absolute;
-      z-index: 1000;
-      bottom: 60px;
-      right: 0px;
-      height: 40px;
-      width: 100%;
-    }
-
-    #photoBtnsWrapper {
-      display: none;
-    }
-
-    #photoBtnsWrapper a {
-      color: #fff;
-    }
-
-    #arBtnsWrapper a {
-      color: #fff;
-    }
-
-    #soundBtn {
-      display: none;
-    }
-
-    @media (orientation: landscape) {
-      #photoBtnsWrapper, #arBtnsWrapper {
-          height: 100%;
-          width: 40px;
-          bottom: 0px;
-          right: 60px;
-          flex-direction: column;
-        }
-    }
-
     #photoWrapper {
       display: none;
       align-items: center;
@@ -156,6 +118,75 @@
     #photoWrapper canvas {
       max-width: 100%;
       max-height: 100%;
+    }
+
+    #videoWrapper {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #000000;
+      z-index: 10;
+    }
+
+    #videoWrapper video {
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    #arBtnsWrapper, #photoBtnsWrapper, #videoBtnsWrapper {
+      display: none;
+      align-items: center;
+      justify-content: space-around;
+      position: absolute;
+      z-index: 15;
+      bottom: 60px;
+      right: 0px;
+      height: 40px;
+      width: 100%;
+    }
+
+    #playVideoBtnWrapper {
+      position: absolute;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      margin: auto;
+      background: transparent;
+      z-index: 15;
+    }
+
+    #arBtnsWrapper a, #photoBtnsWrapper a, #videoBtnsWrapper a, #playVideoBtnWrapper a {
+      color: #fff;
+    }
+
+    #soundBtn {
+      display: none;
+    }
+
+    @media (orientation: landscape) {
+      #arBtnsWrapper, #photoBtnsWrapper, #videoBtnsWrapper {
+          height: 100%;
+          width: 40px;
+          bottom: 0px;
+          right: 60px;
+          flex-direction: column;
+        }
+    }
+
+    .mindar-ui-compatibility {
+      z-index: 100 !important;
+      background-color: #000 !important;
     }
 
   </style>
@@ -186,16 +217,39 @@
   </div>
 
   <div id="photoBtnsWrapper">
-    <a id="backBtn" href="javascript:;">
+    <a id="backPhotoBtn" href="javascript:;">
       <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6363636363636365" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left"><path d="m15 18-6-6 6-6"/></svg>
     </a>
-    <a id="shareBtn" href="javascript:;">
+    <a id="sharePhotoBtn" href="javascript:;">
       <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6363636363636365" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share-2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>
     </a>
-    <a id="downloadBtn" href="javascript:;">
+    <a id="downloadPhotoBtn" href="javascript:;">
       <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6363636363636365" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
     </a>
   </div>
+
+  <div id="videoWrapper">
+  </div>
+
+  <div id="playVideoBtnWrapper">
+    <a id="playVideoBtn" href="javascript:;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6363636363636365" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-play"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+    </a>
+  </div>
+
+  <div id="videoBtnsWrapper">
+    <a id="backVideoBtn" href="javascript:;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6363636363636365" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left"><path d="m15 18-6-6 6-6"/></svg>
+    </a>
+    <a id="shareVideoBtn" href="javascript:;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6363636363636365" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share-2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>
+    </a>
+    <a id="downloadVideoBtn" href="javascript:;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6363636363636365" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+    </a>
+  </div>
+
+  <canvas id="record" style="display: none"></canvas>
 
   <script src="/ar/ar-image-three.prod.js"></script>
   <script type="module">
@@ -204,8 +258,7 @@
     // Declarations
     window.cameraFacing = false;
     var mindarThree = null;
-    let targetFound = -1;
-    let artwork = {
+    var artwork = {
       marker: '/markers/<%= artwork.marker %>',
       video: '/videos/<%= artwork.video %>',
       poster: '/posters/<%= artwork.poster %>',
@@ -215,8 +268,15 @@
       tagline: '<%= artwork.tagline %>',
       element: null
     };
-    let hashLocation = "";
     const shutter = new Audio('/sound/shutter.mp3');
+    var hashLocation = "";
+    var recording = false;
+    var recStartId = null;
+    var recFrameId = null;
+    let mediaRecorder;
+    let recordedChunks = [];
+    let frameRate = 30; // FPS
+    let interval = 1000 / frameRate;
 
     /*
       Loads the video
@@ -280,6 +340,7 @@
         renderer.render(scene, camera);
       });
       document.getElementById("splash").style.display = "none";
+      document.getElementById("arBtnsWrapper").style.display = "flex";
     }
 
     /*
@@ -294,7 +355,7 @@
       await mindarThree.stop();
 
       for (let i = 0; i < mindarThree.anchors.length; i++) {
-        mindarThree.anchors[i].group.visible=false;
+        mindarThree.anchors[i].group.visible=false; // Do I really need this?
         mindarThree.anchors[i].group.updateWorldMatrix(null);
       }
 
@@ -348,19 +409,88 @@
     });
     
     /*
-      Saves the image to a canvas and shows the photo wrapper
+      Saves the image or video and shows the photo or video wrapper
     */
-    document.getElementById("photoBtn").addEventListener('click', () => {
-      if (!mindarThree) {
+    document.getElementById("photoBtn").addEventListener('touchstart', () => {
+      recStartId = setTimeout(() => {
+        recording = true;
+        recordedChunks = [];
+        document.getElementById("photoBtn").style.color = "#f00";
+        const canvas = document.getElementById('record');
+        const stream = canvas.captureStream(frameRate);
+        mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+        mediaRecorder.ondataavailable = event => {
+          if (event.data.size > 0) {
+            recordedChunks.push(event.data);
+          }
+        };
+        mediaRecorder.onstop = () => {
+          const videoBlob = new Blob(recordedChunks, { type: 'video/webm' });
+          const url = URL.createObjectURL(videoBlob);
+          const recVideo = document.createElement("video");
+          recVideo.addEventListener('loadedmetadata', () => {
+            recVideo.setAttribute('id', 'videoCanvas');
+            recVideo.setAttribute('loop', '');
+            recVideo.setAttribute('playsinline', '');
+            recVideo.setAttribute('muted', '');
+
+            const photoWrapper = document.getElementById("videoWrapper");
+            photoWrapper.appendChild(recVideo);
+            photoWrapper.style.display = "flex";
+            document.getElementById("arBtnsWrapper").style.display = "none";
+            document.getElementById("videoBtnsWrapper").style.display = "flex";
+            document.getElementById("playVideoBtnWrapper").style.display = "flex";
+            hashLocation = Date.now();
+            window.location.hash = hashLocation;
+          });
+          recVideo.src = url;
+          recVideo.preload = "metadata";
+        };
+        mediaRecorder.start();
+
+        recFrameId = setInterval(() => {
+          copyRenderedCanvas(canvas);
+        }, interval);
+      }, 250);
+    });
+
+    document.getElementById("photoBtn").addEventListener('touchend', () => {
+      if (!recording) {
         return;
       }
+      recording = false;
+      document.getElementById("photoBtn").style.color = "#fff";
+      clearInterval(recFrameId);
+      recFrameId = null;
+      mediaRecorder.stop();
+    });
 
+    document.getElementById("photoBtn").addEventListener('click', () => {
+      if (recording) {
+        return;
+      }
+      else {
+        clearTimeout(recStartId);
+        recStartId = null;
+      }
+
+      const canvas = document.createElement('canvas');
+      canvas.setAttribute("id", "photoCanvas");
+      copyRenderedCanvas(canvas);
+      const photoWrapper = document.getElementById("photoWrapper");
+      photoWrapper.appendChild(canvas);
+      photoWrapper.style.display = "flex";
+      document.getElementById("arBtnsWrapper").style.display = "none";
+      document.getElementById("photoBtnsWrapper").style.display = "flex";
+      hashLocation = Date.now();
+      window.location.hash = hashLocation;
+      shutter.play();
+    });
+
+    function copyRenderedCanvas(canvas) {
       const {video, renderer, scene, camera} = mindarThree;
       const renderCanvas = renderer.domElement;
 
-      // output canvas
-      const canvas = document.createElement('canvas');
-      canvas.setAttribute("id", "photoCanvas");
       const context = canvas.getContext('2d');
       canvas.width = renderCanvas.width;
       canvas.height = renderCanvas.height;
@@ -375,16 +505,7 @@
       renderer.render(scene, camera); // empty if not run
       context.drawImage(renderCanvas, 0, 0, canvas.width, canvas.height);
       renderer.preserveDrawingBuffer = false;
-
-      const photoWrapper = document.getElementById("photoWrapper");
-      photoWrapper.appendChild(canvas);
-      photoWrapper.style.display = "flex";
-      document.getElementById("arBtnsWrapper").style.display = "none";
-      document.getElementById("photoBtnsWrapper").style.display = "flex";
-      hashLocation = Date.now();
-      window.location.hash = hashLocation;
-      shutter.play();
-    });
+    }
 
     /* 
       Switches the camera from environment to user. 
@@ -400,14 +521,17 @@
     /* 
       Downloads the image
     */ 
-    document.getElementById("downloadBtn").addEventListener('click', () => {
-      const canvas = document.getElementById("photoCanvas");
-      if (!canvas) {
+    document.getElementById("downloadPhotoBtn").addEventListener('click', () => {
+      const resource = document.getElementById("photoCanvas");
+      if (!resource) {
         return;
       }
-      const data = canvas.toDataURL("image/jpeg", 1.0)
+    
+      let mime = {type: "image/jpeg"};
+      let ext = '.jpeg';
+      const data = resource.toDataURL(mime, 1.0)
       const link = document.createElement('a');
-      const filename = artwork.tagline + " " + hashLocation + '.jpg'
+      const filename = artwork.tagline + "-" + hashLocation + ext;
       const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
       link.download = sanitized;
       link.href = data;
@@ -417,29 +541,110 @@
     /*
       Shares the photo
     */
-    document.getElementById("shareBtn").addEventListener('click', () => {
-      const canvas = document.getElementById("photoCanvas");
-      if (!canvas) {
+    document.getElementById("sharePhotoBtn").addEventListener('click', () => {
+      const resource = document.getElementById("photoCanvas");
+      if (!resource) {
         return;
       }
-      canvas.toBlob((blob) => {
-        const file = new File([blob], "photo.png", {type: "image/png"});
+      
+      resource.toBlob((blob) => {
+        let mime = {type: "image/jpeg"};
+        let ext = '.jpeg';
+        const filename = artwork.tagline + "-" + hashLocation + ext;
+        const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
+        const file = new File([blob], sanitized, mime);
         const files = [file];
 	      if (navigator.canShare && navigator.canShare({files})) {
-          navigator.share({
-            files: files,
-            title: artwork.tagline,
-            text: artwork.tagline,
-            url: "https://wallmurals.ai",
-          });
+          try {
+            navigator.share({
+              files: files,
+              title: artwork.tagline,
+              text: artwork.tagline,
+              url: "https://wallmurals.ai",
+            });
+          } 
+          catch (error) {
+            console.error('Error sharing photo:', error);
+          }
 	      }
+      })
+    });
+
+    /*
+      The back button just goes back in the history, the onhashchange event ius the one that modifies the UI
+    */
+    document.getElementById("backPhotoBtn").addEventListener('click', () => {
+      history.back();
+    });
+
+    /*
+      Play the video
+    */
+    document.getElementById("playVideoBtn").addEventListener('click', () => {
+      document.getElementById("playVideoBtnWrapper").style.display = "none";
+      document.getElementById("videoCanvas").play();
+    });
+
+    /* 
+      Downloads the video
+    */ 
+    document.getElementById("downloadVideoBtn").addEventListener('click', () => {
+      const resource = document.getElementById("videoCanvas");
+      if (!resource) {
+        return;
+      }
+    
+      let mime = { mimeType: 'video/webm' };
+      let ext = ".webm";
+      const data = resource.src;
+      const link = document.createElement('a');
+      const filename = artwork.tagline + "-" + hashLocation + ext;
+      const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
+      link.download = sanitized;
+      link.href = data;
+      link.click();
+    });
+
+    /*
+      Shares the video
+    */
+    document.getElementById("shareVideoBtn").addEventListener('click', () => {
+      const resource = document.getElementById("videoCanvas");
+      if (!resource) {
+        return;
+      }
+
+      let mime = { mimeType: 'video/webm' };
+      let ext = ".webm";
+      fetch(resource.src).then((r) => {
+        let blob = r.blob()
+        const filename = artwork.tagline + "-" + hashLocation + ext;
+        const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
+        const file = new File([blob], sanitized, mime);
+        const files = [file];
+        if (navigator.canShare && navigator.canShare({files})) {
+          try {
+            navigator.share({
+              files: files,
+              title: artwork.tagline,
+              text: artwork.tagline,
+              url: "https://wallmurals.ai",
+            });
+          } 
+          catch (error) {
+            console.error('Error sharing video:', error);
+          }
+        }
+      })
+      .catch(function (error) {
+        console.log("Error fetching video before sharing:", error);
       });
     });
 
     /*
       The back button just goes back in the history, the onhashchange event ius the one that modifies the UI
     */
-    document.getElementById("backBtn").addEventListener('click', () => {
+    document.getElementById("backVideoBtn").addEventListener('click', () => {
       history.back();
     });
 
@@ -452,9 +657,14 @@
       }
       document.getElementById("arBtnsWrapper").style.display = "flex";
       document.getElementById("photoBtnsWrapper").style.display = "none";
+      document.getElementById("videoBtnsWrapper").style.display = "none";
+      document.getElementById("playVideoBtnWrapper").style.display = "none";
       const photoWrapper = document.getElementById("photoWrapper");
       photoWrapper.style.display = "none";
       photoWrapper.innerHTML = "";
+      const videoWrapper = document.getElementById("videoWrapper");
+      videoWrapper.style.display = "none";
+      videoWrapper.innerHTML = "";
     }
 
   </script>
