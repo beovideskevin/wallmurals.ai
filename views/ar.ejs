@@ -423,7 +423,7 @@
         const canvas = document.getElementById('record');
         copyRenderedCanvas(canvas);
         const stream = canvas.captureStream(frameRate);
-        mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/mp4; codecs=h264' });
+        mediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm; codecs=vp8" });
         mediaRecorder.onerror = (event) => {
           console.log(event)
         };
@@ -437,7 +437,7 @@
           if (recordedChunks.length == 0) {
             return;
           }
-          const videoBlob = new Blob(recordedChunks, { type: 'video/mp4' });
+          const videoBlob = new Blob(recordedChunks, { type: 'video/webm' });
           const url = URL.createObjectURL(videoBlob);
           const recVideo = document.createElement("video");
           recVideo.addEventListener('loadedmetadata', () => {
@@ -593,8 +593,8 @@
         return;
       }
     
-      let mime = { mimeType: 'video/mp4' };
-      let ext = ".mp4";
+      let mime = { mimeType: 'video/webm' };
+      let ext = ".webm";
       const data = resource.src;
       const link = document.createElement('a');
       const filename = artwork.tagline + "-" + hashLocation + ext;
@@ -613,8 +613,8 @@
         return;
       }
 
-      let mime = { mimeType: 'video/mp4' };
-      let ext = ".mp4";
+      let mime = { mimeType: 'video/webm' };
+      let ext = ".webm";
       fetch(resource.src).then((r) => {
         let blob = r.blob()
         const filename = artwork.tagline + "-" + hashLocation + ext;
