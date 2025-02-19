@@ -421,6 +421,7 @@
         recordedChunks = [];
         document.getElementById("recVideoBtn").style.color = "#f00";
         const canvas = document.getElementById('record');
+        copyRenderedCanvas(canvas);
         const stream = canvas.captureStream(frameRate);
         mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/mp4' });
         mediaRecorder.onerror = (event) => {
