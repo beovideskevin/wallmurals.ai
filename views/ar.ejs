@@ -423,6 +423,10 @@
         const canvas = document.getElementById('record');
         const stream = canvas.captureStream(frameRate);
         mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+        mediaRecorder.onerror = (event) => {
+          console.log(event)
+        };
+
         mediaRecorder.addEventListener("dataavailable", (event) => {
           if (event.data.size > 0) {
             recordedChunks.push(event.data);
