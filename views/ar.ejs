@@ -280,6 +280,8 @@
     let videoBlob = null;
     let frameRate = 20; // FPS
     let interval = 1000 / frameRate;
+    let videoMimeType = "video/webm; codecs=vp8";
+    let videoExt = ".webm";
 
     /*
       Loads the video
@@ -372,6 +374,11 @@
       This is where everything starts
     */
     document.addEventListener('DOMContentLoaded', function() {
+      let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+      if (isSafari) {
+        mimeType = "video/mp4;codecs:h264";
+        videoExt = ".mp4";
+      }
       window.location.hash = "";
       window.cameraFacing = localStorage.getItem('cameraFacing');
       start();
@@ -442,7 +449,7 @@
         const canvas = document.getElementById('record');
         copyRenderedCanvas(canvas);
         const stream = canvas.captureStream(frameRate);
-        mediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm; codecs=vp8" }); // "video/mp4;codecs:h264"
+        mediaRecorder = new MediaRecorder(stream, {mimeType: videoMimeType});
         mediaRecorder.onerror = (event) => {
           console.log(event)
         };
@@ -456,7 +463,7 @@
           if (recordedChunks.length == 0) {
             return;
           }
-          videoBlob = new Blob(recordedChunks, { type: "video/mp4; codecs:h264" }); // 'video/webm; codecs=vp8'
+          videoBlob = new Blob(recordedChunks, {type: videoMimeType}); 
           const url = URL.createObjectURL(videoBlob);
           const recVideo = document.createElement("video");
           recVideo.addEventListener('loadedmetadata', () => {
@@ -604,8 +611,8 @@
         return;
       }
      
-      let mime = { mimeType: "video/mp4;codecs:h264" }; // 'video/webm; codecs=vp8'
-      let ext = ".mp4";
+      let mime = { mimeType: videoMimeType}; 
+      let ext = videoExt;
       const data = resource.src;
       const link = document.createElement('a');
       const filename = artwork.tagline + "-" + hashLocation + ext;
@@ -625,8 +632,8 @@
         return;
       }
 
-      let mime = { mimeType: "video/mp4;codecs:h264" }; //  'video/webm; codecs=vp8'
-      let ext = ".mp4";
+      let mime = {mimeType: videoMimeType}; 
+      let ext = videoExt;
       const filename = artwork.tagline + "-" + hashLocation + ext;
       const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
       const file = new File([videoBlob], sanitized, mime);
