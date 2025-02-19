@@ -295,7 +295,7 @@
           console.log("Finished loading: " + path);
           resolve(video);
         });
-        video.src = path;
+        video.src = path + "#t=0.1";
         video.preload = "metadata";
       });
     }
