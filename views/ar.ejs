@@ -208,6 +208,9 @@
     <a id="photoBtn" href="javascript:;">
       <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6363636363636365" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-camera"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
     </a>
+    <a id="recVideoBtn" href="javascript:;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6363636363636365" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-video"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg>
+    </a>
     <a id="switchBtn" href="javascript:;">
       <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6363636363636365" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-switch-camera"><path d="M11 19H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5"/><path d="M13 5h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-5"/><circle cx="12" cy="12" r="3"/><path d="m18 22-3-3 3-3"/><path d="m6 2 3 3-3 3"/></svg>
     </a>
@@ -413,12 +416,15 @@
     /*
       Saves the image or video and shows the photo or video wrapper
     */
-    document.getElementById("photoBtn").addEventListener('touchstart', () => {
-      recStartId = setTimeout(() => {
+    document.getElementById("recVideoBtn").addEventListener('click', () => {
+      if (!recording) {
         recording = true;
         recordedChunks = [];
-        document.getElementById("photoBtn").style.color = "#f00";
+        document.getElementById("recVideoBtn").style.color = "#f00";
         const canvas = document.getElementById('record');
+        recFrameId = setInterval(() => {
+          copyRenderedCanvas(canvas);
+        }, interval);
         const stream = canvas.captureStream(frameRate);
         mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
         mediaRecorder.ondataavailable = event => {
@@ -449,33 +455,17 @@
           recVideo.preload = "metadata";
         };
         mediaRecorder.start();
-
-        recFrameId = setInterval(() => {
-          copyRenderedCanvas(canvas);
-        }, interval);
-      }, 250);
-    });
-
-    document.getElementById("photoBtn").addEventListener('touchend', () => {
-      if (!recording) {
-        return;
       }
-      recording = false;
-      document.getElementById("photoBtn").style.color = "#fff";
-      clearInterval(recFrameId);
-      recFrameId = null;
-      mediaRecorder.stop();
+      else {
+        recording = false;
+        document.getElementById("recVideoBtn").style.color = "#fff";
+        clearInterval(recFrameId);
+        recFrameId = null;
+        mediaRecorder.stop();
+      }
     });
 
     document.getElementById("photoBtn").addEventListener('click', () => {
-      if (recording) {
-        return;
-      }
-      else {
-        clearTimeout(recStartId);
-        recStartId = null;
-      }
-
       const canvas = document.createElement('canvas');
       canvas.setAttribute("id", "photoCanvas");
       copyRenderedCanvas(canvas);
