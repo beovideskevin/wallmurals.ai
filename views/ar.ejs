@@ -413,59 +413,59 @@
     /*
       Saves the image or video and shows the photo or video wrapper
     */
-    // document.getElementById("photoBtn").addEventListener('touchstart', () => {
-    //   recStartId = setTimeout(() => {
-    //     recording = true;
-    //     recordedChunks = [];
-    //     document.getElementById("photoBtn").style.color = "#f00";
-    //     const canvas = document.getElementById('record');
-    //     const stream = canvas.captureStream(frameRate);
-    //     mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
-    //     mediaRecorder.ondataavailable = event => {
-    //       if (event.data.size > 0) {
-    //         recordedChunks.push(event.data);
-    //       }
-    //     };
-    //     mediaRecorder.onstop = () => {
-    //       const videoBlob = new Blob(recordedChunks, { type: 'video/webm' });
-    //       const url = URL.createObjectURL(videoBlob);
-    //       const recVideo = document.createElement("video");
-    //       recVideo.addEventListener('loadedmetadata', () => {
-    //         recVideo.setAttribute('id', 'videoCanvas');
-    //         recVideo.setAttribute('loop', '');
-    //         recVideo.setAttribute('playsinline', '');
-    //         recVideo.setAttribute('muted', '');
+    document.getElementById("photoBtn").addEventListener('touchstart', () => {
+      recStartId = setTimeout(() => {
+        recording = true;
+        recordedChunks = [];
+        document.getElementById("photoBtn").style.color = "#f00";
+        const canvas = document.getElementById('record');
+        const stream = canvas.captureStream(frameRate);
+        mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+        mediaRecorder.ondataavailable = event => {
+          if (event.data.size > 0) {
+            recordedChunks.push(event.data);
+          }
+        };
+        mediaRecorder.onstop = () => {
+          const videoBlob = new Blob(recordedChunks, { type: 'video/webm' });
+          const url = URL.createObjectURL(videoBlob);
+          const recVideo = document.createElement("video");
+          recVideo.addEventListener('loadedmetadata', () => {
+            recVideo.setAttribute('id', 'videoCanvas');
+            recVideo.setAttribute('loop', '');
+            recVideo.setAttribute('playsinline', '');
+            recVideo.setAttribute('muted', '');
 
-    //         const photoWrapper = document.getElementById("videoWrapper");
-    //         photoWrapper.appendChild(recVideo);
-    //         photoWrapper.style.display = "flex";
-    //         document.getElementById("arBtnsWrapper").style.display = "none";
-    //         document.getElementById("videoBtnsWrapper").style.display = "flex";
-    //         document.getElementById("playVideoBtnWrapper").style.display = "flex";
-    //         hashLocation = Date.now();
-    //         window.location.hash = hashLocation;
-    //       });
-    //       recVideo.src = url;
-    //       recVideo.preload = "metadata";
-    //     };
-    //     mediaRecorder.start();
+            const photoWrapper = document.getElementById("videoWrapper");
+            photoWrapper.appendChild(recVideo);
+            photoWrapper.style.display = "flex";
+            document.getElementById("arBtnsWrapper").style.display = "none";
+            document.getElementById("videoBtnsWrapper").style.display = "flex";
+            document.getElementById("playVideoBtnWrapper").style.display = "flex";
+            hashLocation = Date.now();
+            window.location.hash = hashLocation;
+          });
+          recVideo.src = url;
+          recVideo.preload = "metadata";
+        };
+        mediaRecorder.start();
 
-    //     recFrameId = setInterval(() => {
-    //       copyRenderedCanvas(canvas);
-    //     }, interval);
-    //   }, 250);
-    // });
+        recFrameId = setInterval(() => {
+          copyRenderedCanvas(canvas);
+        }, interval);
+      }, 250);
+    });
 
-    // document.getElementById("photoBtn").addEventListener('touchend', () => {
-    //   if (!recording) {
-    //     return;
-    //   }
-    //   recording = false;
-    //   document.getElementById("photoBtn").style.color = "#fff";
-    //   clearInterval(recFrameId);
-    //   recFrameId = null;
-    //   mediaRecorder.stop();
-    // });
+    document.getElementById("photoBtn").addEventListener('touchend', () => {
+      if (!recording) {
+        return;
+      }
+      recording = false;
+      document.getElementById("photoBtn").style.color = "#fff";
+      clearInterval(recFrameId);
+      recFrameId = null;
+      mediaRecorder.stop();
+    });
 
     document.getElementById("photoBtn").addEventListener('click', () => {
       if (recording) {
