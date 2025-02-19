@@ -615,7 +615,8 @@
 
       let mime = { mimeType: 'video/webm' };
       let ext = ".webm";
-      let blob = await fetch(resource.src); 
+      let resp = await fetch(resource.src);
+      let blob = await resp.blob();
       const filename = artwork.tagline + "-" + hashLocation + ext;
       const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
       const file = new File([blob], sanitized, mime);
