@@ -423,7 +423,7 @@
         const canvas = document.getElementById('record');
         copyRenderedCanvas(canvas);
         const stream = canvas.captureStream(frameRate);
-        mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/mp4 codecs="vp9"' });
+        mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/mp4 codecs=vp9' });
         mediaRecorder.onerror = (event) => {
           console.log(event)
         };
