@@ -425,7 +425,7 @@
         const canvas = document.getElementById('record');
         copyRenderedCanvas(canvas);
         const stream = canvas.captureStream(frameRate);
-        mediaRecorder = new MediaRecorder(stream, { mimeType: "video/mp4; codecs:h264" }); // "video/webm; codecs=vp8"
+        mediaRecorder = new MediaRecorder(stream, { mimeType: "video/mp4;codecs:h264" }); // "video/webm; codecs=vp8"
         mediaRecorder.onerror = (event) => {
           console.log(event)
         };
@@ -598,7 +598,7 @@
         return;
       }
      
-      let mime = { mimeType: "video/mp4; codecs:h264" }; // 'video/webm; codecs=vp8'
+      let mime = { mimeType: "video/mp4;codecs:h264" }; // 'video/webm; codecs=vp8'
       let ext = ".mp4";
       const data = resource.src;
       const link = document.createElement('a');
@@ -619,7 +619,7 @@
         return;
       }
 
-      let mime = { mimeType: "video/mp4; codecs:h264" }; //  'video/webm; codecs=vp8'
+      let mime = { mimeType: "video/mp4;codecs:h264" }; //  'video/webm; codecs=vp8'
       let ext = ".mp4";
       const filename = artwork.tagline + "-" + hashLocation + ext;
       const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
