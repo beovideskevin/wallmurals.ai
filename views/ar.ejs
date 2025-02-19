@@ -607,7 +607,7 @@
     /*
       Shares the video
     */
-    document.getElementById("shareVideoBtn").addEventListener('click', () => {
+    document.getElementById("shareVideoBtn").addEventListener('click', async () => {
       const resource = document.getElementById("videoCanvas");
       if (!resource) {
         return;
@@ -615,29 +615,24 @@
 
       let mime = { mimeType: 'video/webm' };
       let ext = ".webm";
-      fetch(resource.src).then((r) => {
-        let blob = r.blob()
-        const filename = artwork.tagline + "-" + hashLocation + ext;
-        const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
-        const file = new File([blob], sanitized, mime);
-        const files = [file];
-        if (navigator.canShare && navigator.canShare({files})) {
-          try {
-            navigator.share({
-              files: files,
-              title: artwork.tagline,
-              text: artwork.tagline,
-              url: "https://wallmurals.ai",
-            }).catch((error) => {console.log(error)});
-          } 
-          catch (error) {
-            console.error('Error sharing video:', error);
-          }
+      let blob = await fetch(resource.src).blob(); 
+      const filename = artwork.tagline + "-" + hashLocation + ext;
+      const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
+      const file = new File([blob], sanitized, mime);
+      const files = [file];
+      if (navigator.canShare && navigator.canShare({files})) {
+        try {
+          navigator.share({
+            files: files,
+            title: artwork.tagline,
+            text: artwork.tagline,
+            url: "https://wallmurals.ai",
+          }).catch((error) => {console.log(error)});
+        } 
+        catch (error) {
+          console.error('Error sharing video:', error);
         }
-      })
-      .catch(function (error) {
-        console.log("Error fetching video before sharing:", error);
-      });
+      }
     });
 
     /*
