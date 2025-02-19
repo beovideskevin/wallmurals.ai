@@ -448,12 +448,12 @@
         document.getElementById("recVideoBtn").style.color = "#f00";
         const canvas = document.getElementById('record');
         copyRenderedCanvas(canvas);
+        const posterUrl = canvas.toDataURL();
         const stream = canvas.captureStream(frameRate);
         mediaRecorder = new MediaRecorder(stream, {mimeType: videoMimeType});
         mediaRecorder.onerror = (event) => {
           console.log(event)
         };
-
         mediaRecorder.addEventListener("dataavailable", function(event) {
           if (event.data.size > 0) {
             recordedChunks.push(event.data);
@@ -471,6 +471,7 @@
             recVideo.setAttribute('loop', 'true');
             recVideo.setAttribute('playsinline', 'true');
             recVideo.setAttribute('muted', 'true');
+            recVideo.setAttribute('poster', posterUrl);
 
             const photoWrapper = document.getElementById("videoWrapper");
             photoWrapper.appendChild(recVideo);
