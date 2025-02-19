@@ -11,7 +11,8 @@ router.get('/:id', async function(req, res, next) {
   if (req.params.id == 0 || 
       req.params.id == 1 ||
       req.params.id == 2 ||
-      req.params.id == 3) 
+      req.params.id == 3 ||
+      req.params.id == 4) 
   {
     res.set('Cache-Control', 'no-cache'); // Set custom header
     res.render('ar', { 

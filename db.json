@@ -32,6 +32,15 @@
             "height": 480,
             "chroma": "#00ff00",
             "tagline": "Shared with Wall Murals AI"
+        },
+        {
+            "marker": "birds.mind",
+            "video": "birds_green_screen_sm_3.mp4",
+            "poster": "birds.jpeg",
+            "width": 720,
+            "height": 480,
+            "chroma": "#00ff00",
+            "tagline": "Shared with Wall Murals AI"
         }
     ]
 }
