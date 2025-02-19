@@ -417,7 +417,6 @@
     */
     document.getElementById("recVideoBtn").addEventListener('click', () => {
       if (!recording) {
-        console.log("here");
         recording = true;
         recordedChunks = [];
         document.getElementById("recVideoBtn").style.color = "#f00";
@@ -430,6 +429,9 @@
           }
         });
         mediaRecorder.addEventListener("stop", () => {
+          if (recordedChunks.length == 0) {
+            return;
+          }
           const videoBlob = new Blob(recordedChunks, { type: 'video/webm' });
           const url = URL.createObjectURL(videoBlob);
           const recVideo = document.createElement("video");
@@ -457,7 +459,6 @@
         }, interval);
       }
       else {
-        console.log("here ooo");
         recording = false;
         document.getElementById("recVideoBtn").style.color = "#fff";
         clearInterval(recFrameId);
