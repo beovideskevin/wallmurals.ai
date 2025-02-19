@@ -540,33 +540,35 @@
     /*
       Shares the photo
     */
-    document.getElementById("sharePhotoBtn").addEventListener('click', () => {
+    document.getElementById("sharePhotoBtn").addEventListener('click', async () => {
       const resource = document.getElementById("photoCanvas");
       if (!resource) {
         return;
       }
       
-      resource.toBlob((blob) => {
-        let mime = {type: "image/jpeg"};
-        let ext = '.jpeg';
-        const filename = artwork.tagline + "-" + hashLocation + ext;
-        const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
-        const file = new File([blob], sanitized, mime);
-        const files = [file];
-	      if (navigator.canShare && navigator.canShare({files})) {
-          try {
-            navigator.share({
-              files: files,
-              title: artwork.tagline,
-              text: artwork.tagline,
-              url: "https://wallmurals.ai",
-            });
-          } 
-          catch (error) {
-            console.error('Error sharing photo:', error);
-          }
-	      }
-      })
+      let blob = await resource.toBlob();
+      let mime = {type: "image/jpeg"};
+      let ext = '.jpeg';
+      const filename = artwork.tagline + "-" + hashLocation + ext;
+      const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
+      const file = new File([blob], sanitized, mime);
+      const files = [file];
+      if (navigator.canShare && navigator.canShare({files})) {
+        try {
+          navigator.share({
+            files: files,
+            title: artwork.tagline,
+            text: artwork.tagline,
+            url: "https://wallmurals.ai",
+          }).catch((error) => {
+            console.log(error);
+          });
+        } 
+        catch (error) {
+          console.error('Error sharing photo:', error);
+        }
+      }
+      
     });
 
     /*
@@ -628,7 +630,9 @@
             title: artwork.tagline,
             text: artwork.tagline,
             url: "https://wallmurals.ai",
-          }).catch((error) => {console.log(error)});
+          }).catch((error) => {
+            console.log(error);
+          });
         } 
         catch (error) {
           console.error('Error sharing video:', error);
