@@ -384,12 +384,13 @@
       //   mimeType = "video/mp4;codecs:h264";
       //   videoExt = ".mp4";
       // }
-
+alert("no");
       if (!MediaRecorder.isTypeSupported("video/webm; codecs=vp8")) {
         mimeType = "video/mp4;codecs:h264";
         videoExt = ".mp4";
         alert("yes!");
       }
+
       window.location.hash = "";
       window.cameraFacing = localStorage.getItem('cameraFacing');
       start();
