@@ -563,7 +563,7 @@
               text: artwork.tagline,
               url: "https://wallmurals.ai",
             }).catch((error) => {
-              alert("We can not share from this browser. Sorry.");
+              // alert("We can not share from this browser. Sorry.");
               console.log(error);
             });
           } 
@@ -614,7 +614,7 @@
     */
     document.getElementById("shareVideoBtn").addEventListener('click', function() {
       const resource = document.getElementById("videoCanvas");
-      
+
       if (!resource) {
         return;
       }
@@ -633,7 +633,7 @@
             text: artwork.tagline,
             url: "https://wallmurals.ai",
           }).catch((error) => {
-            alert("We can not share from this browser. Sorry.");
+            // alert("We can not share from this browser. Sorry.");
             console.log(error);
           });
         } 
