@@ -284,7 +284,7 @@
     /*
       Loads the video
     */
-    const loadVideo = (path, poster) => {
+    const loadVideo = function(path, poster) {
       return new Promise((resolve, reject) => {
         const video = document.createElement("video");
         video.addEventListener('loadedmetadata', () => {
@@ -303,7 +303,7 @@
     /*
       Starts the AR system
     */
-    const start = async () => {
+    const start = async function() {
       // Set up the AR system
       mindarThree = new window.MINDAR.IMAGE.MindARThree({
         container: document.body,
@@ -352,7 +352,7 @@
       Very destructive restart, needed because of a bug with the AR system, when you switched cameras 
       the video didn't go away
     */
-    const restart = async () => {
+    const restart = async function() {
       if (!mindarThree) {
         return;
       }
@@ -371,7 +371,7 @@
     /*
       This is where everything starts
     */
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', function() {
       window.location.hash = "";
       window.cameraFacing = localStorage.getItem('cameraFacing');
       start();
@@ -380,7 +380,7 @@
     /**
      * Add event so the AR is restarted when the phone changes orientation
      */
-    screen.orientation.addEventListener("change", (event) => {
+    screen.orientation.addEventListener("change", function(event) {
       if (!mindarThree) {
         return;
       }
@@ -392,7 +392,7 @@
       If the page is showed reload it,
       I need to do this because of the back-forward cache, the videos are not loading when the back button is pressed in the browser (comment from filosofiantigua.es)
     */
-    window.addEventListener('pageshow', (event) => {
+    window.addEventListener('pageshow', function(event) {
       if (event.persisted) {
           window.location.reload();
       }
@@ -401,13 +401,13 @@
     /*
       For iphone user we need a click in order to unmute the videos
     */
-    document.getElementById("soundBtn").addEventListener('click', () => {
+    document.getElementById("soundBtn").addEventListener('click', function() {
       artwork.element.muted = false;
       document.getElementById("soundBtn").style.display = "none";
       document.getElementById("muteBtn").style.display = "block";
     });
 
-    document.getElementById("muteBtn").addEventListener('click', () => {
+    document.getElementById("muteBtn").addEventListener('click', function() {
       artwork.element.muted = true;
       document.getElementById("soundBtn").style.display = "block";
       document.getElementById("muteBtn").style.display = "none";
@@ -416,7 +416,7 @@
     /*
       Saves the image or video and shows the photo or video wrapper
     */
-    document.getElementById("recVideoBtn").addEventListener('click', () => {
+    document.getElementById("recVideoBtn").addEventListener('click', function() {
       if (!recording) {
         recording = true;
         recordedChunks = [];
@@ -430,12 +430,12 @@
           console.log(event)
         };
 
-        mediaRecorder.addEventListener("dataavailable", (event) => {
+        mediaRecorder.addEventListener("dataavailable", function(event) {
           if (event.data.size > 0) {
             recordedChunks.push(event.data);
           }
         });
-        mediaRecorder.addEventListener("stop", () => {
+        mediaRecorder.addEventListener("stop", function() {
           if (recordedChunks.length == 0) {
             return;
           }
@@ -461,7 +461,7 @@
           recVideo.preload = "metadata";
         });
         mediaRecorder.start();
-        recFrameId = setInterval(() => {
+        recFrameId = setInterval(function() {
           copyRenderedCanvas(canvas);
         }, interval);
       }
@@ -474,7 +474,7 @@
       }
     });
 
-    document.getElementById("photoBtn").addEventListener('click', () => {
+    document.getElementById("photoBtn").addEventListener('click', function() {
       const canvas = document.createElement('canvas');
       canvas.setAttribute("id", "photoCanvas");
       copyRenderedCanvas(canvas);
@@ -512,7 +512,7 @@
       Switches the camera from environment to user. 
       I had to badly patch the file ar-image-three.prof.js to make this work.
     */ 
-    document.getElementById("switchBtn").addEventListener('click', () => {
+    document.getElementById("switchBtn").addEventListener('click', function() {
       // If the value is null, the result should be user since the default is environment
       window.cameraFacing = window.cameraFacing == "user" ? "environment" : "user";
       localStorage.setItem('cameraFacing', window.cameraFacing);
@@ -522,7 +522,7 @@
     /* 
       Downloads the image
     */ 
-    document.getElementById("downloadPhotoBtn").addEventListener('click', () => {
+    document.getElementById("downloadPhotoBtn").addEventListener('click', function() {
       const resource = document.getElementById("photoCanvas");
       if (!resource) {
         return;
@@ -542,7 +542,7 @@
     /*
       Shares the photo
     */
-    document.getElementById("sharePhotoBtn").addEventListener('click', async () => {
+    document.getElementById("sharePhotoBtn").addEventListener('click', function() {
       const resource = document.getElementById("photoCanvas");
       if (!resource) {
         return;
@@ -577,14 +577,14 @@
     /*
       The back button just goes back in the history, the onhashchange event ius the one that modifies the UI
     */
-    document.getElementById("backPhotoBtn").addEventListener('click', () => {
+    document.getElementById("backPhotoBtn").addEventListener('click', function() {
       history.back();
     });
 
     /*
       Play the video
     */
-    document.getElementById("playVideoBtn").addEventListener('click', () => {
+    document.getElementById("playVideoBtn").addEventListener('click', function() {
       document.getElementById("playVideoBtnWrapper").style.display = "none";
       document.getElementById("videoCanvas").play();
     });
@@ -592,7 +592,7 @@
     /* 
       Downloads the video
     */ 
-    document.getElementById("downloadVideoBtn").addEventListener('click', () => {
+    document.getElementById("downloadVideoBtn").addEventListener('click', function() {
       const resource = document.getElementById("videoCanvas");
       if (!resource) {
         return;
@@ -612,7 +612,7 @@
     /*
       Shares the video
     */
-    document.getElementById("shareVideoBtn").addEventListener('click', async () => {
+    document.getElementById("shareVideoBtn").addEventListener('click', function() {
       const resource = document.getElementById("videoCanvas");
       if (!resource) {
         return;
@@ -645,7 +645,7 @@
     /*
       The back button just goes back in the history, the onhashchange event ius the one that modifies the UI
     */
-    document.getElementById("backVideoBtn").addEventListener('click', () => {
+    document.getElementById("backVideoBtn").addEventListener('click', function() {
       history.back();
     });
 
