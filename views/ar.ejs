@@ -597,7 +597,7 @@
       if (!resource) {
         return;
       }
-    
+     
       let mime = { mimeType: "video/mp4; codecs:h264" }; // 'video/webm; codecs=vp8'
       let ext = ".mp4";
       const data = resource.src;
@@ -614,6 +614,7 @@
     */
     document.getElementById("shareVideoBtn").addEventListener('click', function() {
       const resource = document.getElementById("videoCanvas");
+      
       if (!resource) {
         return;
       }
