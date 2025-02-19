@@ -374,11 +374,9 @@
       This is where everything starts
     */
     document.addEventListener('DOMContentLoaded', function() {
-
       if (!MediaRecorder.isTypeSupported("video/webm; codecs=vp8")) {
-        mimeType = "video/mp4;codecs:h264";
+        videoMimeType = "video/mp4;codecs:h264";
         videoExt = ".mp4";
-        // alert("yes!");
       }
 
       window.location.hash = "";
