@@ -422,7 +422,7 @@
         document.getElementById("recVideoBtn").style.color = "#f00";
         const canvas = document.getElementById('record');
         const stream = canvas.captureStream(frameRate);
-        mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+        mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/mp4' });
         mediaRecorder.onerror = (event) => {
           console.log(event)
         };
@@ -436,7 +436,7 @@
           if (recordedChunks.length == 0) {
             return;
           }
-          const videoBlob = new Blob(recordedChunks, { type: 'video/webm' });
+          const videoBlob = new Blob(recordedChunks, { type: 'video/mp4' });
           const url = URL.createObjectURL(videoBlob);
           const recVideo = document.createElement("video");
           recVideo.addEventListener('loadedmetadata', () => {
@@ -592,8 +592,8 @@
         return;
       }
     
-      let mime = { mimeType: 'video/webm' };
-      let ext = ".webm";
+      let mime = { mimeType: 'video/mp4' };
+      let ext = ".mp4";
       const data = resource.src;
       const link = document.createElement('a');
       const filename = artwork.tagline + "-" + hashLocation + ext;
@@ -612,8 +612,8 @@
         return;
       }
 
-      let mime = { mimeType: 'video/webm' };
-      let ext = ".webm";
+      let mime = { mimeType: 'video/mp4' };
+      let ext = ".mp4";
       fetch(resource.src).then((r) => {
         let blob = r.blob()
         const filename = artwork.tagline + "-" + hashLocation + ext;
