@@ -376,6 +376,10 @@
     document.addEventListener('DOMContentLoaded', function() {
       // let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
       let isSafari = new RegExp("^((?!chrome|android).)*safari", "i");
+      try {
+        isSafari.test(navigator.userAgent);
+      }
+      catch(error) {alert(error);}
       if (isSafari.test(navigator.userAgent)) {
         mimeType = "video/mp4;codecs:h264";
         videoExt = ".mp4";
