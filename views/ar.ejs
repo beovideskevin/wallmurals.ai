@@ -288,9 +288,9 @@
       return new Promise((resolve, reject) => {
         const video = document.createElement("video");
         video.addEventListener('loadedmetadata', () => {
-          video.setAttribute('loop', 'true');
-          video.setAttribute('playsinline', 'true');
-          video.setAttribute('muted', 'true');
+          video.setAttribute('loop', true);
+          video.setAttribute('playsinline', true);
+          video.setAttribute('muted', true);
           video.setAttribute('poster', poster);
           console.log("Finished loading: " + path);
           resolve(video);
@@ -425,7 +425,7 @@
         const canvas = document.getElementById('record');
         copyRenderedCanvas(canvas);
         const stream = canvas.captureStream(frameRate);
-        mediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm; codecs=vp8" });
+        mediaRecorder = new MediaRecorder(stream, { mimeType: "video/mp4; codecs:h264" }); // "video/webm; codecs=vp8"
         mediaRecorder.onerror = (event) => {
           console.log(event)
         };
@@ -439,14 +439,14 @@
           if (recordedChunks.length == 0) {
             return;
           }
-          videoBlob = new Blob(recordedChunks, { type: 'video/webm; codecs=vp8' });
+          videoBlob = new Blob(recordedChunks, { type: "video/mp4; codecs:h264" }); // 'video/webm; codecs=vp8'
           const url = URL.createObjectURL(videoBlob);
           const recVideo = document.createElement("video");
           recVideo.addEventListener('loadedmetadata', () => {
             recVideo.setAttribute('id', 'videoCanvas');
-            recVideo.setAttribute('loop', '');
-            recVideo.setAttribute('playsinline', '');
-            recVideo.setAttribute('muted', '');
+            recVideo.setAttribute('loop', 'true');
+            recVideo.setAttribute('playsinline', 'true');
+            recVideo.setAttribute('muted', 'true');
 
             const photoWrapper = document.getElementById("videoWrapper");
             photoWrapper.appendChild(recVideo);
@@ -598,8 +598,8 @@
         return;
       }
     
-      let mime = { mimeType: 'video/webm; codecs=vp8' };
-      let ext = ".webm";
+      let mime = { mimeType: "video/mp4; codecs:h264" }; // 'video/webm; codecs=vp8'
+      let ext = ".mp4";
       const data = resource.src;
       const link = document.createElement('a');
       const filename = artwork.tagline + "-" + hashLocation + ext;
@@ -618,8 +618,8 @@
         return;
       }
 
-      let mime = { mimeType: 'video/webm; codecs=vp8' };
-      let ext = ".webm";
+      let mime = { mimeType: "video/mp4; codecs:h264" }; //  'video/webm; codecs=vp8'
+      let ext = ".mp4";
       const filename = artwork.tagline + "-" + hashLocation + ext;
       const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
       const file = new File([videoBlob], sanitized, mime);
