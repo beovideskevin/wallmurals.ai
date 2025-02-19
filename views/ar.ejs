@@ -427,12 +427,12 @@
         }, interval);
         const stream = canvas.captureStream(frameRate);
         mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
-        mediaRecorder.ondataavailable = event => {
+        mediaRecorder.addEventListener("ondataavailable", (event) => {
           if (event.data.size > 0) {
             recordedChunks.push(event.data);
           }
-        };
-        mediaRecorder.onstop = () => {
+        });
+        mediaRecorder.addEventListener("onstop", () => {
           const videoBlob = new Blob(recordedChunks, { type: 'video/webm' });
           const url = URL.createObjectURL(videoBlob);
           const recVideo = document.createElement("video");
@@ -453,7 +453,7 @@
           });
           recVideo.src = url;
           recVideo.preload = "metadata";
-        };
+        });
         mediaRecorder.start();
       }
       else {
