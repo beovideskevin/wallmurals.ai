@@ -274,7 +274,6 @@
     const shutter = new Audio('/sound/shutter.mp3');
     var hashLocation = "";
     var recording = false;
-    var recStartId = null;
     var recFrameId = null;
     let mediaRecorder;
     let recordedChunks = [];
@@ -418,21 +417,19 @@
     */
     document.getElementById("recVideoBtn").addEventListener('click', () => {
       if (!recording) {
+        console.log("here");
         recording = true;
         recordedChunks = [];
         document.getElementById("recVideoBtn").style.color = "#f00";
         const canvas = document.getElementById('record');
-        recFrameId = setInterval(() => {
-          copyRenderedCanvas(canvas);
-        }, interval);
         const stream = canvas.captureStream(frameRate);
         mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
-        mediaRecorder.addEventListener("ondataavailable", (event) => {
+        mediaRecorder.addEventListener("dataavailable", (event) => {
           if (event.data.size > 0) {
             recordedChunks.push(event.data);
           }
         });
-        mediaRecorder.addEventListener("onstop", () => {
+        mediaRecorder.addEventListener("stop", () => {
           const videoBlob = new Blob(recordedChunks, { type: 'video/webm' });
           const url = URL.createObjectURL(videoBlob);
           const recVideo = document.createElement("video");
@@ -455,8 +452,12 @@
           recVideo.preload = "metadata";
         });
         mediaRecorder.start();
+        recFrameId = setInterval(() => {
+          copyRenderedCanvas(canvas);
+        }, interval);
       }
       else {
+        console.log("here ooo");
         recording = false;
         document.getElementById("recVideoBtn").style.color = "#fff";
         clearInterval(recFrameId);
