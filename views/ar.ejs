@@ -414,7 +414,24 @@
     });
     
     /*
-      Saves the image or video and shows the photo or video wrapper
+      Saves the image and shows the photo wrapper
+    */
+    document.getElementById("photoBtn").addEventListener('click', function() {
+      const canvas = document.createElement('canvas');
+      canvas.setAttribute("id", "photoCanvas");
+      copyRenderedCanvas(canvas);
+      const photoWrapper = document.getElementById("photoWrapper");
+      photoWrapper.appendChild(canvas);
+      photoWrapper.style.display = "flex";
+      document.getElementById("arBtnsWrapper").style.display = "none";
+      document.getElementById("photoBtnsWrapper").style.display = "flex";
+      hashLocation = Date.now();
+      window.location.hash = hashLocation;
+      shutter.play();
+    });
+
+    /*
+      Saves the video and shows video wrapper
     */
     document.getElementById("recVideoBtn").addEventListener('click', function() {
       if (!recording) {
@@ -425,7 +442,7 @@
         const canvas = document.getElementById('record');
         copyRenderedCanvas(canvas);
         const stream = canvas.captureStream(frameRate);
-        mediaRecorder = new MediaRecorder(stream, { mimeType: "video/mp4;codecs:h264" }); // "video/webm; codecs=vp8"
+        mediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm; codecs=vp8" }); // "video/mp4;codecs:h264"
         mediaRecorder.onerror = (event) => {
           console.log(event)
         };
@@ -474,20 +491,9 @@
       }
     });
 
-    document.getElementById("photoBtn").addEventListener('click', function() {
-      const canvas = document.createElement('canvas');
-      canvas.setAttribute("id", "photoCanvas");
-      copyRenderedCanvas(canvas);
-      const photoWrapper = document.getElementById("photoWrapper");
-      photoWrapper.appendChild(canvas);
-      photoWrapper.style.display = "flex";
-      document.getElementById("arBtnsWrapper").style.display = "none";
-      document.getElementById("photoBtnsWrapper").style.display = "flex";
-      hashLocation = Date.now();
-      window.location.hash = hashLocation;
-      shutter.play();
-    });
-
+    /*
+      Helper for saving frame
+    */ 
     function copyRenderedCanvas(canvas) {
       const {video, renderer, scene, camera} = mindarThree;
       const renderCanvas = renderer.domElement;
@@ -619,7 +625,7 @@
         return;
       }
 
-      let mime = { mimeType: 'video/webm; codecs=vp8' }; //   "video/mp4;codecs:h264"
+      let mime = { mimeType: "video/mp4;codecs:h264" }; //  'video/webm; codecs=vp8'
       let ext = ".mp4";
       const filename = artwork.tagline + "-" + hashLocation + ext;
       const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
