@@ -278,8 +278,6 @@
     let mediaRecorder;
     let recordedChunks = [];
     let videoBlob = null;
-    let frameRate = 20; // FPS
-    let interval = 1000 / frameRate;
     let videoMimeType = "video/webm; codecs=vp8";
     let videoExt = ".webm";
 
@@ -445,10 +443,12 @@
         recording = true;
         recordedChunks = [];
         videoBlob = null;
+        let frameRate = 20; // FPS
+        let interval = 1000 / frameRate;
         document.getElementById("recVideoBtn").style.color = "#f00";
         const canvas = document.getElementById('record');
         copyRenderedCanvas(canvas);
-        const posterUrl = canvas.toDataURL();
+        const poster = canvas.toDataURL();
         const stream = canvas.captureStream(frameRate);
         mediaRecorder = new MediaRecorder(stream, {mimeType: videoMimeType});
         mediaRecorder.onerror = (event) => {
@@ -471,7 +471,7 @@
             recVideo.setAttribute('loop', 'true');
             recVideo.setAttribute('playsinline', 'true');
             recVideo.setAttribute('muted', 'true');
-            recVideo.setAttribute('poster', posterUrl);
+            recVideo.setAttribute('poster', poster);
 
             const photoWrapper = document.getElementById("videoWrapper");
             photoWrapper.appendChild(recVideo);
