@@ -12,6 +12,7 @@
     <% include partials/navigation.ejs %>
 
     <section class="relative pt-32 pb-20" id="visitsSection"> 
+        (weekly, monthly, yearly dropdown)
         <div class="container">
             <div id="visitsContainer" class="shadow-2xl rounded-xl bg-white py-20 pt-20"></div>
         </div>
@@ -32,6 +33,20 @@
     <% include partials/footer.ejs %>
 
     <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                const response = await fetch("/metrics");
+                if (!response.ok || response.status != 200) {
+                    throw new Error(`Response status: ${response.status}`);
+                }
+                const content = await response.json();
+                console.log(content.metrics);
+            }
+            catch (error) {
+                console.error("Error:", error);
+            }
+        });
+
         let visitsOptions = { 
             container: document.getElementById("visitsContainer"),
             data: [

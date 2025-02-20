@@ -39,7 +39,7 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
   cookie: { 
-    // maxAge: 60000, 
+    maxAge: null, // maxAge: should be something else, a number 
     secure: false // process.env.NODE_ENV === 'development' ? false : true
   } 
 }));

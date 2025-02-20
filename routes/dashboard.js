@@ -1,56 +1,18 @@
 var express = require('express');
-
 var router = express.Router();
+const {
+    index,
+    metrics,
+    account
+} = require('../controllers/dashboard');
 
 /* GET dashboard page. */
-router.get('/', function(req, res, next) {
-    console.log("DASHBOARD - FULL SESSION: ", req.session);
-    if (req.session.user) {
-        res.render('dashboard', { 
-            site: process.env.SITE,
-            title: process.env.TITLE,
-            keywords: process.env.KEYWORDS,
-            description: process.env.DESCRIPTION,
-            author: process.env.AUTHOR,
-        });
-    }
-    else {
-        res.redirect('/');
-    }
-});
+router.get('/', index); 
 
 /* GET metrics page. */
-router.get('/metrics', function(req, res, next) {
-    console.log("METRICS - FULL SESSION: ", req.session);
-    if (req.session.user) {
-        res.render('metrics', { 
-            site: process.env.SITE,
-            title: process.env.TITLE,
-            keywords: process.env.KEYWORDS,
-            description: process.env.DESCRIPTION,
-            author: process.env.AUTHOR,
-        });
-    }
-    else {
-        res.redirect('/');
-    }
-});
+router.get('/metrics', metrics);
 
 /* GET account page. */
-router.get('/account', function(req, res, next) {
-    console.log("ACCOUNT - FULL SESSION: ", req.session);
-    if (req.session.user) {
-        res.render('account', { 
-            site: process.env.SITE,
-            title: process.env.TITLE,
-            keywords: process.env.KEYWORDS,
-            description: process.env.DESCRIPTION,
-            author: process.env.AUTHOR,
-        });
-    }
-    else {
-        res.redirect('/');
-    }
-});
+router.get('/account', account);
 
 module.exports = router;

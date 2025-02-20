@@ -4,8 +4,8 @@
  * 
  * Usage:
  * 
- * node .\artwork.js <marker> <video> <poster> <width> <height> <chroma> <location> <tagline>
- * node .\artwork.js beovideskevin kevin 7869123518 
+ * node .\artwork.js <marker> <video> <poster> <width> <height> <chroma> <location> <tagline> <user>
+ * node .\artwork.js 
  * 
 */
 const dotenv = require('dotenv').config({path: "../.env"});
@@ -28,6 +28,7 @@ let height = process.argv[6];
 let chroma = process.argv[7] || "none";
 let location = process.argv[8] || "none";
 let tagline = process.argv[9] || "none";
+let user = process.argv[10];
 
 Artwork.create({
     marker: marker,
@@ -37,7 +38,8 @@ Artwork.create({
     height: height,
     chroma: chroma,
     location: location,
-    tagline: tagline
+    tagline: tagline,
+    user: user
 }).then(function (newArtwork) {
     console.log("Artwork created!", newArtwork);
     process.exit(1);

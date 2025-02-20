@@ -70,8 +70,6 @@
         }
 
         .video-container {
-            height: 515px;
-            width: 245px;
             position: relative;
         }
 
@@ -87,6 +85,7 @@
         .video-container .iphone {
             z-index: 1;
             position: relative;
+            width: 245px;
         }
     </style>
 </head>
@@ -134,7 +133,7 @@
                         </li>
                     </ul>
                     <div class="ms-auto shrink block gap-2 lg:hidden mt-4 text-center">
-                        <a href="/users/login" class="py-2 px-6 inline-flex items-center gap-2 rounded-md text-base text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium">
+                        <a href="/users" class="py-2 px-6 inline-flex items-center gap-2 rounded-md text-base text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium">
                             <i data-lucide="log-in" class="h-4 w-4 fill-white/40"></i>
                             <span class="block">Login</span>
                         </a>
@@ -142,7 +141,7 @@
                 </div>
 
                 <div class="ms-auto shrink hidden lg:inline-flex gap-2">
-                    <a href="/users/login" class="py-2 px-6 inline-flex items-center gap-2 rounded-md text-base text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium">
+                    <a href="/users" class="py-2 px-6 inline-flex items-center gap-2 rounded-md text-base text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium">
                         <i data-lucide="log-in" class="h-4 w-4 fill-white/40"></i>
                         <span class="block">Login</span>
                     </a>
@@ -281,11 +280,11 @@
                 </div>
                 <div class="flex items-center">
                     <!-- <img src="assets/images/inspire.jpg" class="h-[600px] rounded-xl mx-auto" alt="feature-image"> -->
-                    <div class="relative video-container basis-[245px] mx-auto mt-8">
+                    <div class="relative video-container mx-auto mt-8">
                         <video autoplay muted loop playsinline>
-                            <source src="/assets/videos/capture_sm_short.mp4" type="video/mp4" />
+                            <source src="/assets/videos/new_capture_short_sm.mp4" type="video/mp4" />
                         </video>
-                        <img class="iphone" src="/assets/images/statistical.png">
+                        <img class="iphone" src="/assets/images/statistical_whitebg.png">
                     </div>
                 </div>
             </div>
