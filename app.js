@@ -23,7 +23,7 @@ var sess = {
   secret: process.env.SESSION_KEY,
   cookie: {}
 }
-if (app.get('node_env') === 'production') {
+if (process.env.NODE_ENV != 'development') {
   console.log("secure");
   app.set('trust proxy', 1) // trust first proxy
   sess.cookie.secure = true // serve secure cookies
