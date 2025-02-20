@@ -55,15 +55,10 @@
     body {
       position: relative;
       margin: 0;
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      height: 100%;
       overflow: hidden;
       background: transparent;
-    }
-
-    /* make the content a pixel higher that the screen to make the browser UI go away in landscape mode */
-    div.spacer { 
-      height: 1px; 
     }
 
     #splash {
@@ -857,8 +852,5 @@
 
     gtag('config', 'G-9EH5BJHSZ5');
   </script>
-
-  <!-- Hack to make the UI go away -->
-  <div class="spacer"></div>
 </body>
 </html>
