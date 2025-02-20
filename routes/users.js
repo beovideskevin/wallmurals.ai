@@ -46,6 +46,7 @@ router.post('/login', function(req, res, next) {
               req.session.user = user.id;
               console.log(req.session.user);
               req.session.save();
+              console.log(req.session.user);
               res.redirect('/dashboard');
             }
           });
