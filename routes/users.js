@@ -43,7 +43,7 @@ router.post('/login', function(req, res, next) {
               });
             }
             else {
-              req.session.user = { id: user.id, email: user.email };
+              req.session.user = user.id;
               console.log(req.session.user);
               res.redirect('/dashboard');
             }
