@@ -499,7 +499,7 @@
       Make the web fullscreen
     */
     document.getElementById("fullscreenBtn").addEventListener("click", function() {
-      let element = document.body;
+      let element = document.documentElement;
       var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen;
       if (requestMethod) { // Native full screen.
         requestMethod.call(element);
