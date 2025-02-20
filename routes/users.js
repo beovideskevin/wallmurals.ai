@@ -44,10 +44,11 @@ router.post('/login', function(req, res, next) {
             }
             else {
               req.session.user = user.id;
-              console.log(req.session.user);
+              console.log("LOGIN/USER ID: " + req.session.user);
               req.session.save((err) => {
-                console.log(err);
-                console.log(req.session.user);
+                if (err) {
+                  console.log(err);
+                }
                 res.redirect('/dashboard');
               });
             }

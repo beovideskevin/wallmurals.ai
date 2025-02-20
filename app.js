@@ -19,29 +19,30 @@ connectDB();
 
 const app = express();
 
-var sess = {
-  secret: process.env.SESSION_KEY,
-  cookie: {}
-}
-if (process.env.NODE_ENV != 'development') {
-  console.log("secure");
-  app.set('trust proxy', 1) // trust first proxy
-  sess.cookie.secure = true // serve secure cookies
-  sess.cookie.maxAge = 60000;
-}
-
-app.use(session(sess))
-
-// app.set('trust proxy', 1);
-// app.use(session({
+// @TODO I NEED TO SECURE THE SESSION WITH HTTPS
+// var sess = {
 //   secret: process.env.SESSION_KEY,
-//   resave: true,
+//   resave: false,
 //   saveUninitialized: true,
-//   cookie: { 
-//     maxAge: 60000, 
-//     secure: process.env.NODE_ENV === 'development' ? false : true
-//   } 
-// }));
+//   cookie: {
+//     maxAge: 60000
+//   }
+// }
+// if (process.env.NODE_ENV != 'development') {
+//   app.set('trust proxy', 1) // trust first proxy
+//   sess.cookie.secure = true // serve secure cookies
+// }
+// app.use(session(sess))
+
+app.use(session({
+  secret: process.env.SESSION_KEY,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { 
+    maxAge: 60000, 
+    secure: false // process.env.NODE_ENV === 'development' ? false : true
+  } 
+}));
 
 app.locals.site = process.env.SITE;
 app.locals.title = process.env.TITLE;
