@@ -18,16 +18,28 @@ const connectDB = require('./db');
 connectDB();
 
 const app = express();
-app.set('trust proxy', 1);
-app.use(session({
+
+var sess = {
   secret: process.env.SESSION_KEY,
-  resave: true,
-  saveUninitialized: true,
-  cookie: { 
-    maxAge: 60000, 
-    secure: process.env.NODE_ENV === 'development' ? false : true
-  } 
-}));
+  cookie: {}
+}
+if (app.get('env') === 'production') {
+  app.set('trust proxy', 1) // trust first proxy
+  sess.cookie.secure = true // serve secure cookies
+}
+
+app.use(session(sess))
+
+// app.set('trust proxy', 1);
+// app.use(session({
+//   secret: process.env.SESSION_KEY,
+//   resave: true,
+//   saveUninitialized: true,
+//   cookie: { 
+//     maxAge: 60000, 
+//     secure: process.env.NODE_ENV === 'development' ? false : true
+//   } 
+// }));
 
 app.locals.site = process.env.SITE;
 app.locals.title = process.env.TITLE;
