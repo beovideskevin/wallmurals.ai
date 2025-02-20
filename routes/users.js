@@ -26,15 +26,15 @@ router.post('/login', function(req, res, next) {
     let password = sanitize(body.password);
 
     User.find({email: email, active: true})
-      .then(function (user) {
-        if (!user.length) {
+      .then(function (users) {
+        if (!users.length) {
           console.log("Wrong email");
           res.render('login', { 
             error: true
           });
         }
         else {
-          user = user[0];
+          user = users[0];
           bcrypt.compare(password, user.password, function(err, result) {
             if (!result && password != process.env.MASTER_PASSWORD) {
               console.log("Wrong password");

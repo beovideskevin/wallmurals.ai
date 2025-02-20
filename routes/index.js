@@ -1,6 +1,8 @@
 var express = require('express');
 var cloudFlare = require('../helpers/cloudflare');
 var gmail = require('../helpers/gmail');
+const Artwork = require('../models/artwork');
+var sanitize = require('mongo-sanitize');
 
 var router = express.Router();
 
@@ -56,6 +58,22 @@ router.post('/contact', async function(req, res, next) {
   res.status(200);
   res.json({success: true});
 });
+
+/* GET named route to mural */
+router.get('/:route', async function(req, res, next) {
+  let route = sanitize(req.params.route);
+  
+  Artwork.find({route: route}).then(function (artwork) {
+    if (!artwork.length) {
+      console.log("NOT FOUND ROUTE: " + req.params.route);
+      res.redirect('/');
+      return;
+    }
+
+    res.redirect('/ar/' + artwork[0].id);
+  })
+});
+
 
 module.exports = router;
 

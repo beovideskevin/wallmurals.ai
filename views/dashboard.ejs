@@ -3,6 +3,8 @@
 <head>
     <% include partials/head.ejs %>
 
+    <script src="https://cdn.jsdelivr.net/npm/ag-charts-community@11.1.0/dist/umd/ag-charts-community.min.js"></script>
+
     <style>
     </style>
 </head>
@@ -10,15 +12,98 @@
     <% include partials/navigation.ejs %>
 
     <!-- =========== Hero Section Start =========== -->
-    <section class="relative pt-32 pb-20" id="home"> 
+    <section class="relative pt-32 pb-20" id="visitsSection"> 
         <div class="container">
-            UNDER CONSTRUCTION! dashboard
-
-            metrics
+            <div id="visitsContainer" class="shadow-2xl rounded-xl bg-white py-20 pt-20"></div>
         </div>
-        
+    </section>
+
+    <section class="relative pt-10 pb-20" id="engagementSection"> 
+        <div class="container">
+            <div id="engagementContainer" class="shadow-2xl rounded-xl bg-white py-20 pt-20"></div>
+        </div>
+    </section>
+
+    <section class="relative pt-10 pb-20" id="interactionsSection"> 
+        <div class="container">
+            <div id="interactionsContainer" class="shadow-2xl rounded-xl bg-white py-20 pt-20"></div>
+        </div>
     </section>
 
     <% include partials/footer.ejs %>
+
+    <script>
+        let visitsOptions = { 
+            container: document.getElementById("visitsContainer"),
+            data: [
+                { month: "Jan", avgTemp: 2.3, visits: 162000 },
+                { month: "Mar", avgTemp: 6.3, visits: 302000 },
+                { month: "May", avgTemp: 16.2, visits: 800000 },
+                { month: "Jul", avgTemp: 22.8, visits: 1254000 },
+                { month: "Sep", avgTemp: 14.5, visits: 950000 },
+                { month: "Nov", avgTemp: 8.9, visits: 200000 },
+            ],
+            series: [
+                { type: 'line', xKey: 'month', yKey: 'visits', yName: 'Visits' },
+            ]
+        };
+        const visitsChart = agCharts.AgCharts.create(visitsOptions);
+
+        let engagementOptions = { 
+            container: document.getElementById("engagementContainer"),
+            data: [
+                { month: "Jan", avgTemp: 2.3, engagement: 162000 },
+                { month: "Mar", avgTemp: 6.3, engagement: 302000 },
+                { month: "May", avgTemp: 16.2, engagement: 800000 },
+                { month: "Jul", avgTemp: 22.8, engagement: 1254000 },
+                { month: "Sep", avgTemp: 14.5, engagement: 950000 },
+                { month: "Nov", avgTemp: 8.9, engagement: 200000 },
+            ],
+            series: [
+                { type: 'bar', xKey: 'month', yKey: 'engagement', yName: 'Engagement time' },
+            ]
+        };
+        const engagementChart = agCharts.AgCharts.create(engagementOptions);
+
+        const interactionsOptions = { 
+            container: document.getElementById("interactionsContainer"),
+            data: [
+                { month: "Jan", avgTemp: 2.3, photodownload: 162000 },
+                { month: "Mar", avgTemp: 6.3, photodownload: 302000 },
+                { month: "May", avgTemp: 16.2, photodownload: 800000 },
+                { month: "Jul", avgTemp: 22.8, photodownload: 1254000 },
+                { month: "Sep", avgTemp: 14.5, photodownload: 950000 },
+                { month: "Nov", avgTemp: 8.9, photodownload: 200000 },
+
+                { month: "Jan", avgTemp: 2.3, photoshared: 162000 },
+                { month: "Mar", avgTemp: 6.3, photoshared: 302000 },
+                { month: "May", avgTemp: 16.2, photoshared: 800000 },
+                { month: "Jul", avgTemp: 22.8, photoshared: 1254000 },
+                { month: "Sep", avgTemp: 14.5, photoshared: 950000 },
+                { month: "Nov", avgTemp: 8.9, photoshared: 200000 },
+
+                { month: "Jan", avgTemp: 2.3, videodownload: 162000 },
+                { month: "Mar", avgTemp: 6.3, videodownload: 302000 },
+                { month: "May", avgTemp: 16.2, videodownload: 800000 },
+                { month: "Jul", avgTemp: 22.8, videodownload: 1254000 },
+                { month: "Sep", avgTemp: 14.5, videodownload: 950000 },
+                { month: "Nov", avgTemp: 8.9, videodownload: 200000 },
+
+                { month: "Jan", avgTemp: 2.3, videoshared: 162000 },
+                { month: "Mar", avgTemp: 6.3, videoshared: 302000 },
+                { month: "May", avgTemp: 16.2, videoshared: 800000 },
+                { month: "Jul", avgTemp: 22.8, videoshared: 1254000 },
+                { month: "Sep", avgTemp: 14.5, videoshared: 950000 },
+                { month: "Nov", avgTemp: 8.9, videoshared: 200000 },
+            ],
+            series: [
+                { type: 'bar', xKey: 'month', yKey: 'photodownload', yName: 'photo download' },
+                { type: 'bar', xKey: 'month', yKey: 'photoshared', yName: 'photo shared' },
+                { type: 'bar', xKey: 'month', yKey: 'videodownload', yName: 'video download' },
+                { type: 'bar', xKey: 'month', yKey: 'videoshared', yName: 'video shared' },
+            ]
+        };
+        const interactionsChart = agCharts.AgCharts.create(interactionsOptions);
+    </script>
 </body>
 </html>

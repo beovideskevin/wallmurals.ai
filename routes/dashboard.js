@@ -19,10 +19,10 @@ router.get('/', function(req, res, next) {
     }
 });
 
-/* GET billing page. */
-router.get('/billing', function(req, res, next) {
+/* GET metrics page. */
+router.get('/metrics', function(req, res, next) {
     if (req.session.user) {
-        res.render('billing', { 
+        res.render('metrics', { 
             site: process.env.SITE,
             title: process.env.TITLE,
             keywords: process.env.KEYWORDS,

@@ -10,11 +10,15 @@ const metricSchema = mongoose.Schema(
       type: String,
       required: [true, 'Please add a data value'],
     },
-    // artwork: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   required: true,
-    //   ref: 'Artwork',
-    // },
+    uuid:{
+      type: String,
+      required: [true, 'Please add a uuid value'],
+    },
+    artwork: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'Artwork',
+    },
   },
   {
     timestamps: true,

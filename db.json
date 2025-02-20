@@ -1,6 +1,7 @@
 {
     "artworks": [
         {
+            "id": 0,
             "marker": "birds.mind",
             "video": "birds_mural_01_sm.mp4",
             "poster": "birds.jpeg",
@@ -9,6 +10,7 @@
             "chroma": "null"
         },
         {
+            "id": 1,
             "marker": "birds.mind",
             "video": "birds_mural_02_sm.mp4",
             "poster": "birds.jpeg",
@@ -17,6 +19,7 @@
             "chroma": "null"
         },
         {
+            "id": 2,
             "marker": "birds.mind",
             "video": "birds_mural_03_sm.mp4",
             "poster": "birds.jpeg",
@@ -26,6 +29,7 @@
             "tagline": "Shared with Wall Murals AI"
         },
         {
+            "id": 3,
             "marker": "birds.mind",
             "video": "birds_green_screen_sm.mp4",
             "poster": "birds.jpeg",
@@ -35,6 +39,7 @@
             "tagline": "Shared with Wall Murals AI"
         },
         {
+            "id": 4,
             "marker": "birds.mind",
             "video": "birds_green_screen_sm_3.mp4",
             "poster": "birds.jpeg",

@@ -2,6 +2,10 @@ const mongoose = require('mongoose')
 
 const artworkSchema = mongoose.Schema(
   {
+    route: {
+      type: String,
+      required: false,
+    },
     marker: {
       type: String,
       required: [true, 'Please add a marker value'],
@@ -37,12 +41,12 @@ const artworkSchema = mongoose.Schema(
     tagline: {
       type: String,
       required: false,
-    }
-    // user: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   required: true,
-    //   ref: 'User',
-    // },
+    },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'User',
+    },
   },
   {
     timestamps: true,
