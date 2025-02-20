@@ -21,9 +21,9 @@ const app = express();
 
 app.use(session({
   secret: process.env.SESSION_KEY,
-  resave: false,
+  resave: true,
   saveUninitialized: true,
-  cookie: { secure: process.env.NODE_ENV === 'development' ? false : true } 
+  cookie: { maxAge: 60000, secure: process.env.NODE_ENV === 'development' ? false : true } 
 }));
 
 app.locals.site = process.env.SITE;
