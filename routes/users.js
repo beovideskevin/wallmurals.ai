@@ -45,7 +45,7 @@ router.post('/login', function(req, res, next) {
             else {
               req.session.user = { id: user.id, email: user.email };
               console.log(req.session.user);
-              res.render('dashboard', {});
+              res.redirect('/dashboard');
             }
           });
         }
