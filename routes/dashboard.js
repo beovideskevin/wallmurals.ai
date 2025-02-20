@@ -4,7 +4,7 @@ var router = express.Router();
 
 /* GET dashboard page. */
 router.get('/', function(req, res, next) {
-    console.log(req.session.user);
+    console.log(req.session);
     if (req.session.user) {
         res.render('dashboard', { 
             site: process.env.SITE,
