@@ -500,7 +500,8 @@
     */
     document.getElementById("fullscreenBtn").addEventListener("click", function() {
       let element = document.documentElement;
-      var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen;
+      let requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen;
+      alert(requestMethod);
       if (requestMethod) { // Native full screen.
         requestMethod.call(element);
       } 
@@ -511,7 +512,7 @@
     */
     document.getElementById("exitFullscreenBtn").addEventListener("click", function() {
       let element = document.body;
-      var requestMethod = element.exitFullscreen || element.webkitExitFullscreen || element.mozCancelFullScreen || element.msExitFullscreen;
+      let requestMethod = element.exitFullscreen || element.webkitExitFullscreen || element.mozCancelFullScreen || element.msExitFullscreen;
       if (requestMethod) { // Native full screen.
         requestMethod.call(element);
       } 
