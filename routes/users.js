@@ -47,6 +47,7 @@ router.post('/login', function(req, res, next) {
               console.log(req.session.user);
               req.session.save((err) => {
                 console.log(err);
+                console.log(req.session.user);
                 res.redirect('/dashboard');
               });
             }
