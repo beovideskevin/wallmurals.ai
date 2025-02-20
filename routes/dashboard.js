@@ -21,6 +21,7 @@ router.get('/', function(req, res, next) {
 
 /* GET metrics page. */
 router.get('/metrics', function(req, res, next) {
+    console.log(req.session.user);
     if (req.session.user) {
         res.render('metrics', { 
             site: process.env.SITE,
@@ -37,6 +38,7 @@ router.get('/metrics', function(req, res, next) {
 
 /* GET account page. */
 router.get('/account', function(req, res, next) {
+    console.log(req.session.user);
     if (req.session.user) {
         res.render('account', { 
             site: process.env.SITE,
