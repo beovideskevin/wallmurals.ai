@@ -4,7 +4,7 @@ var router = express.Router();
 
 /* GET dashboard page. */
 router.get('/', function(req, res, next) {
-    console.log("FULL SESSION: " + req.session);
+    console.log("DASHBOARD - FULL SESSION: ", req.session);
     if (req.session.user) {
         res.render('dashboard', { 
             site: process.env.SITE,
@@ -21,7 +21,7 @@ router.get('/', function(req, res, next) {
 
 /* GET metrics page. */
 router.get('/metrics', function(req, res, next) {
-    console.log("FULL SESSION: " + req.session);
+    console.log("METRICS - FULL SESSION: ", req.session);
     if (req.session.user) {
         res.render('metrics', { 
             site: process.env.SITE,
@@ -38,7 +38,7 @@ router.get('/metrics', function(req, res, next) {
 
 /* GET account page. */
 router.get('/account', function(req, res, next) {
-    console.log("FULL SESSION: " + req.session);
+    console.log("ACCOUNT - FULL SESSION: ", req.session);
     if (req.session.user) {
         res.render('account', { 
             site: process.env.SITE,

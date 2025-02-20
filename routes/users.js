@@ -44,7 +44,7 @@ router.post('/login', function(req, res, next) {
             }
             else {
               req.session.user = user.id;
-              console.log("LOGIN/USER ID: " + req.session.user);
+              console.log("LOGIN - FULL SESSION: ", req.session);
               req.session.save((err) => {
                 if (err) {
                   console.log(err);
