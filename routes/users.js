@@ -45,6 +45,7 @@ router.post('/login', function(req, res, next) {
             else {
               req.session.user = user.id;
               console.log(req.session.user);
+              req.session.save();
               res.redirect('/dashboard');
             }
           });
