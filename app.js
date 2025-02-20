@@ -18,12 +18,15 @@ const connectDB = require('./db');
 connectDB();
 
 const app = express();
-
+app.set('trust proxy', 1);
 app.use(session({
   secret: process.env.SESSION_KEY,
   resave: true,
   saveUninitialized: true,
-  cookie: { maxAge: 60000, secure: process.env.NODE_ENV === 'development' ? false : true } 
+  cookie: { 
+    maxAge: 60000, 
+    secure: process.env.NODE_ENV === 'development' ? false : true
+  } 
 }));
 
 app.locals.site = process.env.SITE;
