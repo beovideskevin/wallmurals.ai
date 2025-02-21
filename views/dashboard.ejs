@@ -25,8 +25,8 @@
     <% 
         if (artworks.length) { 
             let section = 0;
+            artworks.forEach(function (artwork) { 
     %>
-        <% artworks.forEach(function (artwork) { %>
 
     <section class="relative <% if (!section) { firstSection=false; %>pt-32<% } else { %> pt-10 <% } %> pb-20" id="home"> 
         <div class="container">
@@ -120,10 +120,10 @@
         </div>
     </section>
 
-        <% }); %>
     <% 
+            }); 
             section++;
-        } 
+        }
     %>
 
     <% include partials/footer.ejs %>
@@ -137,8 +137,10 @@
             let qrdowns = document.getElementsByClassName("qrdownload");
             let index = 0;
 
-            <% if (artworks.length) { %>
-                <% artworks.forEach(function (artwork) { %>
+            <% 
+                if (artworks.length) { 
+                    artworks.forEach(function (artwork) { 
+            %>
                     new QRCode(qrdivs[index], {
                         text: "https://www.wallmurals.ai/ar/<%= artwork.id %>",
                         width: 500,
@@ -158,8 +160,10 @@
                     }, 50, qrdivs[index], qrdowns[index]);
 
                     ++index;
-                <% }); %>
-            <% } %>
+            <% 
+                    }); 
+                } 
+            %>
         });
     </script>
 </body>
