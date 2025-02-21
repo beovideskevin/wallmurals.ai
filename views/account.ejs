@@ -9,26 +9,150 @@
 <body>
     <% include partials/navigation.ejs %>
 
-    <section class="relative pt-32 pb-20" id="visitsSection"> 
+    <section class="relative pt-32 pb-20" id="planSection"> 
         <div class="container">
-            <div id="visitsContainer" class="shadow-2xl rounded-xl bg-white py-20 pt-20">
-                BILLING
+            <div id="planContainer" class="shadow-2xl rounded-xl bg-white p-6">
+                <h2 class="text-3xl md:text-4xl/tight font-semibold mt-4 mb-8 text-center md:text-start">Your current subscription: <%= (plan?.type || "FREE" ) %></h2>
+                
+                <div id="StarterContent">
+                    <div class="mt-14" id="start-month" role="tabpanel" aria-labelledby="start-month-tab">
+                        <div class="grid lg:grid-cols-2 grid-cols-1 gap-10">
+                            <div class="flex flex-col shadow-2xl rounded-xl bg-white overflow-hidden">
+                                <div class="text-center pt-10">
+                                    <img src="/assets/images/vector/vector-1.png" class="h-28 w-28 mx-auto" alt="email">
+                                    <h5 class="text-2xl font-semibold text-black">Free</h5>
+                                    <h2 class="text-5xl mt-5 mb-1 items-center align-middle">
+                                        <sup class="text-3xl align-middle">$</sup>
+                                        <span>0</span>
+                                    </h2>
+                                    <span class="text-base font-medium text-muted">per month</span>
+                                </div>
+
+                                <div class="px-5 py-5 mx-auto">
+                                    <ul class="text-center">
+                                        <li class="flex items-center justify-start py-2">
+                                            <i data-lucide="check" class="text-primary text-lg align-middle me-2"></i>
+                                            <h5 class="font-medium">100 views/month</h5>
+                                        </li>
+                                        <li class="flex items-center justify-start py-2">
+                                            <i data-lucide="check" class="text-primary text-lg align-middle me-2"></i>
+                                            <h5 class="font-medium">1 Gb Storage</h5>
+                                        </li>
+                                        <li class="flex items-center justify-start py-2">
+                                            <i data-lucide="x" class="text-muted text-lg align-middle me-2"></i>
+                                            <h5 class="font-medium text-muted">Free Support</h5>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <% if (plan) { %>
+                                    <div class="flex justify-center px-10 pb-10">
+                                        <button class="py-2 px-6 inline-flex rounded-md text-base items-center justify-center border border-primary text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium w-full">Downgrade to FREE</button>
+                                    </div> 
+                                <% } %>
+                            </div>
+                                
+                            <div class="flex flex-col shadow-2xl rounded-xl bg-white overflow-hidden">
+                                <div class="text-center pt-10">
+                                    <img src="/assets/images/vector/vector-2.png" class="h-28 w-28 mx-auto"
+                                        alt="vector-2">
+                                    <h5 class="text-2xl font-semibold text-black">Professional</h5>
+                                    <h2 class="text-5xl mt-5 mb-1 items-center align-middle">
+                                        <sup class="text-3xl align-middle">$</sup>
+                                        <span data-hs-toggle-count='{
+                                            "target": "#toggle-count",
+                                            "min": 160,
+                                            "max": 99
+                                        }' >160</span>
+                                    </h2>
+                                    <span class="text-base font-medium text-muted">per month</span>
+                                </div>
+
+                                <div class="px-5 py-5 mx-auto">
+                                    <ul class="text-center text-black">
+                                        <li class="flex items-center justify-start py-2">
+                                            <i data-lucide="check" class="text-primary text-lg align-middle me-2"></i>
+                                            <h5 class="font-medium">10,000 views/month</h5>
+                                        </li>
+                                        <li class="flex items-center justify-start py-2">
+                                            <i data-lucide="check" class="text-primary text-lg align-middle me-2"></i>
+                                            <h5 class="font-medium">10 Gb Storage</h5>
+                                        </li>
+                                        <li class="flex items-center justify-start py-2">
+                                            <i data-lucide="check" class="text-primary text-lg align-middle me-2"></i>
+                                            <h5 class="font-medium">Free Support</h5>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <% if (!plan) { %>
+                                    <div class="flex justify-center px-10 pb-10">
+                                        <button class="py-2 px-6 inline-flex rounded-md text-base items-center justify-center border border-primary text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium w-full">Upgrade to Professional</button>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <section class="relative pt-10 pb-20" id="engagementSection"> 
+    <section class="relative pt-10 pb-20" id="passwordSection"> 
         <div class="container">
-            <div id="engagementContainer" class="shadow-2xl rounded-xl bg-white py-20 pt-20">
-                CHANGE PASSWORD 
+            <div id="passwordContainer" class="shadow-2xl rounded-xl bg-white p-6">
+                <h2 class="text-3xl md:text-4xl/tight font-semibold mt-4 mb-8 text-center md:text-start">Change your password</h2>
+
+                <form id="changePasswordForm">
+                    <div class="grid sm:grid-cols-2 gap-6">
+                        <div>
+                            <label for="formNewPassword" class="block text-sm/normal font-semibold text-black mb-2">New password</label>
+                            <input type="password" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="formNewPassword" id="formNewPassword" placeholder="Type your new password..." required="">                            
+                        </div>
+                        <div>
+                            <label for="formPassword2" class="block text-sm/normal font-semibold text-black mb-2">Confirm password</label>
+                            <input type="password" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="formNewPassword2" id="formNewPassword2" placeholder="Confirm your password..." required="">                            
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button id="changePasswordBtn" type="submit" class="py-2 px-6 rounded-md text-baseitems-center justify-center border border-primary text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium">Change password</button>
+                    </div>
+
+                    <input type="hidden" name="_csrf" value="<%= csrf %>">
+                </form>
             </div>
         </div>
     </section>
 
-    <section class="relative pt-10 pb-20" id="interactionsSection"> 
+    <section class="relative pt-10 pb-20" id="closeAccountSection"> 
         <div class="container">
-            <div id="interactionsContainer" class="shadow-2xl rounded-xl bg-white py-20 pt-20">
-                DELETE ACCOUNT
+            <div id="closeAccountContainer" class="shadow-2xl rounded-xl bg-white p-6">
+                <h2 class="text-3xl md:text-4xl/tight font-semibold mt-4 mb-8 text-center md:text-start">Close your account</h2>
+
+                <form id="closeAccountForm">
+                    <div class="grid sm:grid-cols-2 gap-6">
+                        <div>
+                            <label for="formPassword" class="block text-sm/normal font-semibold text-black mb-2">Enter your password</label>
+                            <input type="password" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="formPassword" id="formPassword" placeholder="Type your password..." required="">
+                        </div>
+                        <div>
+                            <label for="formReason" class="block text-sm/normal font-semibold text-black mb-2">Why are you leaving?</label>
+                            <select id="formReason" name="formReason" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent">
+                                <option>Please tell us more...</option>
+                                <option value="price">The price is too high</option>
+                                <option value="app">The web application is not good</option>
+                                <option value="engagement">Not enough visits or interactions</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button id="closeAccountBtn" type="submit" class="py-2 px-6 rounded-md text-baseitems-center justify-center border border-primary text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium">Close account</button>
+                    </div>
+
+                    <input type="hidden" name="_csrf" value="<%= csrf %>">
+                </form>
             </div>
         </div>
     </section>

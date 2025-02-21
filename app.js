@@ -3,6 +3,7 @@ const createError = require('http-errors');
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
+const csrf = require('tiny-csrf');
 const cookieParser = require('cookie-parser');
 const minifyHTML = require('express-minify-html-2');
 const compression = require('compression');
@@ -58,7 +59,13 @@ app.set('view engine', 'ejs');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(
+  csrf(
+    process.env.CSRF, // secret -- must be 32 bits or chars in length
+    ["POST"], // the request methods we want CSRF protection for
+  )
+);
 app.use(minifyHTML({
   override: true,
   exception_url: false,

@@ -2,25 +2,98 @@
 <html lang="es-ES">
 <head>
     <% include partials/head.ejs %>
-    
+
     <style>
+        h3 .title {
+            margin-right: 4px;
+        }
     </style>
 </head>
 <body>
     <% include partials/navigation.ejs %>
 
-        
     <section class="relative pt-32 pb-20" id="home"> 
         <div class="container">
-            <div id="visitsContainer" class="shadow-2xl rounded-xl bg-white py-20 pt-20">
-                artwork
+            <div id="artowrksContainer" class="shadow-2xl rounded-xl bg-white p-6">
+                <h2 class="text-3xl md:text-4xl/tight font-semibold mt-4 mb-8 text-center md:text-start">Artworks</h2>
+
+                <% if (artworks.length) { %>
+                    <% artworks.forEach(function (artwork) { %>
+                    <div class="flex items-center justify-center mb-2" style="background: url('/posters/<%= artwork.poster %>') no-repeat center; background-size: cover; min-height: <%= artwork.height %>px;">
+                    </div>
+                    
+                    <div class="grid sm:grid-cols-2 gap-6 mt-8">
+                        <div class="mb-2"><h3 style="display: inline-block; margin-right: 4px;">Route:</h3> <a href="/ar/<%= artwork.id %>" target="_blank">wallmurals.ai/ar/<%= artwork.id %></a></div>
+
+                        <div class="mb-2">
+                            <h3 style="display: inline-block; margin-right: 4px;">Quick link:</h3> <% if (artwork.route) { %><a href="/<%= artwork.route %>" target="_blank">wallmurals.ai/<%= artwork.route %></a><% } else {%> N/A <% } %>
+                        </div>
+    
+                        <div class="mb-2"><h3 style="display: inline-block; margin-right: 4px;">Width:</h3> <%= artwork.width %></div>
+
+                        <div class="mb-2"><h3 style="display: inline-block; margin-right: 4px;">Height:</h3> <%= artwork.height %></div>
+
+                        <div class="mb-2">
+                            <form id="detailsForm<%= artwork.id %>">
+                                <div class="grid sm:grid-cols-2 gap-6">
+                                    <div>
+                                        <label for="formLocation<%= artwork.id %>" class="block text-sm/normal font-semibold text-black mb-2">Location:</label>
+                                        <input type="text" value="<%= artwork.location %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="formLocation<%= artwork.id %>" id="formLocation<%= artwork.id %>" placeholder="Type the location..." required="">
+                                    </div>
+                                    <div class="flex" style="align-items: end; padding-bottom: 3px;">
+                                        <button id="saveLocationBtn<%= artwork.id %>" type="submit" class="w-1/2 py-2 px-6 rounded-md text-baseitems-center justify-center border border-primary text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium">Save</button>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="_csrf" value="<%= csrf %>">
+                            </form>
+                        </div>
+                    
+                        <div class="mb-2">
+                            <form id="detailsForm<%= artwork.id %>">
+                                <div class="grid sm:grid-cols-2 gap-6">
+                                    <div>
+                                        <label for="formTagline<%= artwork.id %>" class="block text-sm/normal font-semibold text-black mb-2">Tagline:</label>
+                                        <input type="text" value="<%= artwork.tagline %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="formTagline<%= artwork.id %>" id="formTagline<%= artwork.id %>" placeholder="Type the tagline..." required="">                            
+                                    </div>
+                                    <div class="flex" style="align-items: end; padding-bottom: 3px;">
+                                        <button id="saveTaglineBtn<%= artwork.id %>" type="submit" class="w-1/2 py-2 px-6 rounded-md text-baseitems-center justify-center border border-primary text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium">Save</button>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="_csrf" value="<%= csrf %>">
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-center mt-8 mb-2 flex-col gap-6">
+                        <div id="qrcode<%= artwork.id %>"></div>
+                        <div>
+                            <button id="saveBtn<%= artwork.id %>" type="submit" class="py-2 px-6 rounded-md text-baseitems-center justify-center border border-primary text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium">Download</button>
+                        </div>
+                    </div>
+
+                    <% }) %>
+                <% } %>
             </div>
         </div>
     </section>
 
     <% include partials/footer.ejs %>
 
+    <!-- QR Code -->
+    <script src="/assets/libs/qrcode/qrcode.min.js"></script>
+
     <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            <% if (artworks.length) { %>
+                <% artworks.forEach(function (artwork) { %>
+                    new QRCode('qrcode<%= artwork.id %>', {
+                        text: "https://www.wallmurals.ai/ar/<%= artwork.id %>",
+                        width: 300,
+                        height: 300,
+                    });
+                <% }); %>
+            <% } %>
+        });
     </script>
 </body>
 </html>

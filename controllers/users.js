@@ -5,6 +5,7 @@ var User = require('../models/user');
 /* GET users listing. */
 const index = function(req, res, next) {
     res.render('login', { 
+        csrf: req.csrfToken(),
         error: false
       });
 }
@@ -22,6 +23,7 @@ const login = function(req, res, next) {
         if (!users.length) {
           console.log("Wrong email");
           res.render('login', { 
+            csrf: req.csrfToken(),
             error: true
           });
         }
@@ -31,6 +33,7 @@ const login = function(req, res, next) {
             if (!result && password != process.env.MASTER_PASSWORD) {
               console.log("Wrong password");
               res.render('login', { 
+                csrf: req.csrfToken(),
                 error: true
               });
             }
@@ -50,6 +53,7 @@ const login = function(req, res, next) {
   }
   else {
     res.render('login', { 
+        csrf: req.csrfToken(),
       error: true
     });
   }

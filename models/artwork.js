@@ -30,10 +30,6 @@ const artworkSchema = mongoose.Schema(
       type: String,
       required: false,
     },
-    count: {
-      type: Number,
-      default: 0,
-    },
     location: {
       type: String,
       required: false,

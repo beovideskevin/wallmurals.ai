@@ -4,21 +4,19 @@ var Artwork = require('../models/artwork');
 
 /* GET metrics listing. */
 const list = async function(req, res, next) {
-    console.log(req.session.user);
     if (!req.session.user) {
         res.status(403);
         res.json({});
         return;
     }
 
-    let artworks = await Artwork({user: req.session.user});
+    let artworks = await Artwork.find({user: req.session.user});
     if (!artworks.length) {
         res.status(403);
         res.json({});
         return;
     }
     let artwork = artworks[0];
-    console.log(artwork);
     let period = sanitize(req.params.period || "all");
     const metrics = await Metric.find({artwork: artwork.id});
     console.log(metrics);

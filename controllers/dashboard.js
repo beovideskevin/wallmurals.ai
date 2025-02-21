@@ -1,13 +1,14 @@
+const Artwork = require('../models/artwork');
+const Subscription = require('../models/subscription');
+
 /* GET dashboard page. */
-const index = function(req, res, next) {
+const index = async function(req, res, next) {
     console.log("DASHBOARD - FULL SESSION: ", req.session);
     if (req.session.user) {
+        let artworks = await Artwork.find({user: req.session.user});
         res.render('dashboard', { 
-            site: process.env.SITE,
-            title: process.env.TITLE,
-            keywords: process.env.KEYWORDS,
-            description: process.env.DESCRIPTION,
-            author: process.env.AUTHOR,
+            csrf: req.csrfToken(),
+            artworks: artworks
         });
     }
     else {
@@ -19,13 +20,7 @@ const index = function(req, res, next) {
 const metrics = function(req, res, next) {
     console.log("METRICS - FULL SESSION: ", req.session);
     if (req.session.user) {
-        res.render('metrics', { 
-            site: process.env.SITE,
-            title: process.env.TITLE,
-            keywords: process.env.KEYWORDS,
-            description: process.env.DESCRIPTION,
-            author: process.env.AUTHOR,
-        });
+        res.render('metrics', {});
     }
     else {
         res.redirect('/');
@@ -33,15 +28,14 @@ const metrics = function(req, res, next) {
 }
 
 /* GET account page. */
-const account = function(req, res, next) {
+const account = async function(req, res, next) {
     console.log("ACCOUNT - FULL SESSION: ", req.session);
     if (req.session.user) {
+        let subscriptions = await Subscription.find({user: req.session.user});
         res.render('account', { 
-            site: process.env.SITE,
-            title: process.env.TITLE,
-            keywords: process.env.KEYWORDS,
-            description: process.env.DESCRIPTION,
-            author: process.env.AUTHOR,
+            csrf: req.csrfToken(),
+            user: user,
+            plan: subscriptions.length? subscriptions[0] : null
         });
     }
     else {
