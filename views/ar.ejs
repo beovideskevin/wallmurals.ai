@@ -850,7 +850,11 @@
             title: artwork.tagline,
             text: artwork.tagline,
             url: "https://wallmurals.ai",
-          }).catch((error) => {
+          })
+          .then(() => {
+            history.back();
+          })
+          .catch((error) => {
             // alert("We can not share from this browser. Sorry.");
             console.log(error);
           });
