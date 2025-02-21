@@ -24,7 +24,7 @@ const login = function(req, res, next) {
           console.log("Wrong email");
           res.render('login', { 
             csrf: req.csrfToken(),
-            error: true
+            error: "Wrong username or password. Please try again."
           });
         }
         else {
@@ -34,7 +34,7 @@ const login = function(req, res, next) {
               console.log("Wrong password");
               res.render('login', { 
                 csrf: req.csrfToken(),
-                error: true
+                error: "Wrong username or password. Please try again."
               });
             }
             else {
@@ -54,7 +54,7 @@ const login = function(req, res, next) {
   else {
     res.render('login', { 
         csrf: req.csrfToken(),
-      error: true
+        error: "Wrong username or password. Please try again."
     });
   }
 }
@@ -62,6 +62,9 @@ const login = function(req, res, next) {
 /* GET logout page. */
 const logout = function(req, res, next) {
   req.session.destroy((err) => {
+    if (err) {
+        console.log(err);
+    }
     res.redirect('/');
   });
 }

@@ -1,7 +1,12 @@
 var sanitize = require('mongo-sanitize');
 const { v4: uuidv4 } = require('uuid');
 const Artwork = require('../models/artwork');
-var Metric = require('../models/metric');
+const Metric = require('../models/metric');
+const Subscription = require('../models/subscription');
+const { getSubscriptionLastDate } = require('../helpers/utils');
+
+const MAX_FREE_VIEWS = 1000;
+const MAX_PRO_VIEWS = 100000;
 
 /* GET AR page. */
 const ar = async function(req, res, next) {
@@ -16,13 +21,27 @@ const ar = async function(req, res, next) {
       return;
     }
 
-    const targetDate = new Date('2025-02-19T00:00:00.000Z');
+    let max = MAX_FREE_VIEWS;
+    let targetDate = getSubscriptionLastDate(1);
+    let subscriptions = await Subscription.find({user: artwork.user, active: true});
+    if (subscriptions.length) {
+        max = MAX_PRO_VIEWS;
+        let start = new Date(subscriptions[0].start);
+        let day = start.getDate() > 28 ? 28 : start.getDate();
+        targetDate = getSubscriptionLastDate(day);
+    }
+    console.log(targetDate);
     let count = await Metric.countDocuments({
         type: "open",
         artwork: artwork.id,
         createdAt: { $gt: targetDate } 
     });
-    // @TODO implement views limit
+    console.log(count);
+    if (count > max) {
+        console.log("MAX VIEWS REACHED: " + req.params.id);
+        res.redirect('/');
+        return;
+    }
 
     Metric.create({
         type: "open",

@@ -23,6 +23,10 @@ const userSchema = mongoose.Schema(
       type: String,
       required: [true, 'Please add a password value'],
     },
+    reason: {
+      type: String,
+      required: false,
+    },
     active: {
       type: Boolean,
       required: false,

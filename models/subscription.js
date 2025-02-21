@@ -6,9 +6,13 @@ const subscriptionSchema = mongoose.Schema(
       type: String, // free, pro, enterprise
       required: [true, 'Please add a type value'],
     },
-    date: {
+    start: {
       type: Date,
       required: [true, 'Please add a date value'],
+    },
+    last: {
+      type: Date,
+      required: false,
     },
     next: {
       type: Date,
@@ -17,6 +21,16 @@ const subscriptionSchema = mongoose.Schema(
     error: {
       type: String,
       required: false,
+    },
+    yearly: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    active: {
+      type: Boolean,
+      required: false,
+      default: true
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,

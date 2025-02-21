@@ -255,7 +255,7 @@
       <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-video"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg>
     </a>
     <a id="stopRecVideoBtn" href="javascript:;" class="isRecording">
-      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-stop"><circle cx="12" cy="12" r="10"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-stop"><circle cx="12" cy="12" r="10"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
       <!-- <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-video"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg> -->
     </a>
 
@@ -428,23 +428,23 @@
         /*
         * Sent download photo metric 
         */
-        if (uuid != "") {
-          fetch("/metrics", {
-            method: "POST",
-            body: JSON.stringify(
-              { 
-                metricType: "targetlost",
-                id: artwork.id,
-                data: "Nothing",
-                uuid: uuid
-              }
-            ),
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-            },
-          });
-        }
+        // if (uuid != "") {
+        //   fetch("/metrics", {
+        //     method: "POST",
+        //     body: JSON.stringify(
+        //       { 
+        //         metricType: "targetlost",
+        //         id: artwork.id,
+        //         data: "Nothing",
+        //         uuid: uuid
+        //       }
+        //     ),
+        //     headers: {
+        //       'Accept': 'application/json',
+        //       'Content-Type': 'application/json',
+        //     },
+        //   });
+        // }
         /*******/
       }
       

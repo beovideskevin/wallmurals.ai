@@ -10,6 +10,7 @@ const index = function (req, res, next) {
 const contact = async function (req, res, next) {
     turnstile = await cloudFlare(req)
     if (!turnstile) {
+        console.log("DIDNT PASSED TURNSTILE", req.body);
         res.status(200);
         res.json({success: false});
         return;
@@ -24,6 +25,7 @@ const contact = async function (req, res, next) {
         body.nothing != "" ||
         body['cf-turnstile-response'] == "") 
     {
+        console.log("NO ARGS", body);
         res.status(200);
         res.json({success: false});
         return;
@@ -40,13 +42,13 @@ const contact = async function (req, res, next) {
     
     gmail.sendMail(mailOptions, function(error, info){
         if (error) {
-        console.log(error);
-        res.status(200);
-        res.json({success: false});
-        return;
+            console.log("EMAIL NOT SENT", error);
+            res.status(200);
+            res.json({success: false});
+            return;
         } 
         else {
-        console.log('CONTACT EMAIL SENT: ' + info.response + ' TEXT: ' + text);
+            console.log('CONTACT EMAIL SENT: ' + info.response + ' TEXT: ' + text);
         }
     });  
     
