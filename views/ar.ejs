@@ -102,7 +102,7 @@
       border-top: 2px solid #ffffff;
     }
 
-    #photoWrapper {
+    /* #photoWrapper {
       display: none;
       align-items: center;
       justify-content: center;
@@ -113,12 +113,12 @@
       height: 100%;
       background-color: #000000;
       z-index: 10;
-    }
-
+    } */
+/* 
     #photoWrapper canvas {
       max-width: 100%;
       max-height: 100%;
-    }
+    } */
 
     #videoWrapper {
       display: none;
@@ -138,7 +138,7 @@
       max-height: 100%;
     }
 
-    #controlBtnsWrapper {
+    /* #controlBtnsWrapper {
       display: none;
       align-items: center;
       justify-content: space-around;
@@ -148,7 +148,7 @@
       right: 0px;
       height: 40px;
       width: 100%;
-    }
+    } */
 
     #arBtnsWrapper, #photoBtnsWrapper, #videoBtnsWrapper {
       display: none;
@@ -162,7 +162,7 @@
       width: 100%;
     }
 
-    #playVideoBtnWrapper {
+    /* #playVideoBtnWrapper {
       position: absolute;
       display: none;
       align-items: center;
@@ -176,28 +176,28 @@
       margin: auto;
       background: transparent;
       z-index: 15;
-    }
+    } */
 
     #controlBtnsWrapper a, #arBtnsWrapper a, #photoBtnsWrapper a, #videoBtnsWrapper a, #playVideoBtnWrapper a {
       color: #fff;
     }
 
-    #soundBtn, #exitFullscreenBtn {
+    /* #soundBtn {
       display: none;
-    }
+    } */
 
-    #stopVideoBtn {
+    #stopVideoBtn, #stopRecVideoBtn {
       display: none;
     }
 
     @media (orientation: landscape) {
-      #controlBtnsWrapper {
+      /* #controlBtnsWrapper {
           height: 100%;
           width: 40px;
           top: 0px;
           left: 60px;
           flex-direction: column-reverse;
-      }
+      } */
 
       #arBtnsWrapper, #photoBtnsWrapper, #videoBtnsWrapper {
           height: 100%;
@@ -232,7 +232,7 @@
     </div>
   </div>
 
-  <div id="controlBtnsWrapper">
+  <!-- <div id="controlBtnsWrapper">
     <a id="soundBtn" href="javascript:;">
       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-2"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.364 18.364a9 9 0 0 0 0-12.728"/></svg>
     </a>
@@ -245,24 +245,32 @@
     <a id="emptyBtn-2" href="javascript:;">
       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide"></svg>
     </a>
-  </div>
+  </div> -->
 
   <div id="arBtnsWrapper">
-    <a id="photoBtn" href="javascript:;">
+    <!-- <a id="photoBtn" href="javascript:;">
       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-camera"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
-    </a>
+    </a> -->
     <a id="recVideoBtn" href="javascript:;">
       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-video"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg>
+    </a>
+    <a id="stopRecVideoBtn" href="javascript:;" class="isRecording">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-stop"><circle cx="12" cy="12" r="10"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+      <!-- <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-video"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg> -->
+    </a>
+
+    <a id="emptyBtn-2" href="javascript:;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide"></svg>
     </a>
     <a id="switchBtn" href="javascript:;">
       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-switch-camera"><path d="M11 19H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5"/><path d="M13 5h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-5"/><circle cx="12" cy="12" r="3"/><path d="m18 22-3-3 3-3"/><path d="m6 2 3 3-3 3"/></svg>
     </a>
   </div>
 
-  <div id="photoWrapper">
-  </div>
+  <!-- <div id="photoWrapper">
+  </div> -->
 
-  <div id="photoBtnsWrapper">
+  <!-- <div id="photoBtnsWrapper">
     <a id="downloadPhotoBtn" href="javascript:;">
       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud-download"><path d="M12 13v8l-4-4"/><path d="m12 21 4-4"/><path d="M4.393 15.269A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.436 8.284"/></svg>
     </a>
@@ -272,29 +280,40 @@
     <a id="backPhotoBtn" href="javascript:;">
       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
     </a>
-  </div>
+  </div> -->
 
   <div id="videoWrapper">
   </div>
-
-  <div id="playVideoBtnWrapper">
+ 
+<!--  <div id="playVideoBtnWrapper">
     <a id="playVideoBtn" href="javascript:;">
       <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-play"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
     </a>
     <a id="stopVideoBtn" href="javascript:;">
       <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-stop"><circle cx="12" cy="12" r="10"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
     </a>
-  </div>
+  </div> -->
 
   <div id="videoBtnsWrapper">
-    <a id="downloadVideoBtn" href="javascript:;">
+    <!-- <a id="downloadVideoBtn" href="javascript:;">
       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud-download"><path d="M12 13v8l-4-4"/><path d="m12 21 4-4"/><path d="M4.393 15.269A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.436 8.284"/></svg>
+    </a> -->
+    <a id="backVideoBtn" href="javascript:;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left"><path d="m15 18-6-6 6-6"/></svg>
+      <!-- <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg> -->
+    </a>
+    <a id="playVideoBtn" href="javascript:;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-play"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+      <!-- <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-play"><polygon points="6 3 20 12 6 21 6 3"/></svg> -->
+      <!-- <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-play"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg> -->
+    </a>
+    <a id="stopVideoBtn" href="javascript:;">
+      <!-- <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pause"><rect x="14" y="4" width="4" height="16" rx="1"/><rect x="6" y="4" width="4" height="16" rx="1"/></svg> -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-pause"><circle cx="12" cy="12" r="10"/><line x1="10" x2="10" y1="15" y2="9"/><line x1="14" x2="14" y1="15" y2="9"/></svg>
+      <!-- <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-stop"><circle cx="12" cy="12" r="10"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg> -->
     </a>
     <a id="shareVideoBtn" href="javascript:;">
       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>
-    </a>
-    <a id="backVideoBtn" href="javascript:;">
-      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
     </a>
   </div>
 
@@ -319,9 +338,8 @@
       tagline: '<%= artwork.tagline %>',
       element: null
     };
-    var shutter = new Audio('/sound/shutter.mp3');
+    // var shutter = new Audio('/sound/shutter.mp3');
     var hashLocation = "";
-    var recording = false;
     var recFrameId = null;
     var mediaRecorder;
     var recordedChunks = [];
@@ -495,98 +513,98 @@
     /*
       For iphone user we need a click in order to unmute the videos
     */
-    document.getElementById("soundBtn").addEventListener('click', function() {
-      artwork.element.muted = false;
-      document.getElementById("soundBtn").style.display = "none";
-      document.getElementById("muteBtn").style.display = "block";
-    });
+    // document.getElementById("soundBtn").addEventListener('click', function() {
+    //   artwork.element.muted = false;
+    //   document.getElementById("soundBtn").style.display = "none";
+    //   document.getElementById("muteBtn").style.display = "block";
+    // });
 
-    document.getElementById("muteBtn").addEventListener('click', function() {
-      artwork.element.muted = true;
-      document.getElementById("soundBtn").style.display = "block";
-      document.getElementById("muteBtn").style.display = "none";
-    });
+    // document.getElementById("muteBtn").addEventListener('click', function() {
+    //   artwork.element.muted = true;
+    //   document.getElementById("soundBtn").style.display = "block";
+    //   document.getElementById("muteBtn").style.display = "none";
+    // });
     
     /*
       Saves the image and shows the photo wrapper
     */
-    document.getElementById("photoBtn").addEventListener('click', function() {
-      const canvas = document.createElement('canvas');
-      canvas.setAttribute("id", "photoCanvas");
-      copyRenderedCanvas(canvas);
-      const photoWrapper = document.getElementById("photoWrapper");
-      photoWrapper.appendChild(canvas);
-      photoWrapper.style.display = "flex";
-      document.getElementById("arBtnsWrapper").style.display = "none";
-      document.getElementById("photoBtnsWrapper").style.display = "flex";
-      hashLocation = Date.now();
-      window.location.hash = hashLocation;
-      shutter.play();
-    });
+    // document.getElementById("photoBtn").addEventListener('click', function() {
+    //   const canvas = document.createElement('canvas');
+    //   canvas.setAttribute("id", "photoCanvas");
+    //   copyRenderedCanvas(canvas);
+    //   const photoWrapper = document.getElementById("photoWrapper");
+    //   photoWrapper.appendChild(canvas);
+    //   photoWrapper.style.display = "flex";
+    //   document.getElementById("arBtnsWrapper").style.display = "none";
+    //   document.getElementById("photoBtnsWrapper").style.display = "flex";
+    //   hashLocation = Date.now();
+    //   window.location.hash = hashLocation;
+    //   shutter.play();
+    // });
 
     /*
       Saves the video and shows video wrapper
     */
     document.getElementById("recVideoBtn").addEventListener('click', function() {
-      if (!recording) {
-        recording = true;
-        recordedChunks = [];
-        videoBlob = null;
-        let frameRate = 30; // FPS
-        let interval = 1000 / frameRate;
-        document.getElementById("recVideoBtn").classList.add("isRecording");
-        const canvas = document.getElementById('record');
-        copyRenderedCanvas(canvas);
-        const poster = canvas.toDataURL();
-        const stream = canvas.captureStream(frameRate);
-        mediaRecorder = new MediaRecorder(stream, {mimeType: videoMimeType});
-        mediaRecorder.onerror = (event) => {
-          console.log(event)
-        };
-        mediaRecorder.addEventListener("dataavailable", function(event) {
-          if (event.data.size > 0) {
-            recordedChunks.push(event.data);
-          }
-        });
-        mediaRecorder.addEventListener("stop", function() {
-          if (recordedChunks.length == 0) {
-            return;
-          }
-          videoBlob = new Blob(recordedChunks, {type: videoMimeType}); 
-          const url = URL.createObjectURL(videoBlob);
-          const recVideo = document.createElement("video");
-          recVideo.addEventListener('loadedmetadata', () => {
-            recVideo.setAttribute('id', 'videoCanvas');
-            recVideo.setAttribute('loop', 'true');
-            recVideo.setAttribute('playsinline', 'true');
-            recVideo.setAttribute('muted', 'true');
-            recVideo.setAttribute('poster', poster);
+      recordedChunks = [];
+      videoBlob = null;
+      let frameRate = 30; // FPS
+      let interval = 1000 / frameRate;
+      document.getElementById("recVideoBtn").style.display = "none";
+      document.getElementById("stopRecVideoBtn").style.display = "block";
+      const canvas = document.getElementById('record');
+      copyRenderedCanvas(canvas);
+      const poster = canvas.toDataURL();
+      const stream = canvas.captureStream(frameRate);
+      mediaRecorder = new MediaRecorder(stream, {mimeType: videoMimeType});
+      mediaRecorder.onerror = (event) => {
+        console.log(event)
+      };
+      mediaRecorder.addEventListener("dataavailable", function(event) {
+        if (event.data.size > 0) {
+          recordedChunks.push(event.data);
+        }
+      });
+      mediaRecorder.addEventListener("stop", function() {
+        if (recordedChunks.length == 0) {
+          return;
+        }
+        videoBlob = new Blob(recordedChunks, {type: videoMimeType}); 
+        const url = URL.createObjectURL(videoBlob);
+        const recVideo = document.createElement("video");
+        recVideo.addEventListener('loadedmetadata', () => {
+          recVideo.setAttribute('id', 'videoCanvas');
+          recVideo.setAttribute('loop', 'true');
+          recVideo.setAttribute('playsinline', 'true');
+          recVideo.setAttribute('muted', 'true');
+          recVideo.setAttribute('poster', poster);
 
-            const photoWrapper = document.getElementById("videoWrapper");
-            photoWrapper.appendChild(recVideo);
-            photoWrapper.style.display = "flex";
-            document.getElementById("arBtnsWrapper").style.display = "none";
-            document.getElementById("videoBtnsWrapper").style.display = "flex";
-            document.getElementById("playVideoBtnWrapper").style.display = "flex";
-            hashLocation = Date.now();
-            window.location.hash = hashLocation;
-          });
-          recVideo.src = url;
-          recVideo.preload = "metadata";
+          const photoWrapper = document.getElementById("videoWrapper");
+          photoWrapper.appendChild(recVideo);
+          photoWrapper.style.display = "flex";
+          document.getElementById("arBtnsWrapper").style.display = "none";
+          document.getElementById("videoBtnsWrapper").style.display = "flex";
+          // document.getElementById("playVideoBtnWrapper").style.display = "flex";
+          hashLocation = Date.now();
+          window.location.hash = hashLocation;
         });
-        mediaRecorder.start();
-        recFrameId = setInterval(function() {
-          copyRenderedCanvas(canvas);
-        }, interval);
-      }
-      else {
-        recording = false;
-        document.getElementById("recVideoBtn").classList.remove("isRecording");
-        clearInterval(recFrameId);
-        recFrameId = null;
-        mediaRecorder.stop();
-      }
+        recVideo.src = url;
+        recVideo.preload = "metadata";
+      });
+      mediaRecorder.start();
+      recFrameId = setInterval(function() {
+        copyRenderedCanvas(canvas);
+      }, interval);      
     });
+
+    document.getElementById("stopRecVideoBtn").addEventListener('click', function() {
+      clearInterval(recFrameId);
+      recFrameId = null;
+      mediaRecorder.stop();
+      document.getElementById("recVideoBtn").style.display = "block";
+      document.getElementById("stopRecVideoBtn").style.display = "none";
+    });
+        
 
     /*
       Helper for saving frame
@@ -625,106 +643,106 @@
     /* 
       Downloads the image
     */ 
-    document.getElementById("downloadPhotoBtn").addEventListener('click', function() {
-      /*
-      * Sent download photo metric 
-      */
-      if (uuid != "") {
-        fetch("/metrics", {
-          method: "POST",
-          body: JSON.stringify(
-            { 
-              metricType: "downloadphoto",
-              id: artwork.id,
-              data: "Nothing",
-              uuid: uuid
-            }
-          ),
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-        });
-      }
-      /*******/
+    // document.getElementById("downloadPhotoBtn").addEventListener('click', function() {
+    //   /*
+    //   * Sent download photo metric 
+    //   */
+    //   if (uuid != "") {
+    //     fetch("/metrics", {
+    //       method: "POST",
+    //       body: JSON.stringify(
+    //         { 
+    //           metricType: "downloadphoto",
+    //           id: artwork.id,
+    //           data: "Nothing",
+    //           uuid: uuid
+    //         }
+    //       ),
+    //       headers: {
+    //         'Accept': 'application/json',
+    //         'Content-Type': 'application/json',
+    //       },
+    //     });
+    //   }
+    //   /*******/
       
-      const resource = document.getElementById("photoCanvas");
-      if (!resource) {
-        return;
-      }
-      let mime = {type: "image/jpeg"};
-      let ext = '.jpeg';
-      const data = resource.toDataURL(mime, 1.0)
-      const link = document.createElement('a');
-      const filename = artwork.tagline + "-" + hashLocation + ext;
-      const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
-      link.download = sanitized;
-      link.href = data;
-      link.click();
-    });
+    //   const resource = document.getElementById("photoCanvas");
+    //   if (!resource) {
+    //     return;
+    //   }
+    //   let mime = {type: "image/jpeg"};
+    //   let ext = '.jpeg';
+    //   const data = resource.toDataURL(mime, 1.0)
+    //   const link = document.createElement('a');
+    //   const filename = artwork.tagline + "-" + hashLocation + ext;
+    //   const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
+    //   link.download = sanitized;
+    //   link.href = data;
+    //   link.click();
+    // });
 
     /*
       Shares the photo
     */
-    document.getElementById("sharePhotoBtn").addEventListener('click', function() {
-      /*
-      * Sent share photo metric 
-      */
-      if (uuid != "") {
-        fetch("/metrics", {
-          method: "POST",
-          body: JSON.stringify(
-            { 
-              metricType: "sharephoto",
-              id: artwork.id,
-              data: "Nothing",
-              uuid: uuid
-            }
-          ),
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-        });
-      }
-      /*******/
+    // document.getElementById("sharePhotoBtn").addEventListener('click', function() {
+    //   /*
+    //   * Sent share photo metric 
+    //   */
+    //   if (uuid != "") {
+    //     fetch("/metrics", {
+    //       method: "POST",
+    //       body: JSON.stringify(
+    //         { 
+    //           metricType: "sharephoto",
+    //           id: artwork.id,
+    //           data: "Nothing",
+    //           uuid: uuid
+    //         }
+    //       ),
+    //       headers: {
+    //         'Accept': 'application/json',
+    //         'Content-Type': 'application/json',
+    //       },
+    //     });
+    //   }
+    //   /*******/
 
-      const resource = document.getElementById("photoCanvas");
-      if (!resource) {
-        return;
-      }
-      resource.toBlob((blob) => {
-        let mime = {type: "image/jpeg"};
-        let ext = '.jpeg';
-        const filename = artwork.tagline + "-" + hashLocation + ext;
-        const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
-        const file = new File([blob], sanitized, mime);
-        const files = [file];
-	      if (navigator.canShare && navigator.canShare({files})) {
-          try {
-            navigator.share({
-              files: files,
-              title: artwork.tagline,
-              text: artwork.tagline,
-              url: "https://wallmurals.ai",
-            }).catch((error) => {
-              // alert("We can not share from this browser. Sorry.");
-              console.log(error);
-            });
-          } 
-          catch (error) {
-            console.error('Error sharing photo:', error);
-          }
-	      }
-      })
-    });
+    //   const resource = document.getElementById("photoCanvas");
+    //   if (!resource) {
+    //     return;
+    //   }
+    //   resource.toBlob((blob) => {
+    //     let mime = {type: "image/jpeg"};
+    //     let ext = '.jpeg';
+    //     const filename = artwork.tagline + "-" + hashLocation + ext;
+    //     const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
+    //     const file = new File([blob], sanitized, mime);
+    //     const files = [file];
+	  //     if (navigator.canShare && navigator.canShare({files})) {
+    //       try {
+    //         navigator.share({
+    //           files: files,
+    //           title: artwork.tagline,
+    //           text: artwork.tagline,
+    //           url: "https://wallmurals.ai",
+    //         }).catch((error) => {
+    //           // alert("We can not share from this browser. Sorry.");
+    //           console.log(error);
+    //         });
+    //       } 
+    //       catch (error) {
+    //         console.error('Error sharing photo:', error);
+    //       }
+	  //     }
+    //   })
+    // });
 
     /*
       The back button just goes back in the history, the onhashchange event ius the one that modifies the UI
     */
-    document.getElementById("backPhotoBtn").addEventListener('click', function() {
-      history.back();
-    });
+    // document.getElementById("backPhotoBtn").addEventListener('click', function() {
+    //   history.back();
+    // });
 
     /*
       Play the video
@@ -735,7 +753,6 @@
       document.getElementById("videoCanvas").loop = true;
       document.getElementById("videoCanvas").playsinline = true;
       document.getElementById("videoCanvas").muted = false;
-      document.getElementById("videoCanvas").currentTime = 0;
       document.getElementById("videoCanvas").play();
     });
 
@@ -752,43 +769,43 @@
     /* 
       Downloads the video
     */ 
-    document.getElementById("downloadVideoBtn").addEventListener('click', function() {
-      /*
-      * Sent download video metric 
-      */
-      if (uuid != "") {
-        fetch("/metrics", {
-          method: "POST",
-          body: JSON.stringify(
-            { 
-              metricType: "downloadvideo",
-              id: artwork.id,
-              data: "Nothing",
-              uuid: uuid
-            }
-          ),
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-        });
-      }
-      /*******/
+    // document.getElementById("downloadVideoBtn").addEventListener('click', function() {
+    //   /*
+    //   * Sent download video metric 
+    //   */
+    //   if (uuid != "") {
+    //     fetch("/metrics", {
+    //       method: "POST",
+    //       body: JSON.stringify(
+    //         { 
+    //           metricType: "downloadvideo",
+    //           id: artwork.id,
+    //           data: "Nothing",
+    //           uuid: uuid
+    //         }
+    //       ),
+    //       headers: {
+    //         'Accept': 'application/json',
+    //         'Content-Type': 'application/json',
+    //       },
+    //     });
+    //   }
+    //   /*******/
 
-      const resource = document.getElementById("videoCanvas");
-      if (!resource) {
-        return;
-      }
-      let mime = { mimeType: videoMimeType}; 
-      let ext = videoExt;
-      const data = resource.src;
-      const link = document.createElement('a');
-      const filename = artwork.tagline + "-" + hashLocation + ext;
-      const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
-      link.download = sanitized;
-      link.href = data;
-      link.click();
-    });
+    //   const resource = document.getElementById("videoCanvas");
+    //   if (!resource) {
+    //     return;
+    //   }
+    //   let mime = { mimeType: videoMimeType}; 
+    //   let ext = videoExt;
+    //   const data = resource.src;
+    //   const link = document.createElement('a');
+    //   const filename = artwork.tagline + "-" + hashLocation + ext;
+    //   const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
+    //   link.download = sanitized;
+    //   link.href = data;
+    //   link.click();
+    // });
 
     /*
       Shares the video
@@ -859,12 +876,12 @@
         return;
       }
       document.getElementById("arBtnsWrapper").style.display = "flex";
-      document.getElementById("photoBtnsWrapper").style.display = "none";
+      // document.getElementById("photoBtnsWrapper").style.display = "none";
       document.getElementById("videoBtnsWrapper").style.display = "none";
-      document.getElementById("playVideoBtnWrapper").style.display = "none";
-      const photoWrapper = document.getElementById("photoWrapper");
-      photoWrapper.style.display = "none";
-      photoWrapper.innerHTML = "";
+      // document.getElementById("playVideoBtnWrapper").style.display = "none";
+      // const photoWrapper = document.getElementById("photoWrapper");
+      // photoWrapper.style.display = "none";
+      // photoWrapper.innerHTML = "";
       const videoWrapper = document.getElementById("videoWrapper");
       videoWrapper.style.display = "none";
       videoWrapper.innerHTML = "";
