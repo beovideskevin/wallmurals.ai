@@ -14,9 +14,9 @@
 
     <section class="relative pt-32 pb-20" id="home"> 
         <div class="container">
+            <h2 class="text-3xl md:text-4xl/tight font-semibold mt-4 mb-8 text-center">Artworks</h2>
+            
             <div id="artowrksContainer" class="shadow-2xl rounded-xl bg-white p-6">
-                <h2 class="text-3xl md:text-4xl/tight font-semibold mt-4 mb-8 text-center md:text-start">Artworks</h2>
-
                 <% if (artworks.length) { %>
                     <% artworks.forEach(function (artwork) { %>
                     <div class="flex items-center justify-center mb-2" style="background: url('/posters/<%= artwork.poster %>') no-repeat center; background-size: cover; min-height: <%= artwork.height %>px;">

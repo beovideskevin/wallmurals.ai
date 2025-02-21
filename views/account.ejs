@@ -11,9 +11,28 @@
 
     <section class="relative pt-32 pb-20" id="planSection"> 
         <div class="container">
-            <div id="planContainer" class="shadow-2xl rounded-xl bg-white p-6">
-                <h2 class="text-3xl md:text-4xl/tight font-semibold mt-4 mb-8 text-center md:text-start">Your current subscription: <%= (plan?.type || "FREE" ) %></h2>
+            <h2 class="text-3xl md:text-4xl/tight font-semibold mt-4 mb-8 text-center">Your current subscription: <%= (plan?.type || "Free" ) %></h2>
                 
+            <div id="planContainer" class="grid grid-cols-1 bg-white p-6">
+                <div class="flex justify-center">
+                    <div id="toggle-count" class="p-1 inline-block border border-gray-200 rounded-lg">
+                        <span class="relative inline-block">
+                            <input id="toggle-count-monthly" name="toggle-count" type="radio" class="absolute top-0 end-0 size-full border-transparent bg-transparent bg-none text-white rounded-lg cursor-pointer focus:border-0 focus:ring-transparent focus:ring-offset-transparent" checked>
+                            <label for="toggle-count-monthly" class="inline-block py-2 px-5 rounded-s-md uppercase text-sm font-semibold">
+                                Monthly
+                            </label>
+                        </span>
+                        <span class="relative inline-block">
+                            <input id="toggle-count-annual" name="toggle-count" type="radio" class="absolute top-0 end-0 size-full border-transparent bg-transparent bg-none text-white rounded-lg cursor-pointer focus:border-0 focus:ring-transparent focus:ring-offset-transparent">
+                            <label for="toggle-count-annual" class="inline-block py-2 px-5 rounded-e-md uppercase text-sm font-semibold">
+                                Annual
+                            </label>
+                        </span>
+                    </div>
+                </div>
+
+                <p class="text-muted text-base mx-auto mt-5">Save up to 40% with Annual Plan.</p>
+
                 <div id="StarterContent">
                     <div class="mt-14" id="start-month" role="tabpanel" aria-labelledby="start-month-tab">
                         <div class="grid lg:grid-cols-2 grid-cols-1 gap-10">
@@ -100,9 +119,9 @@
 
     <section class="relative pt-10 pb-20" id="passwordSection"> 
         <div class="container">
-            <div id="passwordContainer" class="shadow-2xl rounded-xl bg-white p-6">
-                <h2 class="text-3xl md:text-4xl/tight font-semibold mt-4 mb-8 text-center md:text-start">Change your password</h2>
+            <h2 class="text-3xl md:text-4xl/tight font-semibold mt-4 mb-8 text-center">Change your password</h2>
 
+            <div id="passwordContainer" class="shadow-2xl rounded-xl bg-white p-6">
                 <form id="changePasswordForm">
                     <div class="grid sm:grid-cols-2 gap-6">
                         <div>
@@ -127,9 +146,9 @@
 
     <section class="relative pt-10 pb-20" id="closeAccountSection"> 
         <div class="container">
-            <div id="closeAccountContainer" class="shadow-2xl rounded-xl bg-white p-6">
-                <h2 class="text-3xl md:text-4xl/tight font-semibold mt-4 mb-8 text-center md:text-start">Close your account</h2>
+            <h2 class="text-3xl md:text-4xl/tight font-semibold mt-4 mb-8 text-center ">Close your account</h2>
 
+            <div id="closeAccountContainer" class="shadow-2xl rounded-xl bg-white p-6">
                 <form id="closeAccountForm">
                     <div class="grid sm:grid-cols-2 gap-6">
                         <div>
