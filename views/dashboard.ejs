@@ -7,6 +7,16 @@
         h3 .title {
             margin-right: 4px;
         }
+
+        .qrcode { 
+            width: 40%;
+        }
+
+        @media only screen and (min-width: 768px) {
+            .qrcode { 
+                width: 25%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -14,8 +24,8 @@
 
     <section class="relative pt-32 pb-20" id="home"> 
         <div class="container">
-            <h2 class="text-3xl md:text-4xl/tight font-semibold mt-4 mb-8 text-center">Artworks</h2>
-            
+            <h2 class="text-3xl md:text-4xl/tight font-semibold mt-4 mb-8 text-center">Artwork</h2>
+
             <div id="artowrksContainer" class="shadow-2xl rounded-xl bg-white p-6">
                 <% if (artworks.length) { %>
                     <% artworks.forEach(function (artwork) { %>
@@ -64,15 +74,23 @@
                         </div>
                     </div>
 
-                    <div class="flex items-center justify-center mt-8 mb-2 flex-col gap-6">
-                        <div id="qrcode<%= artwork.id %>"></div>
-                        <div>
-                            <button id="saveBtn<%= artwork.id %>" type="submit" class="py-2 px-6 rounded-md text-baseitems-center justify-center border border-primary text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium">Download</button>
-                        </div>
-                    </div>
-
                     <% }) %>
                 <% } %>
+            </div>
+        </div>
+    </section>
+
+    <section class="relative pt-10 pb-20" id="home"> 
+        <div class="container">
+            <h2 class="text-3xl md:text-4xl/tight font-semibold mt-4 mb-8 text-center">QR</h2>
+
+            <div id="artowrksContainer" class="shadow-2xl rounded-xl bg-white p-6">
+                <div class="flex items-center justify-center mt-10 mb-2 flex-col gap-6">
+                    <div class="qrcode"></div>
+                    <div>
+                        <button id="saveBtn" type="submit" class="py-2 px-6 rounded-md text-baseitems-center justify-center border border-primary text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium">Download</button>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -84,13 +102,18 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', async function() {
+            let qrdivs = document.getElementsByClassName("qrcode");
+            let index = 0;
+
             <% if (artworks.length) { %>
                 <% artworks.forEach(function (artwork) { %>
-                    new QRCode('qrcode<%= artwork.id %>', {
+
+                    new QRCode(qrdivs[index], {
                         text: "https://www.wallmurals.ai/ar/<%= artwork.id %>",
-                        width: 300,
-                        height: 300,
+                        width: 500,
+                        height: 500,
                     });
+                    ++index;
                 <% }); %>
             <% } %>
         });
