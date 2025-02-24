@@ -6,6 +6,7 @@ window.cameraFacing = false;
 var mindarThree = null;
 var hashLocation = "";
 var refresh = false;
+var resetAudio = false;
 var recFrameId = null;
 var mediaRecorder;
 var recordedChunks = [];
@@ -180,6 +181,13 @@ const stop = async function () {
     }
     showSplash();
     await mindarThree.stop();
+    // Stop the background sound and video
+    if (artwork.videoElement) {
+        artwork.videoElement.pause();
+    }
+    if (artwork.audioElement) {
+        artwork.audioElement.stop();
+    }
     // Fixing a bug in the AR system, when the camera switches
     for (let i = 0; i < mindarThree.anchors.length; i++) {
         mindarThree.anchors[i].group.visible=false; // Do I really need this?
@@ -246,14 +254,16 @@ window.addEventListener("hashchange", function() {
     
     // There is a pending 
     if (refresh) {
+        refresh = false;
         restart();
     }
-    
-    // Unmute the sound 
-    if (artwork.audioElement) {
-        artwork.audioElement.setVolume(1);
-    }
 
+    // Stop the background sound
+    if (artwork.audioElement && resetAudio) {
+        resetAudio = false;
+        artwork.audioElement.setVolume(1);
+    }  
+    
     // Hide the video wrapper
     hideVideo();
 });
@@ -304,8 +314,13 @@ document.getElementById("recVideoBtn").addEventListener('click', function() {
 		const destination = context.createMediaStreamDestination();
 		artwork.audioElement.listener.getInput().connect(destination);
 		artwork.audioElement.gain.connect(destination);
-		canvasStream.addTrack(destination.stream.getAudioTracks()[0]);
-        mediaRecorder = new MediaRecorder(canvasStream, {mimeType: videoMimeType});
+		// canvasStream.addTrack(destination.stream.getAudioTracks()[0]);
+        const combinedStream = new MediaStream([
+            ...canvasStream.getVideoTracks(),
+            ...destination.stream.getAudioTracks()
+        ]);
+
+        mediaRecorder = new MediaRecorder(combinedStream, {mimeType: videoMimeType});
     }
     else {
         mediaRecorder = new MediaRecorder(canvasStream, {mimeType: videoMimeType});
@@ -337,11 +352,13 @@ document.getElementById("recVideoBtn").addEventListener('click', function() {
             const photoWrapper = document.getElementById("videoWrapper");
             photoWrapper.appendChild(recVideo);
             showVideo();
+            showRecBtn();
 
-            // Mute the sound 
-            if (artwork.audioElement) {
+            // Stop the background sound
+            if (artwork.audioElement && artwork.audioElement.getVolume()) {
                 artwork.audioElement.setVolume(0);
-            }
+                resetAudio = true;
+            }    
 
             // Set the has of the page
             hashLocation = Date.now();
@@ -364,7 +381,6 @@ document.getElementById("stopRecVideoBtn").addEventListener('click', function() 
     clearInterval(recFrameId);
     recFrameId = null;
     mediaRecorder.stop();
-    showRecBtn();
 });
     
 /**
