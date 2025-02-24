@@ -45,6 +45,7 @@ app.use(session({
   } 
 }));
 
+app.locals.node_env = process.env.NODE_ENV;
 app.locals.site = process.env.SITE;
 app.locals.title = process.env.TITLE;
 app.locals.keywords = process.env.KEYWORDS;
