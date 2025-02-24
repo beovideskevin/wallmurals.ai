@@ -1,2 +1,8 @@
 .env
 /node_modules/
+/public/audios
+/public/markers
+/public/models
+/public/posters
+/public/uploads
+/public/videos
