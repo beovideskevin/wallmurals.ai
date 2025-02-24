@@ -81,7 +81,7 @@ const setup = async function() {
     const anchor = mindarThree.addAnchor(0);
 
     // Load the artwork
-    if (artwork.type == "video") {
+    if (artwork.type == "video" && artwork.video) {
         // If the artwork is a video
         artwork.videoElement = await loadVideo(artwork.video, artwork.poster);
         let texture = new window.MINDAR.IMAGE.THREE.VideoTexture(artwork.videoElement);
@@ -92,7 +92,7 @@ const setup = async function() {
         let plane = new window.MINDAR.IMAGE.THREE.Mesh(geometry, material);
         anchor.group.add(plane);        
     }
-    else {
+    else if (artwork.type == "model" && artwork.model) {
         // If the artwork is a model
         const light = new window.MINDAR.IMAGE.THREE.HemisphereLight( 0xffffff, 0xbbbbff, 1 );
         scene.add(light);
@@ -104,9 +104,13 @@ const setup = async function() {
         const action = artwork.mixerElement.clipAction(artwork.modelElement.animations[0]);
         action.play();
     }
+    else {
+        alert("CRITICAL: NO RESOURCE TO DISPLAY");
+        return;
+    }
 
     // Read the audio
-    if (artwork.audio != "") {
+    if (artwork.audio) {
         loadAudio(artwork.audio).then(function(tmpAudio) {
             const audioClip = tmpAudio;
             const listener = new window.MINDAR.IMAGE.THREE.AudioListener();
