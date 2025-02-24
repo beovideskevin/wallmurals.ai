@@ -5,7 +5,7 @@
  * Usage:
  * 
  * node .\artwork.js <marker> <video> <poster> <width> <height> <chroma> <location> <tagline> <user> <route>
- * node .\artwork.js "birds.mind" "birds_green_screen_sm_3" "birds.jpeg" "720" "480" "#00ff00" "n/a" "shared with WallMurals.ai" "67b2384b51b20d0f179106ac" "birds" 
+ * node .\artwork.js "video/model" "birds.mind" "birds_green_screen_sm_3.mp4" "birds.mp3" "birds.jpeg" "720" "480" "#00ff00" "n/a" "shared with WallMurals.ai" "birds" "67b2384b51b20d0f179106ac"  
  * 
 */
 const dotenv = require('dotenv').config({path: "../.env"});
@@ -20,21 +20,31 @@ if (!process.argv[2]) {
     process.exit(1);
 }
 
-let marker = process.argv[2];
-let video = process.argv[3];
-let poster = process.argv[4];
-let width = process.argv[5];
-let height = process.argv[6];
-let chroma = process.argv[7] || "none";
-let location = process.argv[8] || "none";
-let tagline = process.argv[9] || "none";
-let user = process.argv[10];
-let route = process.argv[11] || "";
+let type = process.argv[2];
+let marker = process.argv[3];
+let video = "";
+let model = process.argv[4];
+if (type == "video") {
+    video = process.argv[4];
+    model = "";
+}
+let audio = process.argv[5] == "n/a" ? "" : process.argv[5];
+let poster = process.argv[6];
+let width = process.argv[7] == "n/a" ? "" : process.argv[7];
+let height = process.argv[8] == "n/a" ? "" : process.argv[8];
+let chroma = process.argv[9] == "n/a" ? "" : process.argv[9];
+let location = process.argv[10] == "n/a" ? "" : process.argv[10];
+let tagline = process.argv[11] == "n/a" ? "" : process.argv[11];
+let route = process.argv[12] == "n/a" ? "" : process.argv[12];
+let user = process.argv[13];
 
 Artwork.create({
-    marker: marker,
-    video: video,
-    poster: poster,
+    type: type,
+    marker: user + "/" + marker,
+    video: video != "" ? user + "/" + video : video,
+    model: model != "" ? user + "/" + model : model,
+    audio: audio != "" ? user + "/" + audio : audio,
+    poster: user + "/" + poster,
     width: width,
     height: height,
     chroma: chroma,

@@ -13,9 +13,6 @@ const {
 /* GET dashboard page. */
 router.get('/', index); 
 
-/* POST update location form. */
-router.post('/updatelocation', updateLocation); 
-
 /* POST update tagline form. */
 router.post('/updatetagline', updateTagLine); 
 

@@ -22,61 +22,6 @@ const index = async function(req, res, next) {
     }
 }
 
-/* POST update artwork location */
-const updateLocation = async function(req, res, next) {
-    console.log("DASHBOARD - FULL SESSION: ", req.session);
-
-    if (req.session.user) {
-        let artworks = await Artwork.find({user: req.session.user});
-
-        let body = req.body;
-        if (body.id == "" || body.formLocation == "")  {
-            console.log("NO ARGS ", body);
-            res.render('dashboard', { 
-                csrf: req.csrfToken(),
-                artworks: artworks,
-                error: "There was an error while updating the location.",
-                message: false,
-            });
-            return;
-        }
-
-        let id = sanitize(body.id);
-        const artwork = await Artwork.findById(id);
-        if (!artwork || artwork == []) {
-            console.log("NO ARTWORK ", body);
-            console.log("NOT FOUND ID: " + req.params.id);
-            res.redirect('/');
-            return;
-        }
-
-        artwork.location = sanitize(body.formLocation);
-        artwork.save()
-            .then(async function(artwork) {
-                console.log("IT WORKS: " + artwork);
-                artworks = await Artwork.find({user: req.session.user});
-                res.render('dashboard', { 
-                    csrf: req.csrfToken(),
-                    artworks: artworks,
-                    error: false,
-                    message: "Location updated.",
-                });
-            })
-            .catch(function(error) {
-                console.log("ERROR: " + error);
-                res.render('dashboard', { 
-                    csrf: req.csrfToken(),
-                    artworks: artworks,
-                    error: "There was an error while updating the location.",
-                    message: false, 
-                });
-            });
-    }
-    else {
-        res.redirect('/');
-    }
-}
-
 /* POST update artwork tagline */
 const updateTagLine = async function(req, res, next) {
     console.log("DASHBOARD - FULL SESSION: ", req.session);
@@ -336,7 +281,6 @@ const closeAccount = async function(req, res, next) {
 
 module.exports = {
     index,
-    updateLocation,
     updateTagLine,
     metrics,
     account,

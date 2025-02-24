@@ -53,41 +53,10 @@
     <!-- Main Css -->
     <link href="/assets/css/style.css" rel="stylesheet" type="text/css">
 
-    <style>
-        #home {
-            overflow: hidden;
-            background-color: rgb(0,0,0,0.5);
-        }
+    <!-- Index Css -->
+    <link href="/assets/css/index.css" rel="stylesheet" type="text/css">
 
-        #homeVideo {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translateX(-50%) translateY(-50%);
-            min-width: 100%;
-            max-width: fit-content;
-            z-index: -1;
-        }
-
-        .video-container {
-            position: relative;
-        }
-
-        .video-container video {
-            height: 480px;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translateX(-50%) translateY(-50%);
-        }
-
-        /* Just styling the content of the div, the *magic* in the previous rules */
-        .video-container .iphone {
-            z-index: 1;
-            position: relative;
-            width: 245px;
-        }
-    </style>
+    <style></style>
 </head>
 <body>
     <!-- Navbar Start -->
@@ -699,8 +668,13 @@
                     <h2 class="text-3xl md:text-4xl/tight font-semibold mt-4">Check the latest of our company.</h2>
                 </div>
             </div>
-            <div class="flex mt-14 items-center justify-center">
-                <iframe class="" frameborder="0" allowfullscreen="" width="640" height="360" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" title="Upper Westside Murals handprinted signs at Brickworks, Atlanta"  src="https://www.youtube.com/embed/KmvGSstsmfA?controls=1&amp;rel=0&amp;playsinline=0&amp;modestbranding=0&amp;cc_load_policy=0&amp;autoplay=0&amp;enablejsapi=1&amp;origin=https%3A%2F%2Fwww.upperwestsidemurals.com&amp;widgetid=1"></iframe>
+            <div class="flex mt-14 items-center justify-center gap-6 flex-col sm:flex-row">
+                <div class="mt-2 px-2">
+                    <iframe class="youVideo" frameborder="0" allowfullscreen="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" title="Upper Westside Murals handprinted signs at Brickworks, Atlanta"  src="https://www.youtube.com/embed/KmvGSstsmfA?controls=1&amp;rel=0&amp;playsinline=0&amp;modestbranding=0&amp;cc_load_policy=0&amp;autoplay=0&amp;enablejsapi=1&amp;origin=https%3A%2F%2Fwww.wallmurals.ai&amp;widgetid=1"></iframe>
+                </div>
+                <div class="mt-2 px-2">
+                    <iframe class="youVideo" frameborder="0" allowfullscreen="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" title="Upper Westside Murals handprinted signs at Brickworks, Atlanta"  src="https://www.youtube.com/embed/kduBGAJlcZ4?controls=1&rel=0&playsinline=0&modestbranding=0&cc_load_policy=0&autoplay=0&enablejsapi=1&origin=https%3A%2F%2Fwww.wallmurals.ai&widgetid=7"></iframe>
+                </div>
             </div>
         </div>
     </section>

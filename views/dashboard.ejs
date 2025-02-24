@@ -3,21 +3,10 @@
 <head>
     <% include partials/head.ejs %>
 
-    <style>
-        h3 .title {
-            margin-right: 4px;
-        }
+    <!-- AR Css -->
+    <link href="/assets/css/dashboard.css" rel="stylesheet" type="text/css">
 
-        .qrcode { 
-            width: 40%;
-        }
-
-        @media only screen and (min-width: 768px) {
-            .qrcode { 
-                width: 25%;
-            }
-        }
-    </style>
+    <style></style>
 </head>
 <body>
     <% include partials/navigation.ejs %>
@@ -61,31 +50,30 @@
                 </div>
                 
                 <div class="grid sm:grid-cols-2 gap-6 mt-8">
-                    <div class="mb-2"><h3 style="display: inline-block; margin-right: 4px;">Route:</h3> <a href="/ar/<%= artwork.id %>" target="_blank">wallmurals.ai/ar/<%= artwork.id %></a></div>
 
-                    <div class="mb-2">
+                    <div class="mb-2"><h3 style="display: inline-block; margin-right: 4px;">Type:</h3> <%= artwork.type %></div>
+
+                    <div class="mb-2 overflow-hidden">
                         <h3 style="display: inline-block; margin-right: 4px;">Quick link:</h3> <% if (artwork.route) { %><a href="/<%= artwork.route %>" target="_blank">wallmurals.ai/<%= artwork.route %></a><% } else {%> N/A <% } %>
                     </div>
+
+                    <div class="mb-2 overflow-hidden"><h3 style="display: inline-block; margin-right: 4px;">Route:</h3> <a href="/ar/<%= artwork.id %>" target="_blank">wallmurals.ai/ar/<%= artwork.id %></a></div>
+
+                    <div class="mb-2 overflow-hidden"><h3 style="display: inline-block; margin-right: 4px;">Video:</h3> <a href="/videos/<%= artwork.video %>" target="_blank"><%= artwork.video %></a></div>
+                    
+                    <div class="mb-2 overflow-hidden"><h3 style="display: inline-block; margin-right: 4px;">Model:</h3> <a href="/models/<%= artwork.model %>" target="_blank"><%= artwork.model %></a></div>
+                    
+                    <div class="mb-2 overflow-hidden"><h3 style="display: inline-block; margin-right: 4px;">Audio:</h3> <a href="/audios/<%= artwork.audio %>" target="_blank"><%= artwork.audio %></a></div>
+
+                    <div class="mb-2 overflow-hidden"><h3 style="display: inline-block; margin-right: 4px;">Poster:</h3> <a href="/posters/<%= artwork.poster %>" target="_blank"><%= artwork.poster %></a></div>
+
+                    <div class="mb-2 overflow-hidden"><h3 style="display: inline-block; margin-right: 4px;">Marker:</h3> <a href="/markers/<%= artwork.marker %>" target="_blank"><%= artwork.marker %></a></div>
 
                     <div class="mb-2"><h3 style="display: inline-block; margin-right: 4px;">Width:</h3> <%= artwork.width %></div>
 
                     <div class="mb-2"><h3 style="display: inline-block; margin-right: 4px;">Height:</h3> <%= artwork.height %></div>
 
-                    <div class="mb-2">
-                        <form id="detailsForm<%= artwork.id %>" method="POST" action="/dashboard/updatelocation">
-                            <div class="grid sm:grid-cols-2 gap-6">
-                                <div>
-                                    <label for="formLocation<%= artwork.id %>" class="block text-sm/normal font-semibold text-black mb-2">Location:</label>
-                                    <input type="text" value="<%= artwork.location %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="formLocation" id="formLocation<%= artwork.id %>" placeholder="Type the location..." required="">
-                                </div>
-                                <div class="flex" style="align-items: end; padding-bottom: 3px;">
-                                    <button id="saveLocationBtn<%= artwork.id %>" type="submit" class="w-1/2 py-2 px-6 rounded-md text-baseitems-center justify-center border border-primary text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium">Save</button>
-                                </div>
-                            </div>
-                            <input type="hidden" name="id" value="<%= artwork.id %>">
-                            <input type="hidden" name="_csrf" value="<%= csrf %>">
-                        </form>
-                    </div>
+                    <div class="mb-2 overflow-hidden"><h3 style="display: inline-block; margin-right: 4px;">Location:</h3> <%= artwork.location %></div>
                 
                     <div class="mb-2">
                         <form id="detailsForm<%= artwork.id %>" method="POST" action="/dashboard/updatetagline">
@@ -113,8 +101,8 @@
 
             <div id="artowrksContainer" class="shadow-2xl rounded-xl bg-white p-6">
                 <div class="flex items-center justify-center mt-10 mb-2 flex-col gap-6">
-                    <div class="qrcode"></div>
-                    <div class="qrdownload"></div>
+                    <div class="qrcodeDashboard"></div>
+                    <div class="qrcodeDownload"></div>
                 </div>
             </div>
         </div>
@@ -133,8 +121,8 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', async function() {
-            let qrdivs = document.getElementsByClassName("qrcode");
-            let qrdowns = document.getElementsByClassName("qrdownload");
+            let qrdivs = document.getElementsByClassName("qrcodeDashboard");
+            let qrdowns = document.getElementsByClassName("qrcodeDownload");
             let index = 0;
 
             <% 

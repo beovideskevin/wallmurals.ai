@@ -2,6 +2,11 @@ const mongoose = require('mongoose')
 
 const artworkSchema = mongoose.Schema(
   {
+    type: {
+      type: String,
+      required: false,
+      default: "video"
+    },
     route: {
       type: String,
       required: false,
@@ -12,7 +17,15 @@ const artworkSchema = mongoose.Schema(
     },
     video: {
       type: String,
-      required: [true, 'Please add a video value'],
+      required: false,
+    },
+    model: {
+      type: String,
+      required: false,
+    },
+    audio: {
+      type: String,
+      required: false,
     },
     poster: {
       type: String,
@@ -20,11 +33,11 @@ const artworkSchema = mongoose.Schema(
     },
     width: {
       type: Number,
-      required: [true, 'Please add a width value'],
+      required: false,
     },
     height: {
       type: Number,
-      required: [true, 'Please add a height value'],
+      required: false,
     },
     chroma: {
       type: String,
