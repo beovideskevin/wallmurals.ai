@@ -87,7 +87,7 @@ body {
   min-height: 50vh;
 }
 
-.content h1 {
+#locError h1 {
   display: block;
   font-size: 2em;
   margin-block-start: 0.67em;
@@ -98,7 +98,7 @@ body {
   unicode-bidi: isolate;
 }
 
-.content p {
+#locError p {
   display: block;
   margin-block-start: 1em;
   margin-block-end: 1em;
@@ -107,7 +107,7 @@ body {
   unicode-bidi: isolate;
 }
 
-.content a {
+#locError a {
   color: #ffffff;
 }
 
@@ -187,5 +187,5 @@ body {
 }
 
 .mindar-ui-compatibility a {
-  color: #ffffff;
+  color: #ffffff !important;
 }
