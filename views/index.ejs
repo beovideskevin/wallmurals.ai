@@ -922,6 +922,7 @@
                             'Content-Type': 'application/json',
                         },
                     });
+                    console.log(response);
                     if (!response.ok || response.status != 200) {
                         throw new Error(`Response status: ${response.status}`);
                     }
