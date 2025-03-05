@@ -5,11 +5,17 @@
 
     <style>
         .qrcodeDashboard { 
-            width: 40%;
+            width: 60%;
         }
 
         @media only screen and (min-width: 768px) {
-            .qrcodeDashboard { 
+            .qrcodeDashboard {
+                width: 45%;
+            }
+        }
+
+        @media only screen and (min-width: 992px) {
+            .qrcodeDashboard {
                 width: 25%;
             }
         }
@@ -21,10 +27,10 @@
     <% 
         if (artworks.length) { 
             let section = 0;
-            artworks.forEach(function (artwork) { 
+            artworks.forEach(function (artwork) {
     %>
 
-    <section class="relative <% if (!section) { firstSection=false; %>pt-32<% } else { %> pt-10 <% } %> pb-20" id="home"> 
+    <section class="relative <% if (!section) { %> pt-32 <% } else { %> pt-10 <% } %> pb-20" id="home">
         <div class="container">
             <% if (!section) { %>
                 <% if (error && message) { %>
@@ -54,7 +60,9 @@
             <!-- <h2 class="text-3xl md:text-4xl/tight font-semibold mt-4 mb-8 text-center">Artworks</h2> -->
 
             <div id="artowrksContainer" class="shadow-2xl rounded-xl bg-white p-6">
-                <div class="flex items-center justify-center mb-2" style="background: url('/posters/<%= artwork.animations[0].poster %>') no-repeat center; background-size: cover; min-height: <%= artwork.animations[0].height %>px;">
+                <div class="flex items-center mb-2" style="justify-content: space-evenly; flex-direction: column; background: url('/posters/<%= artwork.animations[0].poster %>') no-repeat center; background-size: cover; min-height: <%= artwork.animations[0].height %>px;">
+                    <div class="qrcodeDashboard"></div>
+                    <div class="qrcodeDownload"></div>
                 </div>
                 
                 <div class="grid sm:grid-cols-2 gap-6 mt-8">
@@ -135,22 +143,22 @@
         </div>
     </section>
 
-    <section class="relative pt-10 pb-20" id="home"> 
-        <div class="container">
-            <!-- <h2 class="text-3xl md:text-4xl/tight font-semibold mt-4 mb-8 text-center">QR</h2> -->
+<!--    <section class="relative pt-10 pb-20" id="home"> -->
+<!--        <div class="container">-->
+<!--            &lt;!&ndash; <h2 class="text-3xl md:text-4xl/tight font-semibold mt-4 mb-8 text-center">QR</h2> &ndash;&gt;-->
 
-            <div id="artowrksContainer" class="shadow-2xl rounded-xl bg-white p-6">
-                <div class="flex items-center justify-center mt-10 mb-2 flex-col gap-6">
-                    <div class="qrcodeDashboard"></div>
-                    <div class="qrcodeDownload"></div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!--            <div id="artowrksContainer" class="shadow-2xl rounded-xl bg-white p-6">-->
+<!--                <div class="flex items-center justify-center mt-10 mb-2 flex-col gap-6">-->
+<!--                    <div class="qrcodeDashboard"></div>-->
+<!--                    <div class="qrcodeDownload"></div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
 
-    <% 
-            }); 
+    <%
             section++;
+            });
         }
     %>
 
@@ -188,7 +196,7 @@
                         link.classList = 'py-2 px-6 rounded-md text-baseitems-center justify-center border border-primary text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium"';
                         link.href = saveUrl;
                         link.download = 'WallMuralAiQR.png';
-                        link.innerHTML = 'Download';
+                        link.innerHTML = 'Download QR';
                         qrBtn.appendChild(link);
                     }, 50, qrdivs[index], qrdowns[index]);
 
