@@ -1,133 +1,187 @@
 <!DOCTYPE html>
 <html lang="es-ES">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
-  <!-- SEO -->
-  <title><%= title %></title>
-  <meta name="keywords" content="<%= keywords %>" />
-  <meta name="description" content="<%= description %>" />
-  <meta name="author" content="<%= author %>" />
-  <link rel="canonical" href="https://www.wallmurals.ai/">
+    <!-- SEO -->
+    <title><%= title %></title>
+    <meta name="keywords" content="<%= keywords %>"/>
+    <meta name="description" content="<%= description %>"/>
+    <meta name="author" content="<%= author %>"/>
+    <link rel="canonical" href="https://www.wallmurals.ai/">
 
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="<%= title %>" />
-  <meta property="og:description" content="<%= description %>" />
-  <meta property="og:site_name" content="<%= site %>" />
-  <meta property="og:locale" content="es_ES" />
-  <meta property="og:url" content="https://www.wallmurals.ai" />
-  <meta property="og:image" content="/posters/<%= artwork.poster %>"/>
-  <!-- <meta property="og:image:type" content="image/png" />
-  <meta property="og:image:width" content="480" />
-  <meta property="og:image:height" content="640" /> -->
-  <meta property="article:publisher" content="<%= author %>" />
-  <meta property="article:author" content="<%= author %>" />
-  
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:site" content="<%= site %>" />
-  <meta name="twitter:url" content="https://www.wallmurals.ai" />
-  <meta name="twitter:title" content="<%= title %>" />
-  <meta name="twitter:description" content="<%= description %>" />
-  <meta name="twitter:image" content="/posters/<%= artwork.poster %>" />
-  
-  <meta itemprop="name" content="<%= site %>" />
-  <meta itemprop="description" content="<%= description %>" />
-  <meta itemprop="image" content="/posters/<%= artwork.poster %>" />
+    <meta property="og:type" content="website"/>
+    <meta property="og:title" content="<%= title %>"/>
+    <meta property="og:description" content="<%= description %>"/>
+    <meta property="og:site_name" content="<%= site %>"/>
+    <meta property="og:locale" content="es_ES"/>
+    <meta property="og:url" content="https://www.wallmurals.ai"/>
+    <meta property="og:image" content="/posters/default.jpeg"/>
+    <!-- <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="480" />
+    <meta property="og:image:height" content="640" /> -->
+    <meta property="article:publisher" content="<%= author %>"/>
+    <meta property="article:author" content="<%= author %>"/>
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="/assets/icons/icon-72x72.png">
+    <meta name="twitter:card" content="summary_large_image"/>
+    <meta name="twitter:site" content="<%= site %>"/>
+    <meta name="twitter:url" content="https://www.wallmurals.ai"/>
+    <meta name="twitter:title" content="<%= title %>"/>
+    <meta name="twitter:description" content="<%= description %>"/>
+    <meta name="twitter:image" content="/posters/default.jpeg"/>
 
-  <!-- AR Css -->
-  <link href="/assets/css/ar.css" rel="stylesheet" type="text/css">
+    <meta itemprop="name" content="<%= site %>"/>
+    <meta itemprop="description" content="<%= description %>"/>
+    <meta itemprop="image" content="/posters/default.jpeg"/>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/assets/icons/icon-48x48.png">
+
+    <!-- AR Css -->
+    <link href="<%= (node_env == "development") ? "/ar" : "/dist" %>/ar.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
-  <div id="splash">
+<div id="splash">
     <div class="loader">
     </div>
-  </div>
+</div>
 
-  <div id="arBtnsWrapper">
-    <% if (artwork.audio) { %>  
-      <a id="soundBtn" href="javascript:;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-2"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.364 18.364a9 9 0 0 0 0-12.728"/></svg>
-      </a>
-      <a id="muteBtn" href="javascript:;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-x"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><line x1="22" x2="16" y1="9" y2="15"/><line x1="16" x2="22" y1="9" y2="15"/></svg>
-      </a>
-    <% } %>
+<div id="locError">
+    <div class="content">
+        <h1>Failed to launch :(</h1> <br/>
+        <p>The software needs permission to access your location and camera.</p> <br/>
+        <p>These permissions are asked only for the augmented reality show to work properly. We are also concerned with
+            privacy and do not store your location or recordings.</p> <br/>
+        <p>Please refresh the page.</p>
+    </div>
+</div>
+
+<div id="arBtnsWrapper">
+    <a id="soundBtn" href="javascript:;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+             class="lucide lucide-volume-2">
+            <path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/>
+            <path d="M16 9a5 5 0 0 1 0 6"/>
+            <path d="M19.364 18.364a9 9 0 0 0 0-12.728"/>
+        </svg>
+    </a>
+    <a id="muteBtn" href="javascript:;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+             class="lucide lucide-volume-off">
+            <path d="M16 9a5 5 0 0 1 .95 2.293"/>
+            <path d="M19.364 5.636a9 9 0 0 1 1.889 9.96"/>
+            <path d="m2 2 20 20"/>
+            <path d="m7 7-.587.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298V11"/>
+            <path d="M9.828 4.172A.686.686 0 0 1 11 4.657v.686"/>
+        </svg>
+    </a>
+    <a id="noSoundBtn" href="javascript:;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+             class="lucide lucide-volume-x">
+            <path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/>
+            <line x1="22" x2="16" y1="9" y2="15"/>
+            <line x1="16" x2="22" y1="9" y2="15"/>
+        </svg>
+    </a>
 
     <a id="recVideoBtn" href="javascript:;">
-      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-video"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+             class="lucide lucide-video">
+            <path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/>
+            <rect x="2" y="6" width="14" height="12" rx="2"/>
+        </svg>
     </a>
     <a id="stopRecVideoBtn" href="javascript:;" class="isRecording">
-      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-stop"><circle cx="12" cy="12" r="10"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>      
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+             class="lucide lucide-circle-stop">
+            <circle cx="12" cy="12" r="10"/>
+            <rect x="9" y="9" width="6" height="6" rx="1"/>
+        </svg>
     </a>
-
-    <% if (artwork.audio == "") { %>  
-      <a id="emptyBtn-2" href="javascript:;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide"></svg>
-      </a>
-    <% } %>
 
     <a id="switchBtn" href="javascript:;">
-      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-switch-camera"><path d="M11 19H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5"/><path d="M13 5h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-5"/><circle cx="12" cy="12" r="3"/><path d="m18 22-3-3 3-3"/><path d="m6 2 3 3-3 3"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+             class="lucide lucide-switch-camera">
+            <path d="M11 19H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5"/>
+            <path d="M13 5h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-5"/>
+            <circle cx="12" cy="12" r="3"/>
+            <path d="m18 22-3-3 3-3"/>
+            <path d="m6 2 3 3-3 3"/>
+        </svg>
     </a>
-  </div>
+</div>
 
-  <div id="videoWrapper">
-  </div>
+<div id="videoWrapper">
+</div>
 
-  <div id="videoBtnsWrapper">
+<div id="videoBtnsWrapper">
     <a id="backVideoBtn" href="javascript:;">
-      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left"><path d="m15 18-6-6 6-6"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+             class="lucide lucide-chevron-left">
+            <path d="m15 18-6-6 6-6"/>
+        </svg>
     </a>
     <a id="playVideoBtn" href="javascript:;">
-      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-play"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+             class="lucide lucide-circle-play">
+            <circle cx="12" cy="12" r="10"/>
+            <polygon points="10 8 16 12 10 16 10 8"/>
+        </svg>
     </a>
     <a id="stopVideoBtn" href="javascript:;">
-      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-pause"><circle cx="12" cy="12" r="10"/><line x1="10" x2="10" y1="15" y2="9"/><line x1="14" x2="14" y1="15" y2="9"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+             class="lucide lucide-circle-pause">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="10" x2="10" y1="15" y2="9"/>
+            <line x1="14" x2="14" y1="15" y2="9"/>
+        </svg>
     </a>
     <a id="shareVideoBtn" href="javascript:;">
-      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+             class="lucide lucide-share">
+            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+            <polyline points="16 6 12 2 8 6"/>
+            <line x1="12" x2="12" y1="2" y2="15"/>
+        </svg>
     </a>
-  </div>
+</div>
 
-  <canvas id="record" style="display: none"></canvas>
+<canvas id="record" style="display: none"></canvas>
 
-  <!-- Main code of app -->
-  <script>
-    const uuid = "<%= uuid %>";
-    var artwork = {
-      id: "<%= artwork.id %>",
-      type: '<%= artwork.type %>',
-      marker: '/markers/<%= artwork.marker %>',
-      video: '<%= artwork.video ? "/videos/" + artwork.video : "" %>',
-      model: '<%= artwork.model ? "/models/" + artwork.model : "" %>',
-      audio: '<%= artwork.audio ? "/audios/" + artwork.audio : ""  %>',
-      poster: '/posters/<%= artwork.poster %>',
-      width: <%= artwork.width %>,
-      height: <%= artwork.height %>,
-      chroma: '<%= artwork.chroma %>',
-      tagline: '<%= artwork.tagline %>',
-      videoElement: null,
-      modelElement: null,
-      mixerElement: null,
-      audioElement: null,
-    };
-  </script>
-  <script type="module" src="/ar/ar-image-three.prod.js"></script>
-  <script type="module" src="/ar/ar.js"></script>
+<!-- Main code of app -->
+<script>
+    var uuid = "<%= uuid %>";
+    var artwork = JSON.parse('<%- artwork %>');
+    console.log(artwork);
+</script>
+<script type="module" src="/assets/libs/three/ar-image-three.prod.js"></script>
+<script type="module" src="<%= (node_env == "development") ? "/ar" : "/dist" %>/ar.js"></script>
 
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-9EH5BJHSZ5"></script>
-  <script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9EH5BJHSZ5"></script>
+<script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
     gtag('js', new Date());
 
     gtag('config', 'G-9EH5BJHSZ5');
-  </script>
+</script>
 </body>
 </html>

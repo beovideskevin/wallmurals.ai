@@ -3,10 +3,17 @@
 <head>
     <% include partials/head.ejs %>
 
-    <!-- AR Css -->
-    <link href="/assets/css/dashboard.css" rel="stylesheet" type="text/css">
+    <style>
+        .qrcodeDashboard { 
+            width: 40%;
+        }
 
-    <style></style>
+        @media only screen and (min-width: 768px) {
+            .qrcodeDashboard { 
+                width: 25%;
+            }
+        }
+    </style>
 </head>
 <body>
     <% include partials/navigation.ejs %>
@@ -19,68 +26,101 @@
 
     <section class="relative <% if (!section) { firstSection=false; %>pt-32<% } else { %> pt-10 <% } %> pb-20" id="home"> 
         <div class="container">
-            <% if (error && !section) { %>
-            <div class="flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
-                <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-                </svg>
-                <span class="sr-only">Info</span>
-                <div>
-                    <span class="font-medium"><%= error %></span>
+            <% if (!section) { %>
+                <% if (error && message) { %>
+                <div class="flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                    <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                    </svg>
+                    <span class="sr-only">Info</span>
+                    <div>
+                        <span class="font-medium"><%= message %></span>
+                    </div>
                 </div>
-            </div>
-            <% } %>
-
-            <% if (message && !section) { %>
-            <div class="flex items-center p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
-                <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-                </svg>
-                <span class="sr-only">Info</span>
-                <div>
-                    <%= message %>
+                <% } %>
+                <% else if (!error && message) { %>
+                <div class="flex items-center p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
+                    <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                    </svg>
+                    <span class="sr-only">Info</span>
+                    <div>
+                        <%= message %>
+                    </div>
                 </div>
-            </div>
+                <% } %>
             <% } %>
             
             <!-- <h2 class="text-3xl md:text-4xl/tight font-semibold mt-4 mb-8 text-center">Artworks</h2> -->
 
             <div id="artowrksContainer" class="shadow-2xl rounded-xl bg-white p-6">
-                <div class="flex items-center justify-center mb-2" style="background: url('/posters/<%= artwork.poster %>') no-repeat center; background-size: cover; min-height: <%= artwork.height %>px;">
+                <div class="flex items-center justify-center mb-2" style="background: url('/posters/<%= artwork.animations[0].poster %>') no-repeat center; background-size: cover; min-height: <%= artwork.animations[0].height %>px;">
                 </div>
                 
                 <div class="grid sm:grid-cols-2 gap-6 mt-8">
 
-                    <div class="mb-2"><h3 style="display: inline-block; margin-right: 4px;">Type:</h3> <%= artwork.type %></div>
-
                     <div class="mb-2 overflow-hidden">
-                        <h3 style="display: inline-block; margin-right: 4px;">Quick link:</h3> <% if (artwork.route) { %><a href="/<%= artwork.route %>" target="_blank">wallmurals.ai/<%= artwork.route %></a><% } else {%> N/A <% } %>
+                        <h3>Quick link:</h3> <% if (artwork.route) { %><a href="/<%= artwork.route %>" target="_blank">wallmurals.ai/<%= artwork.route %></a><% } else {%> N/A <% } %>
                     </div>
 
-                    <div class="mb-2 overflow-hidden"><h3 style="display: inline-block; margin-right: 4px;">Route:</h3> <a href="/ar/<%= artwork.id %>" target="_blank">wallmurals.ai/ar/<%= artwork.id %></a></div>
+                    <div class="mb-2 overflow-hidden"><h3>Route:</h3> <a href="/ar/<%= artwork.id %>" target="_blank">wallmurals.ai/ar/<%= artwork.id %></a></div>
 
-                    <div class="mb-2 overflow-hidden"><h3 style="display: inline-block; margin-right: 4px;">Video:</h3> <a href="/videos/<%= artwork.video %>" target="_blank"><%= artwork.video %></a></div>
+                    <%  
+                        let videos = [];
+                        let models = [];
+                        let audios = [];
+                        let posters = [];
+                        let width = [];
+                        let height = [];
+
+                        artwork.animations.forEach(function (animation) { 
+                            if (animation.video) {
+                                videos.push(`<a href="/videos/${animation.video}" target="_blank">${animation.video}</a>`);
+                            }
+                            if (animation.model) {
+                                models.push(`<a href="/models/${animation.model}" target="_blank">${animation.model}</a>`);
+                            }
+                            if (animation.audio) {
+                                audios.push(`<a href="/audios/${animation.audio}" target="_blank">${animation.audio}</a>`);
+                            }
+                            if (animation.poster) {
+                                posters.push(`<a href="/posters/${animation.poster}" target="_blank">${animation.poster}</a>`);
+                            }
+                            if (animation.width) {
+                                width.push(animation.width);
+                            }
+                            if (animation.height) {
+                                height.push(animation.height);
+                            }
+                        }); 
+                    %>
                     
-                    <div class="mb-2 overflow-hidden"><h3 style="display: inline-block; margin-right: 4px;">Model:</h3> <a href="/models/<%= artwork.model %>" target="_blank"><%= artwork.model %></a></div>
+                    <div class="mb-2 overflow-hidden"><h3>Videos:</h3> <%- videos.join("<br>") %> </div>
                     
-                    <div class="mb-2 overflow-hidden"><h3 style="display: inline-block; margin-right: 4px;">Audio:</h3> <a href="/audios/<%= artwork.audio %>" target="_blank"><%= artwork.audio %></a></div>
+                    <div class="mb-2 overflow-hidden"><h3>Models:</h3> <%- models.join("<br>") %> </div>
+                    
+                    <div class="mb-2 overflow-hidden"><h3>Audios:</h3> <%- audios.join("<br>") %> </div>
 
-                    <div class="mb-2 overflow-hidden"><h3 style="display: inline-block; margin-right: 4px;">Poster:</h3> <a href="/posters/<%= artwork.poster %>" target="_blank"><%= artwork.poster %></a></div>
+                    <div class="mb-2 overflow-hidden"><h3>Posters:</h3> <%- posters.join("<br>") %></div>
 
-                    <div class="mb-2 overflow-hidden"><h3 style="display: inline-block; margin-right: 4px;">Marker:</h3> <a href="/markers/<%= artwork.marker %>" target="_blank"><%= artwork.marker %></a></div>
+                    <div class="mb-2"><h3>Width:</h3><%- width.join("<br>") %></div>
 
-                    <div class="mb-2"><h3 style="display: inline-block; margin-right: 4px;">Width:</h3> <%= artwork.width %></div>
+                    <div class="mb-2"><h3>Height:</h3><%- height.join("<br>") %></div>
 
-                    <div class="mb-2"><h3 style="display: inline-block; margin-right: 4px;">Height:</h3> <%= artwork.height %></div>
+                    <div class="mb-2 overflow-hidden"><h3>Marker:</h3> <a href="/markers/<%= artwork.marker %>" target="_blank"><%= artwork.marker %></a></div>
+                    
+                    <div class="mb-2 overflow-hidden"><h3>Location:</h3> <%= artwork.location %></div>
 
-                    <div class="mb-2 overflow-hidden"><h3 style="display: inline-block; margin-right: 4px;">Location:</h3> <%= artwork.location %></div>
+                    <div class="mb-2 overflow-hidden"><h3>Latitude:</h3> <%= artwork.lat %></div>
+
+                    <div class="mb-2 overflow-hidden"><h3>Longitude:</h3> <%= artwork.lon %></div>
                 
-                    <div class="mb-2">
-                        <form id="detailsForm<%= artwork.id %>" method="POST" action="/dashboard/updatetagline">
+                    <div class="mb-2" style="grid-column: 1 / span 2;">
+                        <form id="detailsForm<%= artwork.id %>" method="POST" action="/dashboard/updatetagline" onsubmit="return checkTaglineValue('<%= artwork.id %>')">
                             <div class="grid sm:grid-cols-2 gap-6">
                                 <div>
                                     <label for="formTagline<%= artwork.id %>" class="block text-sm/normal font-semibold text-black mb-2">Tagline:</label>
-                                    <input type="text" value="<%= artwork.tagline %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="formTagline" id="formTagline<%= artwork.id %>" placeholder="Type the tagline..." required="">                            
+                                    <input type="text" value="<%= artwork.tagline %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="formTagline" id="formTagline<%= artwork.id %>" placeholder="Type the tagline..." required="">
                                 </div>
                                 <div class="flex" style="align-items: end; padding-bottom: 3px;">
                                     <button id="saveTaglineBtn<%= artwork.id %>" type="submit" class="w-1/2 py-2 px-6 rounded-md text-baseitems-center justify-center border border-primary text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium">Save</button>
@@ -120,6 +160,11 @@
     <script src="/assets/libs/qrcode/qrcode.min.js"></script>
 
     <script>
+        function checkTaglineValue(id) {
+            let tagLine = document.getElementById("formTagline" + id);
+            return tagLine && tagLine.value != "";
+        }
+
         document.addEventListener('DOMContentLoaded', async function() {
             let qrdivs = document.getElementsByClassName("qrcodeDashboard");
             let qrdowns = document.getElementsByClassName("qrcodeDownload");
@@ -152,6 +197,8 @@
                     }); 
                 } 
             %>
+
+            // Check form
         });
     </script>
 </body>

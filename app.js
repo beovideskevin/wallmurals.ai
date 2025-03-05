@@ -20,7 +20,7 @@ connectDB();
 
 const app = express();
 
-// @TODO I NEED TO SECURE THE SESSION WITH HTTPS
+// @TODO I NEED TO SECURE THE SESSION WITH HTTPS AND STORE IT WITH REDIS
 // var sess = {
 //   secret: process.env.SESSION_KEY,
 //   resave: false,
@@ -46,11 +46,11 @@ app.use(session({
 }));
 
 app.locals.node_env = process.env.NODE_ENV;
-app.locals.site = process.env.SITE;
-app.locals.title = process.env.TITLE;
-app.locals.keywords = process.env.KEYWORDS;
-app.locals.description = process.env.DESCRIPTION;
-app.locals.author = process.env.AUTHOR;
+app.locals.site = "Wall Murals AI";
+app.locals.title = "Wall Murals AI - Artificial Intelligence and Augmented Reality Murals ";
+app.locals.keywords = "Wall Murals, Custom Murals, Commercial and Residential, Artificial Intelligence, Augmented Reality, Augmented Reality Mural";
+app.locals.description = "Wall Murals AI is a Company Specialized in Artificial Intelligence and Augmented Reality Murals: Commercial, Residential, Branding, Offices, Schools, Kids Rooms, and more.";
+app.locals.author = "Wall Murals AI";
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -88,9 +88,9 @@ app.use(express.static('public'));
 
 // routes
 app.use('/ar', arRouter);
+app.use('/metrics', metricsRouter);
 app.use('/users', usersRouter);
 app.use('/dashboard', dashboardRouter);
-app.use('/metrics', metricsRouter);
 app.use('/', indexRouter);
 
 // catch 404 and forward to error handler

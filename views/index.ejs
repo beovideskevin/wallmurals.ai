@@ -47,16 +47,56 @@
     <!-- Jarallax Css -->
     <link href="/assets/libs/jarallax/jarallax.min.css" rel="stylesheet">
 
-    <!-- Swiper Css 
-    <link href="/assets/libs/swiper/swiper-bundle.min.css" rel="stylesheet"> -->
-
     <!-- Main Css -->
-    <link href="/assets/css/style.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/style.min.css" rel="stylesheet" type="text/css">
 
-    <!-- Index Css -->
-    <link href="/assets/css/index.css" rel="stylesheet" type="text/css">
+    <style>
+        #home {
+            overflow: hidden;
+            background-color: rgb(0,0,0,0.5);
+        }
 
-    <style></style>
+        #homeVideo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%);
+            min-width: 100%;
+            max-width: fit-content;
+            z-index: -1;
+        }
+
+        .video-container {
+            position: relative;
+        }
+
+        .video-container video {
+            height: 480px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%);
+        }
+
+        /* Just styling the content of the div, the *magic* in the previous rules */
+        .video-container .iphone {
+            z-index: 1;
+            position: relative;
+            width: 245px;
+        }
+
+        .youVideo {
+            width: 320px;
+            height: 180px;
+        }
+
+        @media only screen and (min-width: 992px) {
+            .youVideo {
+                width: 640px;
+                height: 360px;
+            }   
+        } 
+    </style>
 </head>
 <body>
     <!-- Navbar Start -->
@@ -130,7 +170,7 @@
                 <div class="text-sm max-w-3xl mx-auto text-center">
                     <h1 class="text-3xl md:text-5xl/tight lg:text-6xl/tight text-white tracking-normal capitalize leading-normal font-bold max-w-2xl mt-4">Stunning Murals, <span class="text-primary">Interactive Magic!</span></h1>
                     <div class="max-w-xl mx-auto">
-                        <p class="text-base font-medium text-white leading-7 mt-2 capitalize">Our software is running entirely on the cloud,<br>with no need for application download.</p>
+                        <p class="text-base font-medium text-white leading-7 mt-2 capitalize">We are offering a 10% finder's fee <br> refer a client and facilitate the business</p>
                     </div>
                     <div class="flex flex-wrap items-center justify-center mt-9 text-center gap-3">
                         <a href="#contact" class="py-2 px-6 rounded-md text-white text-base bg-primary hover:bg-primaryDark border border-primary hover:border-primaryDark transition-all duration-500 font-medium">Contact Us</a>
@@ -213,7 +253,7 @@
                         <span class="text-sm text-primary uppercase font-semibold tracking-wider text-default-950">Convenient</span>
                     </div>
                     <h2 class="text-3xl md:text-4xl/tight font-semibold text-black mt-4 text-center lg:text-start">How does it work?</h2>
-                    <p class="text-base font-normal text-muted mt-6 text-justify mx-2">Simply scan the QR code signage, point your smartphone or tablet at the mural, and watch as the artwork comes to life, transforming into an immersive digital experience right before your eyes.</p>
+                    <p class="text-base font-normal text-muted mt-6 text-justify mx-2">Our software is running entirely on the cloud, with no need for application download. Simply scan the QR code signage, point your smartphone or tablet at the mural, and watch as the artwork comes to life, transforming into an immersive digital experience right before your eyes.</p>
                     <div class="grid lg:grid-cols-3 grid-cols-1 gap-8 mt-9">
                         <div class="text-center lg:text-start">
                             <div class="flex items-center justify-center lg:justify-start">
@@ -790,7 +830,7 @@
                 <div class="flex justify-between items-center">
                     <p class="text-base text-white"><script>document.write(new Date().getFullYear())</script>© <a href="#">Wall Murals AI</a></p>
                     <div>
-                        <a class="size-8 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent text-white hover:bg-primary transition-all duration-300" href="#">
+                        <!-- <a class="size-8 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent text-white hover:bg-primary transition-all duration-300" href="#">
                             <i data-lucide="instagram" class="h-4 w-4 text-white"></i>
                         </a>
                         <a class="size-8 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent text-white hover:bg-primary transition-all duration-300" href="#">
@@ -799,6 +839,9 @@
                         <a class="size-8 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent text-white hover:bg-primary transition-all duration-300" href="#">
                             <i data-lucide="twitter" class="h-4 w-4 text-white"></i>
                         </a>
+                        <a class="size-8 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent text-white hover:bg-primary transition-all duration-300" href="#">
+                            <i data-lucide="youtube" class="h-4 w-4 text-white"></i>
+                        </a> -->
                     </div>
                 </div>
             </div>
@@ -818,27 +861,11 @@
     <!-- Jarallax Js -->
     <script src="/assets/libs/jarallax/jarallax.min.js"></script> 
 
-    <!-- Swiper Bundle Js 
-    <script src="/assets/libs/swiper/swiper-bundle.min.js"></script>  -->
-
-    <!-- Swiper Js 
-    <script src="/assets/js/swiper.js"></script>  -->
-
-    <!-- Main App Js -->
-    <script src="/assets/js/app.js" ></script>
+    <!-- Main Index Js -->
+    <script src="/assets/js/index.js" ></script>
 
     <!-- Cloudflare -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
-
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HQKX6X1BMS"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', 'G-HQKX6X1BMS');
-    </script>
 
     <!-- Send email -->
     <script>
@@ -913,6 +940,16 @@
                 return false;
             })
         })
+    </script>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HQKX6X1BMS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-HQKX6X1BMS');
     </script>
 </body>
 </html>

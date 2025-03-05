@@ -1,7 +1,7 @@
 var sanitize = require('mongo-sanitize');
 var Metric = require('../models/metric');
 var Artwork = require('../models/artwork');
-const { getMonthNameArray } = require('../helpers/utils');
+const { getMonthNameArray, saveMetric } = require('../helpers/utils');
 
 /* GET metrics listing. */
 const list = async function(req, res, next) {
@@ -107,6 +107,7 @@ const save = function(req, res, next) {
     Metric.find({uuid: uuid}).then(function (metrics) {
         // If the uuid is fake or bad return 400
         if (!metrics.length) {
+            console.log("not found!");
             res.status(400);
             res.json({success: false});
             return;
@@ -115,26 +116,6 @@ const save = function(req, res, next) {
         saveMetric({metricType, id, data, uuid});
         res.status(200);
         res.json({success: true});
-    });
-}
-
-saveMetric = (values) => {
-    const {metricType, id, data, uuid} = values;
-    Metric.create({
-        type: metricType,
-        data: data,
-        uuid: uuid,
-        artwork: id
-    }).then(function (newMetric) {
-        console.log("Metric created!", newMetric);
-    }).catch(function (error) {
-        if(error.name === 'ValidationError') {
-            const messages = Object.values(error.errors).map(val => val.message);
-            console.log("VALIDATION ERROR: " + messages);
-        } 
-        else {
-            console.log("ERROR: " + error);
-        }
     });
 }
 

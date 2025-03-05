@@ -1,77 +1,93 @@
 var sanitize = require('mongo-sanitize');
-const { v4: uuidv4 } = require('uuid');
+const {v4: uuidv4} = require('uuid');
 const Artwork = require('../models/artwork');
-const Metric = require('../models/metric');
-const Subscription = require('../models/subscription');
-const { getSubscriptionLastDate } = require('../helpers/utils');
+const {checkViews, openMetric, isCloseToPlace} = require('../helpers/utils');
 
-const MAX_FREE_VIEWS = 1000;
-const MAX_PRO_VIEWS = 100000;
+/* GET the artwork by location */
+const arLoc = async function (req, res, next) {
+    const lat = sanitize(req.params.lat);
+    const lon = sanitize(req.params.lon);
+    const uuid = sanitize(req.params.uuid);
 
-/* GET AR page. */
-const ar = async function(req, res, next) {
-  const uuid = uuidv4();
-  const forwardedFor = req.headers['x-forwarded-for'] || req.connection.remoteAddress || "no IP";
-  const id = sanitize(req.params.id);
-  try {
-    const artwork = await Artwork.findById(id);
-    if (!artwork || artwork == []) {
-      console.log("NOT FOUND ID: " + req.params.id);
-      res.redirect('/');
-      return;
-    }
-
-    let max = MAX_FREE_VIEWS;
-    let targetDate = getSubscriptionLastDate(1);
-    let subscriptions = await Subscription.find({user: artwork.user, active: true});
-    if (subscriptions.length) {
-        max = MAX_PRO_VIEWS;
-        let start = new Date(subscriptions[0].start);
-        let day = start.getDate() > 28 ? 28 : start.getDate();
-        targetDate = getSubscriptionLastDate(day);
-    }
-    console.log(targetDate);
-    let count = await Metric.countDocuments({
-        type: "open",
-        artwork: artwork.id,
-        createdAt: { $gt: targetDate } 
-    });
-    console.log(count);
-    if (count > max) {
-        console.log("MAX VIEWS REACHED: " + req.params.id);
-        res.redirect('/');
+    if (!lat || !lon || !uuid) {
+        res.set('Content-Type', 'application/json')
+        res.status(404);
+        res.json(null);
         return;
     }
 
-    Metric.create({
-        type: "open",
-        data: forwardedFor,
-        uuid: uuid,
-        artwork: artwork.id
-    }).then(function (newMetric) {
-        console.log("Metric created!", newMetric);
-    }).catch(function (error) {
-        if(error.name === 'ValidationError') {
-            const messages = Object.values(error.errors).map(val => val.message);
-            console.log("VALIDATION ERROR: " + messages);
-        } 
-        else {
-            console.log("ERROR: " + error);
+    const artworks = await Artwork.find({});
+    for (const artwork of artworks) {
+        if (!artwork.lat || !artwork.lon) {
+            continue;
         }
-    });
-    
-    res.set('Cache-Control', 'no-cache'); // Set custom header NO CACHE
-    res.render('ar', {
-      uuid: uuid,
-      artwork: artwork
-    });
-  }
-  catch (error) {
-    console.log("AR ROUTE ERROR: " + error + " ID: " + req.params.id);
-    res.redirect('/');
-  }
+        if (isCloseToPlace(lat, lon, artwork.lat, artwork.lon)) {
+            openMetric(req, artwork.id, uuid);
+            res.set('Content-Type', 'application/json')
+            res.status(200);
+            res.json(artwork);
+            return;
+        }
+    }
+    res.set('Content-Type', 'application/json')
+    res.status(404);
+    res.json(null);
+}
+
+/* GET the artwork */
+const ar = async function (req, res, next) {
+    const id = sanitize(req.params.id);
+    const uuid = uuidv4();
+
+    // Probably will never happen :)
+    if (!id) {
+        res.render('ar', {
+            uuid: uuidv4(),
+            artwork: JSON.stringify(null)
+        });
+        return;
+    }
+
+    Artwork.findById(id)
+        .then(function (artwork) {
+            if (!artwork || !checkViews(artwork)) {
+                console.log("NOT FOUND ROUTE OR EXCESS VIEWS", req.params.id, artwork);
+                res.render('ar', {
+                    uuid: uuidv4(),
+                    artwork: JSON.stringify(null)
+                });
+                return;
+            }
+
+            openMetric(req, artwork.id, uuid);
+
+            res.render('ar', {
+                uuid: uuid,
+                artwork: JSON.stringify(artwork)
+            });
+        })
+        .catch(function(error) {
+            console.log("ERROR: " + error);
+            res.redirect('/home');
+        });
+}
+
+/* POST AR page. */
+const createAr = async function (req, res, next) {
+}
+
+/* PUT AR page. */
+const editAr = async function (req, res, next) {
+}
+
+/* DELETE AR page. */
+const deleteAr = async function (req, res, next) {
 }
 
 module.exports = {
-    ar
+    arLoc,
+    ar,
+    createAr,
+    editAr,
+    deleteAr
 };

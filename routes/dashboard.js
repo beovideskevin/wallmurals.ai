@@ -10,22 +10,22 @@ const {
     closeAccount
 } = require('../controllers/dashboard');
 
-/* GET dashboard page. */
-router.get('/', index); 
-
-/* POST update tagline form. */
-router.post('/updatetagline', updateTagLine); 
-
 /* GET metrics page. */
 router.get('/metrics', metrics);
 
 /* GET account page. */
-router.get('/account', account);
+router.get('/account/:message?/:error?', account);
 
 /* POST change password. */
-router.post('/changepassword', changePassword); 
+router.post('/changepassword', changePassword);
 
 /* POST close account. */
-router.post('/closeaccount', closeAccount); 
+router.post('/closeaccount', closeAccount);
+
+/* GET dashboard page. */
+router.get('/:message?/:error?', index);
+
+/* POST update tagline form. */
+router.post('/updatetagline', updateTagLine); 
 
 module.exports = router;

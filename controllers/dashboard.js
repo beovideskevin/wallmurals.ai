@@ -3,18 +3,22 @@ var bcrypt = require('bcrypt');
 const Artwork = require('../models/artwork');
 const Subscription = require('../models/subscription');
 const User = require('../models/user');
+const { urlencoded } = require('express');
 
 /* GET dashboard page. */
 const index = async function(req, res, next) {
     console.log("DASHBOARD - FULL SESSION: ", req.session);
+
+    let error = req.params.error || false;
+    let message = req.params.message || "";
 
     if (req.session.user) {
         let artworks = await Artwork.find({user: req.session.user});
         res.render('dashboard', { 
             csrf: req.csrfToken(),
             artworks: artworks,
-            error: false,
-            message: false,
+            error: error,
+            message: message,
         });
     }
     else {
@@ -32,12 +36,7 @@ const updateTagLine = async function(req, res, next) {
         let body = req.body;
         if (body.id == "" || body.formTagline == "")  {
             console.log("NO ARGS ", body);
-            res.render('dashboard', { 
-                csrf: req.csrfToken(),
-                artworks: artworks,
-                error: "There was an error while updating the tagline.",
-                message: false,
-            });
+            res.redirect('/dashboard/' + encodeURIComponent("There was an error while updating the tagline.") + '/true');
             return;
         }
 
@@ -46,7 +45,7 @@ const updateTagLine = async function(req, res, next) {
         if (!artwork || artwork == []) {
             console.log("NO ARTWORK ", body);
             console.log("NOT FOUND ID: " + req.params.id);
-            res.redirect('/');
+            res.redirect('/dashboard/' + encodeURIComponent("The artwork was not found by the id.") + '/true');
             return;
         }
 
@@ -55,21 +54,11 @@ const updateTagLine = async function(req, res, next) {
             .then(async function(artwork) {
                 console.log("IT WORKS: " + artwork);
                 artworks = await Artwork.find({user: req.session.user});
-                res.render('dashboard', { 
-                    csrf: req.csrfToken(),
-                    artworks: artworks,
-                    error: false,
-                    message: "Tagline updated.",
-                });
+                res.redirect('/dashboard/' + encodeURIComponent("Tagline updated."));
             })
             .catch(function(error) {
                 console.log("ERROR: " + error);
-                res.render('dashboard', { 
-                    csrf: req.csrfToken(),
-                    artworks: artworks,
-                    error: "There was an error while updating the tagline.",
-                    message: false, 
-                });
+                res.redirect('/dashboard/' + encodeURIComponent("There was an error while updating the tagline.") + '/true');
             });
     }
     else {
@@ -93,14 +82,17 @@ const metrics = function(req, res, next) {
 const account = async function(req, res, next) {
     console.log("ACCOUNT - FULL SESSION: ", req.session);
 
+    let error = req.params.error || false;
+    let message = req.params.message || "";
+
     if (req.session.user) {
         let subscriptions = await Subscription.find({user: req.session.user});
         res.render('account', { 
             csrf: req.csrfToken(),
             user: req.session.user,
             plan: subscriptions.length? subscriptions[0] : null,
-            error: false,
-            message: false,
+            error: error,
+            message: message,
         });
     }
     else {
@@ -120,26 +112,13 @@ const changePassword = async function(req, res, next) {
             body.formNewPassword2 == "")
         {
             console.log("NO ARGS", body);
-            res.render('account', { 
-                csrf: req.csrfToken(),
-                user: req.session.user,
-                plan: subscriptions.length? subscriptions[0] : null,
-                error: "There was an error while updating the password.",
-                message: false,
-            });
+            res.redirect('/account/' + encodeURIComponent("There was an error while updating the password.") + '/true');
             return;
         }
 
         if (body.formNewPassword != body.formNewPassword2) {
             console.log("NO MATCH ", body);
-            res.render('account', { 
-                csrf: req.csrfToken(),
-                user: req.session.user,
-                plan: subscriptions.length? subscriptions[0] : null,
-                error: "The passwords do not match. Please try again.",
-                message: false,
-            });
-            return;
+            res.redirect('/account/' + encodeURIComponent("The passwords do not match. Please try again.") + '/true');
         }
 
         const password = sanitize(body.formNewPassword);
@@ -147,13 +126,7 @@ const changePassword = async function(req, res, next) {
         bcrypt.hash(password, saltRounds, function(err, hash) {
             if (err) {
                 console.log("HASH ERROR: " + err);
-                res.render('account', { 
-                    csrf: req.csrfToken(),
-                    user: req.session.user,
-                    plan: subscriptions.length? subscriptions[0] : null,
-                    error: "There was an error while updating the password.",
-                    message: false,
-                });
+                res.redirect('/account/' + encodeURIComponent("There was an error while updating the password.") + '/true');
                 return;
             }
 
@@ -163,34 +136,16 @@ const changePassword = async function(req, res, next) {
                     user.save()
                         .then(function(user) {
                             console.log("IT WORKS ", user);
-                            res.render('account', { 
-                                csrf: req.csrfToken(),
-                                user: req.session.user,
-                                plan: subscriptions.length? subscriptions[0] : null,
-                                error: false,
-                                message: "The password was updated.",
-                            });
+                            res.redirect('/account/' + encodeURIComponent("The password was updated."));
                         })
                         .catch(function(error) {
                             console.log("IT FAILED ", error);
-                            res.render('account', { 
-                                csrf: req.csrfToken(),
-                                user: req.session.user,
-                                plan: subscriptions.length? subscriptions[0] : null,
-                                error: "There was an error while updating the password.",
-                                message: false,
-                            });
+                            res.redirect('/account/' + encodeURIComponent("There was an error while updating the password.") + '/true');
                         });
                 })
                 .catch(function (error) {
                     console.log("IT FAILED ", error);
-                    res.render('account', { 
-                        csrf: req.csrfToken(),
-                        user: req.session.user,
-                        plan: subscriptions.length? subscriptions[0] : null,
-                        error: "There was an error while updating the password.",
-                        message: false,
-                    });
+                    res.redirect('/users/logout');
                 });
         });
     }
@@ -211,13 +166,7 @@ const closeAccount = async function(req, res, next) {
             body.formReason == "")  
         {
             console.log("NO ARGS", body);
-            res.render('account', { 
-                csrf: req.csrfToken(),
-                user: req.session.user,
-                plan: subscriptions.length? subscriptions[0] : null,
-                error: "There was an error while updating the user.",
-                message: false,
-            });
+            res.redirect('/account/' + encodeURIComponent("There was an error while updating the user.") + '/true');
             return;
         }
 
@@ -232,46 +181,21 @@ const closeAccount = async function(req, res, next) {
                         user.save()
                             .then(function(user) {
                                 console.log("IT WORKS ", user);
-                                res.render('account', { 
-                                    csrf: req.csrfToken(),
-                                    user: req.session.user,
-                                    plan: subscriptions.length? subscriptions[0] : null,
-                                    error: false,
-                                    message: "The account was closed. You can now log out.",
-                                });
+                                res.redirect('/account/' + encodeURIComponent("The account was closed. You can now log out."));
                             })
                             .catch(function(error) {
                                 console.log("IT FAILED ", error);
-                                res.render('account', { 
-                                    csrf: req.csrfToken(),
-                                    user: req.session.user,
-                                    plan: subscriptions.length? subscriptions[0] : null,
-                                    error: "There was an error while updating the user.",
-                                    message: false,
-                                });
+                                res.redirect('/account/' + encodeURIComponent("There was an error while updating the user.") + '/true');
                             });
                     }
                     else {
                         console.log("Passwords DO NOT match.");
-                        res.render('account', { 
-                            csrf: req.csrfToken(),
-                            user: req.session.user,
-                            plan: subscriptions.length? subscriptions[0] : null,
-                            error: "The password is not correct. Please try again.",
-                            message: false,
-                        });
+                        res.redirect('/account/' + encodeURIComponent("The password is not correct. Please try again.") + '/true');
                     }
                 });
             })
             .catch(function (error) {
-                console.log("IT FAILED ", error);
-                res.render('account', { 
-                    csrf: req.csrfToken(),
-                    user: req.session.user,
-                    plan: subscriptions.length? subscriptions[0] : null,
-                    error: "There was an error while updating the user.",
-                    message: false,
-                });
+                res.redirect('/users/logout');
             });
     }
     else {

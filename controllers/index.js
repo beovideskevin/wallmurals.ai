@@ -1,9 +1,16 @@
 var cloudFlare = require('../helpers/cloudflare');
 var gmail = require('../helpers/gmail');
 var sanitize = require('mongo-sanitize');
+const { v4: uuidv4 } = require('uuid');
 const Artwork = require('../models/artwork');
+const { checkViews, openMetric } = require('../helpers/utils');
+
 
 const index = function (req, res, next) {
+    res.redirect('/home');
+}
+
+const home = function (req, res, next) {
     res.render('index', {});
 }
 
@@ -56,22 +63,37 @@ const contact = async function (req, res, next) {
     res.json({success: true});
 }
 
-function route(req, res, next) {
-    let route = sanitize(req.params.route);
-  
-    Artwork.find({route: route}).then(function (artwork) {
-        if (!artwork.length) {
-            console.log("NOT FOUND ROUTE: " + req.params.route);
-            res.redirect('/');
+const route = async function (req, res, next) {
+    const route = sanitize(req.params.route);
+    const uuid = uuidv4();
+
+    const artwork = await Artwork.findOne({route: route});
+    if (!artwork || !checkViews(artwork)) {
+        if (route.toUpperCase() == 'AR') {
+            res.render('ar', {
+                uuid: uuidv4(),
+                artwork: JSON.stringify(null)
+            });
             return;
         }
 
-        res.redirect('/ar/' + artwork[0].id); 
+        console.log("NOT FOUND ROUTE OR EXCESS VIEWS", req.params.route, artwork);
+        res.redirect('/home');
+        return;
+    }
+
+    openMetric(req, artwork.id, uuid);
+
+    // res.set('Cache-Control', 'no-cache'); // Set custom header NO CACHE
+    res.render('ar', {
+        uuid: uuid,
+        artwork: JSON.stringify(artwork)
     });
 }
 
 module.exports = {
     index,
-    contact,
     route,
+    home,
+    contact,
 };

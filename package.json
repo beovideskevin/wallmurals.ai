@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "nodemon ./bin/www"
+    "dev": "nodemon ./bin/www",
+    "build": "gulp"
   },
   "dependencies": {
     "aws-sdk": "^2.1692.0",
@@ -19,6 +20,9 @@
     "express-minify-html-2": "^2.0.0",
     "express-session": "^1.18.1",
     "generate-password": "^1.7.1",
+    "gulp": "^5.0.0",
+    "gulp-uglify": "^3.0.2",
+    "gulp-uglifycss": "^1.1.0",
     "http-errors": "~1.6.3",
     "jsonwebtoken": "^9.0.2",
     "mongo-sanitize": "^1.1.0",
