@@ -112,13 +112,13 @@ const changePassword = async function(req, res, next) {
             body.formNewPassword2 == "")
         {
             console.log("NO ARGS", body);
-            res.redirect('/account/' + encodeURIComponent("There was an error while updating the password.") + '/true');
+            res.redirect('/dashboard/account/' + encodeURIComponent("There was an error while updating the password.") + '/true');
             return;
         }
 
         if (body.formNewPassword != body.formNewPassword2) {
             console.log("NO MATCH ", body);
-            res.redirect('/account/' + encodeURIComponent("The passwords do not match. Please try again.") + '/true');
+            res.redirect('/dashboard/account/' + encodeURIComponent("The passwords do not match. Please try again.") + '/true');
             return;
         }
 
@@ -127,7 +127,7 @@ const changePassword = async function(req, res, next) {
         bcrypt.hash(password, saltRounds, function(err, hash) {
             if (err) {
                 console.log("HASH ERROR: " + err);
-                res.redirect('/account/' + encodeURIComponent("There was an error while updating the password.") + '/true');
+                res.redirect('/dashboard/account/' + encodeURIComponent("There was an error while updating the password.") + '/true');
                 return;
             }
 
@@ -137,11 +137,11 @@ const changePassword = async function(req, res, next) {
                     user.save()
                         .then(function(user) {
                             console.log("IT WORKS ", user);
-                            res.redirect('/account/' + encodeURIComponent("The password was updated."));
+                            res.redirect('/dashboard/account/' + encodeURIComponent("The password was updated."));
                         })
                         .catch(function(error) {
                             console.log("IT FAILED ", error);
-                            res.redirect('/account/' + encodeURIComponent("There was an error while updating the password.") + '/true');
+                            res.redirect('/dashboard/account/' + encodeURIComponent("There was an error while updating the password.") + '/true');
                         });
                 })
                 .catch(function (error) {
@@ -167,7 +167,7 @@ const closeAccount = async function(req, res, next) {
             body.formReason == "")  
         {
             console.log("NO ARGS", body);
-            res.redirect('/account/' + encodeURIComponent("There was an error while updating the user.") + '/true');
+            res.redirect('/dashboard/account/' + encodeURIComponent("There was an error while updating the user.") + '/true');
             return;
         }
 
@@ -182,16 +182,16 @@ const closeAccount = async function(req, res, next) {
                         user.save()
                             .then(function(user) {
                                 console.log("IT WORKS ", user);
-                                res.redirect('/account/' + encodeURIComponent("The account was closed. You can now log out."));
+                                res.redirect('/dashboard/account/' + encodeURIComponent("The account was closed. You can now log out."));
                             })
                             .catch(function(error) {
                                 console.log("IT FAILED ", error);
-                                res.redirect('/account/' + encodeURIComponent("There was an error while updating the user.") + '/true');
+                                res.redirect('/dashboard/account/' + encodeURIComponent("There was an error while updating the user.") + '/true');
                             });
                     }
                     else {
                         console.log("Passwords DO NOT match.");
-                        res.redirect('/account/' + encodeURIComponent("The password is not correct. Please try again.") + '/true');
+                        res.redirect('/dashboard/account/' + encodeURIComponent("The password is not correct. Please try again.") + '/true');
                     }
                 });
             })
