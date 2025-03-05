@@ -121,6 +121,8 @@ const deleteAr = async function (req, res, next) {
 
 module.exports = {
     arLoc,
+    arRoute,
+    arId,
     ar,
     createAr,
     editAr,
