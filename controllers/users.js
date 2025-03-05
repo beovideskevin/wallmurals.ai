@@ -12,8 +12,8 @@ const index = async function (req, res, next) {
         res.render('dashboard', {
             csrf: req.csrfToken(),
             artworks: artworks,
-            error: error,
-            message: message,
+            error: false,
+            message: "",
         });
     }
     else {
