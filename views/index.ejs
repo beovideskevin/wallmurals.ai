@@ -930,7 +930,11 @@
                     if (!content.success) {
                         throw new Error(`Response success: false`);
                     }
-                    emailSuccess.setAttribute('style', 'display:flex !important'); 
+                    emailSuccess.setAttribute('style', 'display:flex !important');
+                    firstName.value = "";
+                    lastName.value = "";
+                    email.value = "";
+                    message.value = "";
                 }
                 catch (error) {
                     console.error("Error:", error);
