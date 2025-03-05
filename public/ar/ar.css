@@ -185,3 +185,7 @@ body {
   z-index: 100 !important;
   background-color: #000 !important;
 }
+
+.mindar-ui-compatibility a {
+  color: #ffffff;
+}
