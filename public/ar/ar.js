@@ -148,7 +148,6 @@ const setup = async function() {
                     saveMetrics("targetlost");
                 }
             });
-            
         }
         else if (artwork.animations[i].model) {
             // If the artwork is a model

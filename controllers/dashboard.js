@@ -14,7 +14,7 @@ const index = async function(req, res, next) {
 
     if (req.session.user) {
         let artworks = await Artwork.find({user: req.session.user});
-        res.render('dashboard', { 
+        res.render('dashboard', {
             csrf: req.csrfToken(),
             artworks: artworks,
             error: error,
@@ -22,7 +22,7 @@ const index = async function(req, res, next) {
         });
     }
     else {
-        res.redirect('/');
+        res.redirect('/home');
     }
 }
 
@@ -62,7 +62,7 @@ const updateTagLine = async function(req, res, next) {
             });
     }
     else {
-        res.redirect('/');
+        res.redirect('/home');
     }
 }
 
@@ -74,7 +74,7 @@ const metrics = function(req, res, next) {
         res.render('metrics', {});
     }
     else {
-        res.redirect('/');
+        res.redirect('/home');
     }
 }
 
@@ -96,7 +96,7 @@ const account = async function(req, res, next) {
         });
     }
     else {
-        res.redirect('/');
+        res.redirect('/home');
     }
 }
 
