@@ -922,7 +922,6 @@
                             'Content-Type': 'application/json',
                         },
                     });
-                    console.log(response);
                     if (!response.ok || response.status != 200) {
                         throw new Error(`Response status: ${response.status}`);
                     }
@@ -931,14 +930,10 @@
                         throw new Error(`Response success: false`);
                     }
                     emailSuccess.setAttribute('style', 'display:flex !important');
-                    firstName.value = "";
-                    lastName.value = "";
-                    email.value = "";
-                    message.value = "";
+                    this.reset();
                 }
                 catch (error) {
-                    console.error("Error:", error);
-                    emailError.setAttribute('style', 'display:flex !important'); 
+                    emailError.setAttribute('style', 'display:flex !important');
                 }
                 turnstile.reset();
                 sendEmail.disabled = true;

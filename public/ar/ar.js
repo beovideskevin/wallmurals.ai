@@ -260,7 +260,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Get the show started
     window.location.hash = "";
 
-    console.log(artwork);
     if (artwork) {
         setup();
     }
@@ -272,15 +271,12 @@ document.addEventListener('DOMContentLoaded', async function() {
                 async function (position) {
                     const latitude = position.coords.latitude;
                     const longitude = position.coords.longitude;
-                    console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
                     const response = await fetch(`/ar/location/${latitude}/${longitude}/${uuid}`);
                     if (!response.ok || response.status != 200) {
-                        console.log(`Response status: ${response.status}`);
                         window.location = "https://www.wallmurals.ai/home";
                         return;
                     }
                     const content = await response.json();
-                    console.log(content);
                     if (!content) {
                         window.location = "https://www.wallmurals.ai/home";
                         return;
@@ -290,7 +286,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                 }, 
                 // Error
                 function (error) {
-                    console.log(`Error getting location: ${error.message}`);
                     locError.style.display = "flex";
                 },
                 // Options
