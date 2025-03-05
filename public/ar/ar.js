@@ -281,6 +281,10 @@ document.addEventListener('DOMContentLoaded', async function() {
                     }
                     const content = await response.json();
                     console.log(content);
+                    if (!content) {
+                        window.location = "https://www.wallmurals.ai/home";
+                        return;
+                    }
                     artwork = content;
                     setup();
                 }, 

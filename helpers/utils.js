@@ -52,7 +52,6 @@ checkViews = async function(artwork) {
     });
     if (count > max) {
         console.log("MAX VIEWS REACHED: " + req.params.id);
-        res.redirect('/');
         return false;
     }
     return true;

@@ -889,14 +889,14 @@
                 const emailError = document.getElementById("emailError");
                 emailError.setAttribute('style', 'display:none !important');
 
-                if (firstName == "" || 
-                    lastName == "" || 
-                    email == "" || 
-                    phone == "" || 
+                if (firstName == "" ||
+                    lastName == "" ||
+                    email == "" ||
+                    phone == "" ||
                     message == "" ||
-                    cfTurnstileResponse == "") 
+                    cfTurnstileResponse == "")
                 {
-                    emailWarning.setAttribute('style', 'display:flex !important'); 
+                    emailWarning.setAttribute('style', 'display:flex !important');
                     return false;
                 }
 

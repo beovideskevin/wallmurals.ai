@@ -15,7 +15,7 @@ const home = function (req, res, next) {
 }
 
 const contact = async function (req, res, next) {
-    turnstile = await cloudFlare(req)
+    const turnstile = await cloudFlare(req);
     if (!turnstile) {
         console.log("DIDNT PASSED TURNSTILE", req.body);
         res.status(200);
@@ -24,13 +24,13 @@ const contact = async function (req, res, next) {
     }
 
     let body = req.body;
-    if (body.firstName == "" || 
-        body.lastName == "" || 
-        body.email == "" || 
-        body.phone == "" || 
+    if (body.firstName == "" ||
+        body.lastName == "" ||
+        body.email == "" ||
+        body.phone == "" ||
         body.message == "" ||
         body.nothing != "" ||
-        body['cf-turnstile-response'] == "") 
+        body['cf-turnstile-response'] == "")
     {
         console.log("NO ARGS", body);
         res.status(200);
@@ -63,37 +63,8 @@ const contact = async function (req, res, next) {
     res.json({success: true});
 }
 
-const route = async function (req, res, next) {
-    const route = sanitize(req.params.route);
-    const uuid = uuidv4();
-
-    const artwork = await Artwork.findOne({route: route});
-    if (!artwork || !checkViews(artwork)) {
-        if (route.toUpperCase() == 'AR') {
-            res.render('ar', {
-                uuid: uuidv4(),
-                artwork: JSON.stringify(null)
-            });
-            return;
-        }
-
-        console.log("NOT FOUND ROUTE OR EXCESS VIEWS", req.params.route, artwork);
-        res.redirect('/home');
-        return;
-    }
-
-    openMetric(req, artwork.id, uuid);
-
-    // res.set('Cache-Control', 'no-cache'); // Set custom header NO CACHE
-    res.render('ar', {
-        uuid: uuid,
-        artwork: JSON.stringify(artwork)
-    });
-}
-
 module.exports = {
     index,
-    route,
     home,
     contact,
 };

@@ -16,7 +16,4 @@ router.get('/home', home);
 /* POST contact form */
 router.post('/contact', contact);
 
-/* GET named route to mural */
-router.get('/:route', route);
-
 module.exports = router;
