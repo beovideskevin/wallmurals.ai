@@ -1,6 +1,6 @@
 var sanitize = require('mongo-sanitize');
-var Metric = require('../models/metric');
-var Artwork = require('../models/artwork');
+const Metric = require('../models/metric');
+const Artwork = require('../models/artwork');
 const { getMonthNameArray, saveMetric } = require('../helpers/utils');
 
 /* GET metrics listing. */
