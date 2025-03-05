@@ -4,6 +4,11 @@
     <% include partials/head.ejs %>
 
     <style>
+        .qrContainer {
+            justify-content: space-evenly;
+            flex-direction: column;
+        }
+
         .qrcodeDashboard { 
             width: 60%;
         }
@@ -60,7 +65,7 @@
             <!-- <h2 class="text-3xl md:text-4xl/tight font-semibold mt-4 mb-8 text-center">Artworks</h2> -->
 
             <div id="artowrksContainer" class="shadow-2xl rounded-xl bg-white p-6">
-                <div class="flex items-center mb-2" style="justify-content: space-evenly; flex-direction: column; background: url('/posters/<%= artwork.animations[0].poster %>') no-repeat center; background-size: cover; min-height: <%= artwork.animations[0].height %>px;">
+                <div class="flex items-center mb-2 qrContainer" style="background: url('/posters/<%= artwork.animations[0].poster %>') no-repeat center; min-height: <%= artwork.animations[0].height %>px; background-size: cover; background-color: rgba(0,0,0,0.5); background-blend-mode: darken;">
                     <div class="qrcodeDashboard"></div>
                     <div class="qrcodeDownload"></div>
                 </div>
