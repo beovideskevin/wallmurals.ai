@@ -65,7 +65,7 @@ app.use(
   csrf(
     process.env.CSRF, // secret -- must be 32 bits or chars in length
     ["POST"], // the request methods we want CSRF protection for
-    ["/metrics", /\/metrics\.*/i], // any URLs we want to exclude, either as strings or regexp
+    ["/metrics", /\/metrics\.*/i, "/contact"], // any URLs we want to exclude, either as strings or regexp
   )
 );
 if (process.env.NODE_ENV != 'development') {

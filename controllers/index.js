@@ -24,14 +24,14 @@ const contact = async function (req, res, next) {
     }
 
     let body = req.body;
-    if (body.firstName == "" ||
+    if (
+        body.firstName == "" ||
         body.lastName == "" ||
         body.email == "" ||
         body.phone == "" ||
         body.message == "" ||
-        body.nothing != "" ||
-        body['cf-turnstile-response'] == "")
-    {
+        body.nothing != "" // this must be an empty field
+    ) {
         console.log("NO ARGS", body);
         res.status(200);
         res.json({success: false});
