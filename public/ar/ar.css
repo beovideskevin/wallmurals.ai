@@ -107,6 +107,10 @@ body {
   unicode-bidi: isolate;
 }
 
+.content a {
+  color: #ffffff;
+}
+
 #videoWrapper {
   display: none;
   align-items: center;
