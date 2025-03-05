@@ -206,13 +206,12 @@
         function checkPasswordsValue() {
             let password = document.getElementById("formNewPassword");
             let password2 = document.getElementById("formNewPassword2");
-            return password && password.value != "" && password2 && password2.value != "";
-
+            return password.value != "" && password2.value != "";
         }
 
         function checkAccountValue() {
             let password = document.getElementById("formPassword");
-            return password && password.value != "";
+            return password.value != "";
         }
     </script>
 </body>
