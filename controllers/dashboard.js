@@ -119,6 +119,7 @@ const changePassword = async function(req, res, next) {
         if (body.formNewPassword != body.formNewPassword2) {
             console.log("NO MATCH ", body);
             res.redirect('/account/' + encodeURIComponent("The passwords do not match. Please try again.") + '/true');
+            return;
         }
 
         const password = sanitize(body.formNewPassword);
