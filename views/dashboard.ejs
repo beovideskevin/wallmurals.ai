@@ -60,10 +60,10 @@
                 <div class="grid sm:grid-cols-2 gap-6 mt-8">
 
                     <div class="mb-2 overflow-hidden">
-                        <h3>Quick link:</h3> <% if (artwork.route) { %><a href="/<%= artwork.route %>" target="_blank">wallmurals.ai/<%= artwork.route %></a><% } else {%> N/A <% } %>
+                        <h3>Quick link:</h3> <% if (artwork.route) { %><a href="/<%= artwork.route %>" target="_blank">wallmurals.ai/ar/<%= artwork.route %></a><% } else {%> N/A <% } %>
                     </div>
 
-                    <div class="mb-2 overflow-hidden"><h3>Route:</h3> <a href="/ar/<%= artwork.id %>" target="_blank">wallmurals.ai/ar/<%= artwork.id %></a></div>
+                    <div class="mb-2 overflow-hidden"><h3>Route:</h3> <a href="/ar/<%= artwork.id %>" target="_blank">wallmurals.ai/ar/id/<%= artwork.id %></a></div>
 
                     <%  
                         let videos = [];
