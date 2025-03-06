@@ -7,12 +7,11 @@ var mindarThree = null;
 var elements = [];
 var hashLocation = "";
 var refresh = false;
-var resetAudio = false;
 var recFrameId = null;
 var mediaRecorder;
 var recordedChunks = [];
 var videoBlob = null;
-var videoMimeType = "video/webm; codecs=vp8";
+var videoMimeType = "video/webm; codecs=vp9,opus";
 var videoExt = ".webm";
 const frameRate = 30; // FPS
 
@@ -105,6 +104,9 @@ const setup = async function() {
                 audioElement.setRefDistance(100);
                 audioElement.setLoop(true);
                 elements[i].audioElement = audioElement;
+                elements[i].audioElement.setVolume(0);
+                elements[i].audioElement.play();
+                elements[i].audioElement.stop();
             });    
         }
 
@@ -130,19 +132,18 @@ const setup = async function() {
                         elements[i].videoElement.play();
                     }
                     if (elements[i].audioElement) {
+                        elements[i].audioElement.stop();
+                        elements[i].audioElement.setVolume(1);
                         elements[i].audioElement.play();
                     }
                     saveMetrics("targetfound");
                 }
                 anchor.onTargetLost = () => {
-                    if (window.location.hash != "") {
-                        return;
-                    }
                     if (elements[i].videoElement) {
                         elements[i].videoElement.pause();
                     }
                     if (elements[i].audioElement) {
-                        elements[i].audioElement.stop();
+                        elements[i].audioElement.setVolume(0);
                     }
                     mindarThree.ui.showScanning();
                     saveMetrics("targetlost");
@@ -165,16 +166,15 @@ const setup = async function() {
                         return;
                     }
                     if (elements[i].audioElement) {
+                        elements[i].audioElement.stop();
+                        elements[i].audioElement.setVolume(1);
                         elements[i].audioElement.play();
                     }
                     saveMetrics("targetfound");
                 }
                 anchor.onTargetLost = () => {
-                    if (window.location.hash != "") {
-                        return;
-                    }
                     if (elements[i].audioElement) {
-                        elements[i].audioElement.stop();
+                        elements[i].audioElement.setVolume(0);
                     }
                     mindarThree.ui.showScanning();
                     saveMetrics("targetlost");
@@ -250,7 +250,7 @@ const restart = async function() {
  */
 document.addEventListener('DOMContentLoaded', async function() {
     // Change the mime type for iPhone and safari
-    if (!MediaRecorder.isTypeSupported("video/webm; codecs=vp8")) {
+    if (!MediaRecorder.isTypeSupported(videoMimeType)) {
         videoMimeType = "video/mp4;codecs:h264";
         videoExt = ".mp4";
     }
@@ -344,22 +344,22 @@ document.addEventListener('DOMContentLoaded', async function() {
         copyRenderedCanvas(canvas);
         const poster = canvas.toDataURL();
         const canvasStream = canvas.captureStream(frameRate);
-        if (artwork.audioElement) {
-            const context = artwork.audioElement.context;
-            const destination = context.createMediaStreamDestination();
-            artwork.audioElement.listener.getInput().connect(destination);
-            artwork.audioElement.gain.connect(destination);
-            // canvasStream.addTrack(destination.stream.getAudioTracks()[0]);
-            const combinedStream = new MediaStream([
-                ...canvasStream.getVideoTracks(),
-                ...destination.stream.getAudioTracks()
-            ]);
-
-            mediaRecorder = new MediaRecorder(combinedStream, {mimeType: videoMimeType});
+        const streamArray = [...canvasStream.getVideoTracks()];
+        for (const element of elements) {
+            if (element.audioElement) {
+                const context = element.audioElement.context;
+                const destination = context.createMediaStreamDestination();
+                element.audioElement.listener.getInput().connect(destination);
+                element.audioElement.gain.connect(destination);
+                streamArray.push(...destination.stream.getAudioTracks());
+            }
         }
-        else {
-            mediaRecorder = new MediaRecorder(canvasStream, {mimeType: videoMimeType});
-        }
+        const combinedStream = new MediaStream(streamArray);
+        mediaRecorder = new MediaRecorder(combinedStream, {
+            audioBitsPerSecond: 128000,
+            videoBitsPerSecond: 2500000,
+            mimeType: videoMimeType
+        });
         mediaRecorder.onerror = (event) => {
             console.log(event);
             showRecBtn();
@@ -392,7 +392,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                 // Stop the background sound
                 for (const element of elements) {
                     if (element.audioElement && element.audioElement.getVolume()) {
-                        resetAudio = true;
                         element.audioElement.setVolume(0);
                     }
                 }
@@ -511,20 +510,12 @@ window.addEventListener("hashchange", function() {
       return;
     }
     
-    // There is a pending 
+    // There is a pending refresh
     if (refresh) {
         refresh = false;
         restart();
     }
 
-    // Start the sound if it was quiet
-    if (resetAudio) {
-        resetAudio = false;
-        for (const element of elements) {
-            element.audioElement.setVolume(1);   
-        }
-    }
-    
     // Hide the video wrapper
     hideVideo();
 });
