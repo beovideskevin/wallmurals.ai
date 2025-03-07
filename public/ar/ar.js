@@ -106,7 +106,6 @@ const setup = async function() {
                 elements[i].audioElement = audioElement;
                 elements[i].audioElement.setVolume(0);
                 elements[i].audioElement.play();
-                elements[i].audioElement.stop();
             });    
         }
 
