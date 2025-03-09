@@ -7,17 +7,19 @@ const Artwork = require("../models/artwork");
 const index = async function (req, res, next) {
     console.log("DASHBOARD - FULL SESSION: ", req.session);
 
+    let error = req.params.error || false;
+    let message = req.params.message || "";
+
     if (req.session.user) {
         let artworks = await Artwork.find({user: req.session.user});
         res.render('dashboard', {
             csrf: req.csrfToken(),
             artworks: artworks,
-            error: false,
+            error: error,
             message: "",
         });
     }
     else {
-        let message = req.params.message || false;
         res.render('login', {
             csrf: req.csrfToken(),
             message: message
