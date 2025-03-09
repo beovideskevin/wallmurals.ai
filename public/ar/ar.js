@@ -7,6 +7,7 @@ var mindarThree = null;
 var elements = [];
 var hashLocation = "";
 var refresh = false;
+var isMuted = false;
 var recFrameId = null;
 var mediaRecorder;
 var recordedChunks = [];
@@ -105,7 +106,8 @@ const setup = async function() {
                 audioElement.setLoop(true);
                 elements[i].audioElement = audioElement;
                 elements[i].audioElement.setVolume(0);
-                elements[i].audioElement.play();
+                elements[i].audioElement.play(); // We need to init the audio
+                elements[i].audioElement.stop();
             });    
         }
 
@@ -132,7 +134,9 @@ const setup = async function() {
                     }
                     if (elements[i].audioElement) {
                         elements[i].audioElement.stop();
-                        elements[i].audioElement.setVolume(1);
+                        if (!isMuted) {
+                            elements[i].audioElement.setVolume(1);
+                        }
                         elements[i].audioElement.play();
                     }
                     saveMetrics("targetfound");
@@ -315,20 +319,14 @@ document.addEventListener('DOMContentLoaded', async function() {
      * If there is audio, mute and unmute it 
      */
     document.getElementById("soundBtn").addEventListener('click', function() {
-        for (const element of elements) {
-            if (element.audioElement) {
-                element.audioElement.setVolume(0);
-            }
-        }
+        changeSound(0);
+        isMuted = true;
         showMuteBtn();
     });
 
     document.getElementById("muteBtn").addEventListener('click', function() {
-        for (const element of elements) {
-            if (element.audioElement) {
-                element.audioElement.setVolume(1);
-            }
-        }
+        changeSound(1);
+        isMuted = false;
         hideMuteBtn();
     });
 
@@ -387,13 +385,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 photoWrapper.appendChild(recVideo);
                 showVideo();
                 showRecBtn();
-
-                // Stop the background sound
-                for (const element of elements) {
-                    if (element.audioElement && element.audioElement.getVolume()) {
-                        element.audioElement.setVolume(0);
-                    }
-                }
+                changeSound(0); // Stop the background sound
 
                 // Set the has of the page
                 hashLocation = Date.now();
@@ -567,6 +559,16 @@ function saveMetrics(type) {
 /**
  * UI helpers
  */
+
+function changeSound(vol)
+{
+    for (const element of elements) {
+        if (element.audioElement && element.audioElement.getVolume()) {
+            element.audioElement.setVolume(vol);
+        }
+    }
+}
+
 function showSplash() 
 {
     document.getElementById("splash").style.display = "flex";

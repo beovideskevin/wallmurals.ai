@@ -88,8 +88,8 @@ const openMetric = function(req, id, uuid) {
 }
 
 const isCloseToPlace = function (userLat, userLon, targetLat, targetLon) {
-    const MIN_DISTANCE = 1000;
-    const METERS_PER_KILOMETER = 1000;
+    const MIN_DISTANCE = 1000; // min distance in meters
+    const METERS_PER_KILOMETER = 1000; // 1000 meter per kilometer
     const EARTH_RADIUS_KM = 6371;
 
     const toRadians = (angle) => (angle * Math.PI) / 180;
