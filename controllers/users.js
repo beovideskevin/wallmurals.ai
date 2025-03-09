@@ -5,7 +5,7 @@ const Artwork = require("../models/artwork");
 
 /* GET users listing. */
 const index = async function (req, res, next) {
-    // console.log("DASHBOARD - FULL SESSION: ", req.session);
+    console.log("DASHBOARD - FULL SESSION: ", req.session);
 
     let error = req.params.error || false;
     let message = req.params.message || "";
