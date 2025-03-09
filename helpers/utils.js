@@ -111,6 +111,7 @@ const isCloseToPlace = function (userLat, userLon, targetLat, targetLon) {
     };
 
     const calculatedDistance = distance(userLat, userLon, targetLat, targetLon);
+    console.log(calculatedDistance);
     return calculatedDistance <= MIN_DISTANCE;
 }
 
