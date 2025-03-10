@@ -257,6 +257,8 @@ const restart = async function() {
 document.addEventListener('DOMContentLoaded', async function() {
     // Change the mime type for iPhone and safari
     if (!MediaRecorder.isTypeSupported(videoMimeType)) {
+        // video/webm;codecs=avc1
+
         videoMimeType = "video/mp4;codecs:h264";
         videoExt = ".mp4";
     }
@@ -390,8 +392,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const photoWrapper = document.getElementById("videoWrapper");
                 photoWrapper.appendChild(recVideo);
                 showVideo();
-                changeSound(0); // Stop the background sound
-                isMuted = true;
+                if (!isMuted) {
+                    changeSound(0); // Stop the background sound
+                }
 
                 // Set the has of the page
                 hashLocation = Date.now();
@@ -506,11 +509,16 @@ window.addEventListener("hashchange", function() {
     if (window.location.hash != "") {
       return;
     }
-    
+
     // There is a pending refresh
     if (refresh) {
         refresh = false;
         restart();
+    }
+
+    // Restart the sound if it is not muted
+    if (!isMuted) {
+        changeSound(1);
     }
 
     // Hide the video wrapper
