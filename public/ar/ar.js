@@ -358,8 +358,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
         const combinedStream = new MediaStream(streamArray);
         mediaRecorder = new MediaRecorder(combinedStream, {
-            audioBitsPerSecond: 128000,
-            videoBitsPerSecond: 5000000, // 2500000,
+            // audioBitsPerSecond: 128000,
+            // videoBitsPerSecond: 5000000, // 2500000,
             mimeType: videoMimeType
         });
         mediaRecorder.onerror = (event) => {
