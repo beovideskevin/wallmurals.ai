@@ -275,11 +275,13 @@ document.addEventListener('DOMContentLoaded', async function() {
                     const longitude = position.coords.longitude;
                     const response = await fetch(`/ar/location/${latitude}/${longitude}/${uuid}`);
                     if (!response.ok || response.status != 200) {
+                        alert("There are no augmented reality murals in your area.");
                         window.location = "https://www.wallmurals.ai/home";
                         return;
                     }
                     const content = await response.json();
                     if (!content) {
+                        alert("There are no augmented reality murals in your area.");
                         window.location = "https://www.wallmurals.ai/home";
                         return;
                     }
