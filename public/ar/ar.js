@@ -391,6 +391,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 photoWrapper.appendChild(recVideo);
                 showVideo();
                 changeSound(0); // Stop the background sound
+                isMuted = true;
 
                 // Set the has of the page
                 hashLocation = Date.now();
