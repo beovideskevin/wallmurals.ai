@@ -373,11 +373,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
         });
         mediaRecorder.addEventListener("stop", function() {
-            console.log("entro aqui");
+            showRecBtn();
             if (recordedChunks.length == 0) {
                 return;
             }
-            console.log("pero no entro aqui");
             videoBlob = new Blob(recordedChunks, {type: videoMimeType}); 
             const url = URL.createObjectURL(videoBlob);
             const recVideo = document.createElement("video");
@@ -392,7 +391,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const photoWrapper = document.getElementById("videoWrapper");
                 photoWrapper.appendChild(recVideo);
                 showVideo();
-                showRecBtn();
                 changeSound(0); // Stop the background sound
 
                 // Set the has of the page
