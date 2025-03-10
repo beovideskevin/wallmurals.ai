@@ -15,6 +15,7 @@ var videoBlob = null;
 var videoMimeType = "video/webm; codecs=vp9,opus";
 var videoExt = ".webm";
 const frameRate = 30; // FPS
+var pageshow = false;
 
 /**
  * Loads the video
@@ -491,9 +492,22 @@ screen.orientation.addEventListener("change", function(event) {
  * I need to do this because of the back-forward cache, the videos are not loading when the back button is pressed in the browser (comment from filosofiantigua.es)
  */
 window.addEventListener('pageshow', function(event) {
-    if (event.persisted) {
-        window.location.reload();
+    // if (event.persisted) {
+    //     window.location.reload();
+    // }
+    if (pageshow) {
+        pageshow = !pageshow;
+        start();
     }
+
+});
+
+window.addEventListener('pagehide', function(event) {
+    // if (event.persisted) {
+    //     window.location.reload();
+    // }
+    pageshow = false;
+    stop();
 });
 
 /**
