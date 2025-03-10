@@ -15,7 +15,6 @@ var videoBlob = null;
 var videoMimeType = "video/webm; codecs=vp9,opus";
 var videoExt = ".webm";
 const frameRate = 30; // FPS
-var pageshow = false;
 
 /**
  * Loads the video
