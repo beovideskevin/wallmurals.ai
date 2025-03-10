@@ -568,7 +568,7 @@ function saveMetrics(type) {
 function changeSound(vol)
 {
     for (const element of elements) {
-        if (element.audioElement && element.audioElement.getVolume()) {
+        if (element.audioElement) {
             element.audioElement.setVolume(vol);
         }
     }
