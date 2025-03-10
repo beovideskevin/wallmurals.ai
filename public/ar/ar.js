@@ -491,9 +491,9 @@ screen.orientation.addEventListener("change", function(event) {
  * I need to do this because of the back-forward cache, the videos are not loading when the back button is pressed in the browser (comment from filosofiantigua.es)
  */
 window.addEventListener('pageshow', function(event) {
-    // if (event.persisted) {
+    if (event.persisted) {
         window.location.reload();
-    // }
+    }
 });
 
 /**
