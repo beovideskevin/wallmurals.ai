@@ -373,9 +373,11 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
         });
         mediaRecorder.addEventListener("stop", function() {
+            console.log("entro aqui");
             if (recordedChunks.length == 0) {
                 return;
             }
+            console.log("pero no entro aqui");
             videoBlob = new Blob(recordedChunks, {type: videoMimeType}); 
             const url = URL.createObjectURL(videoBlob);
             const recVideo = document.createElement("video");
