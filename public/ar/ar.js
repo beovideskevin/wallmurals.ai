@@ -105,8 +105,8 @@ const setup = async function() {
                 audioElement.setRefDistance(100);
                 audioElement.setLoop(true);
                 elements[i].audioElement = audioElement;
-                elements[i].audioElement.setVolume(0);
-                elements[i].audioElement.play(); // We need to init the audio
+                elements[i].audioElement.setVolume(0); // We need to init the audio
+                elements[i].audioElement.play();
                 elements[i].audioElement.stop();
                 elements[i].audioElement.setVolume(1);
             });    
@@ -134,10 +134,6 @@ const setup = async function() {
                         elements[i].videoElement.play();
                     }
                     if (elements[i].audioElement) {
-                        elements[i].audioElement.stop();
-                        if (!isMuted) {
-                            elements[i].audioElement.setVolume(1);
-                        }
                         elements[i].audioElement.play();
                     }
                     saveMetrics("targetfound");
@@ -147,7 +143,7 @@ const setup = async function() {
                         elements[i].videoElement.pause();
                     }
                     if (elements[i].audioElement) {
-                        elements[i].audioElement.setVolume(0);
+                        elements[i].audioElement.stop();
                     }
                     mindarThree.ui.showScanning();
                     saveMetrics("targetlost");
@@ -170,17 +166,13 @@ const setup = async function() {
                         return;
                     }
                     if (elements[i].audioElement) {
-                        elements[i].audioElement.stop();
-                        if (!isMuted) {
-                            elements[i].audioElement.setVolume(1);
-                        }
                         elements[i].audioElement.play();
                     }
                     saveMetrics("targetfound");
                 }
                 anchor.onTargetLost = () => {
                     if (elements[i].audioElement) {
-                        elements[i].audioElement.setVolume(0);
+                        elements[i].audioElement.stop();
                     }
                     mindarThree.ui.showScanning();
                     saveMetrics("targetlost");
