@@ -6,6 +6,7 @@ window.cameraFacing = false;
 var mindarThree = null;
 var elements = [];
 var hashLocation = "";
+var targetFound = false;
 var refresh = false;
 var isMuted = false;
 var recFrameId = null;
@@ -129,21 +130,25 @@ const setup = async function() {
                     if (window.location.hash != "") {
                         return;
                     }
+                    targetFound = true;
                     if (elements[i].videoElement) {
                         elements[i].videoElement.currentTime = 0;
                         elements[i].videoElement.play();
                     }
                     if (elements[i].audioElement) {
+                        elements[i].audioElement.stop();
+                        elements[i].audioElement.setVolume(1);
                         elements[i].audioElement.play();
                     }
                     saveMetrics("targetfound");
                 }
                 anchor.onTargetLost = () => {
+                    targetFound = false;
                     if (elements[i].videoElement) {
                         elements[i].videoElement.pause();
                     }
                     if (elements[i].audioElement) {
-                        elements[i].audioElement.stop();
+                        elements[i].audioElement.setVolume(0);
                     }
                     mindarThree.ui.showScanning();
                     saveMetrics("targetlost");
@@ -165,14 +170,18 @@ const setup = async function() {
                     if (window.location.hash != "") {
                         return;
                     }
+                    targetFound = true;
                     if (elements[i].audioElement) {
+                        elements[i].audioElement.stop();
+                        elements[i].audioElement.setVolume(1);
                         elements[i].audioElement.play();
                     }
                     saveMetrics("targetfound");
                 }
                 anchor.onTargetLost = () => {
+                    targetFound = false;
                     if (elements[i].audioElement) {
-                        elements[i].audioElement.stop();
+                        elements[i].audioElement.setVolume(0);
                     }
                     mindarThree.ui.showScanning();
                     saveMetrics("targetlost");
@@ -385,9 +394,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const photoWrapper = document.getElementById("videoWrapper");
                 photoWrapper.appendChild(recVideo);
                 showVideo();
-                if (!isMuted) {
-                    changeSound(0); // Stop the background sound
-                }
+                changeSound(0); // Stop the background sound
 
                 // Set the has of the page
                 hashLocation = Date.now();
@@ -510,7 +517,7 @@ window.addEventListener("hashchange", function() {
     }
 
     // Restart the sound if it is not muted
-    if (!isMuted) {
+    if (!isMuted && targetFound) {
         changeSound(1);
     }
 
