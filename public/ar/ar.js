@@ -105,9 +105,10 @@ const setup = async function() {
                 audioElement.setRefDistance(100);
                 audioElement.setLoop(true);
                 elements[i].audioElement = audioElement;
-                elements[i].audioElement.setVolume(1);
+                elements[i].audioElement.setVolume(0);
                 elements[i].audioElement.play(); // We need to init the audio
                 elements[i].audioElement.stop();
+                elements[i].audioElement.setVolume(1);
             });    
         }
 
@@ -170,7 +171,9 @@ const setup = async function() {
                     }
                     if (elements[i].audioElement) {
                         elements[i].audioElement.stop();
-                        elements[i].audioElement.setVolume(1);
+                        if (!isMuted) {
+                            elements[i].audioElement.setVolume(1);
+                        }
                         elements[i].audioElement.play();
                     }
                     saveMetrics("targetfound");
