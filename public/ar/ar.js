@@ -249,10 +249,11 @@ const restart = async function() {
 document.addEventListener('DOMContentLoaded', async function() {
     // Change the mime type for iPhone and safari
     if (!MediaRecorder.isTypeSupported(videoMimeType)) {
-        // video/webm;codecs=avc1
-
-        videoMimeType = "video/mp4;codecs:h264";
-        videoExt = ".mp4";
+        videoMimeType = "video/webm; codecs=avc1,opus";
+        if (!MediaRecorder.isTypeSupported(videoMimeType)) {
+            videoMimeType = "video/mp4;codecs:h264";
+            videoExt = ".mp4";
+        }
     }
     // Get the camera setting
     window.cameraFacing = localStorage.getItem('cameraFacing');
