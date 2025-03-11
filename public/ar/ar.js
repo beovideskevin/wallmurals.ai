@@ -6,7 +6,7 @@ window.cameraFacing = false;
 var mindarThree = null;
 var elements = [];
 var hashLocation = "";
-var paused = false;
+var isPaused = false;
 var targetFound = false;
 var refresh = false;
 var isMuted = false;
@@ -136,7 +136,7 @@ const setup = async function() {
                         elements[i].videoElement.currentTime = 0;
                         elements[i].videoElement.play();
                     }
-                    if (elements[i].audioElement) {
+                    if (elements[i].audioElement && !isMuted) {
                         elements[i].audioElement.stop();
                         elements[i].audioElement.setVolume(1);
                         elements[i].audioElement.play();
@@ -172,7 +172,7 @@ const setup = async function() {
                         return;
                     }
                     targetFound = true;
-                    if (elements[i].audioElement) {
+                    if (elements[i].audioElement && !isMuted) {
                         elements[i].audioElement.stop();
                         elements[i].audioElement.setVolume(1);
                         elements[i].audioElement.play();
@@ -499,13 +499,14 @@ window.addEventListener('pageshow', function(event) {
     if (event.persisted) {
         window.location.reload();
     }
-    if (paused) {
+    if (isPaused) {
+        isPaused = false;
         mindarThree.unpause();
     }
 });
 
 window.addEventListener('pagehide', function(event) {
-    paused = true;
+    isPaused = true;
     mindarThree.pause();
 });
 
