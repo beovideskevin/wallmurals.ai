@@ -6,6 +6,7 @@ window.cameraFacing = false;
 var mindarThree = null;
 var elements = [];
 var hashLocation = "";
+var paused = false;
 var targetFound = false;
 var refresh = false;
 var isMuted = false;
@@ -498,6 +499,14 @@ window.addEventListener('pageshow', function(event) {
     if (event.persisted) {
         window.location.reload();
     }
+    if (paused) {
+        mindarThree.unpause();
+    }
+});
+
+window.addEventListener('pagehide', function(event) {
+    paused = true;
+    mindarThree.pause();
 });
 
 /**
