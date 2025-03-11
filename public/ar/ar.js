@@ -231,14 +231,8 @@ const stop = async function () {
     showSplash();
     await mindarThree.stop();
 
-    // Stop all sounds
-    for (const element of elements) {
-        if (element.audioElement) {
-            element.audioElement.stop();
-        }
-    }
-
-    // Do I need to stop all animations? how? video is easy.
+    // Stop all audio
+    changeSound(0);
 
     // Fixing a bug in the AR system, when the camera switches
     for (const element of mindarThree.anchors) {
