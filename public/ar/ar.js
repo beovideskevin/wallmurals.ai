@@ -6,17 +6,21 @@ window.cameraFacing = false;
 var mindarThree = null;
 var elements = [];
 var hashLocation = "";
-var isPaused = false;
 var targetFound = false;
 var refresh = false;
 var isMuted = false;
 var recFrameId = null;
-var mediaRecorder;
+var mediaRecorder = null;
+var canvas = null;
+var audioCtx = null;
+var streamArray = []
 var recordedChunks = [];
 var videoBlob = null;
 var videoMimeType = "video/webm; codecs=vp9,opus";
 var videoExt = ".webm";
 const frameRate = 30; // FPS
+const volOn = 0.5;
+const volOff = 0.0;
 
 /**
  * Loads the video
@@ -46,19 +50,6 @@ const loadGLTF = function(path) {
         loader.load("/models/" + path, (gltf) => {
             console.log("Finished loading: " + path);
             resolve(gltf);
-        });
-    });
-}
-
-/**
- * Loads the audio
- */
-const loadAudio = function (path) {
-    return new Promise((resolve, reject) => {
-        const loader = new window.MINDAR.IMAGE.THREE.AudioLoader();
-        loader.load("/audios/" + path, (buffer) => {
-            console.log("Finished loading: " + path);
-            resolve(buffer);
         });
     });
 }
@@ -98,20 +89,8 @@ const setup = async function() {
         // Read the audio
         if (artwork.animations[i].audio) {
             showSoundBtn();
-            loadAudio(artwork.animations[i].audio).then(function(audioClip) {
-                const listener = new window.MINDAR.IMAGE.THREE.AudioListener();
-                camera.add(listener);
-                let audioElement = new window.MINDAR.IMAGE.THREE.PositionalAudio(listener);
-                anchor.group.add(audioElement);
-                audioElement.setBuffer(audioClip);
-                audioElement.setRefDistance(100);
-                audioElement.setLoop(true);
-                elements[i].audioElement = audioElement;
-                elements[i].audioElement.setVolume(0); // We need to init the audio
-                elements[i].audioElement.play();
-                elements[i].audioElement.stop();
-                elements[i].audioElement.setVolume(1);
-            });    
+            elements[i].audioElement = new Audio("/audios/" + artwork.animations[i].audio);
+            elements[i].audioElement.volume = volOn;
         }
 
         if (artwork.animations[i].video) {
@@ -136,9 +115,8 @@ const setup = async function() {
                         elements[i].videoElement.currentTime = 0;
                         elements[i].videoElement.play();
                     }
-                    if (elements[i].audioElement && !isMuted) {
-                        elements[i].audioElement.stop();
-                        elements[i].audioElement.setVolume(1);
+                    if (elements[i].audioElement) {
+                        elements[i].audioElement.currentTime = 0;
                         elements[i].audioElement.play();
                     }
                     saveMetrics("targetfound");
@@ -149,7 +127,7 @@ const setup = async function() {
                         elements[i].videoElement.pause();
                     }
                     if (elements[i].audioElement) {
-                        elements[i].audioElement.setVolume(0);
+                        elements[i].audioElement.pause();
                     }
                     mindarThree.ui.showScanning();
                     saveMetrics("targetlost");
@@ -172,9 +150,8 @@ const setup = async function() {
                         return;
                     }
                     targetFound = true;
-                    if (elements[i].audioElement && !isMuted) {
-                        elements[i].audioElement.stop();
-                        elements[i].audioElement.setVolume(1);
+                    if (elements[i].audioElement) {
+                        elements[i].audioElement.currentTime = 0;
                         elements[i].audioElement.play();
                     }
                     saveMetrics("targetfound");
@@ -182,7 +159,7 @@ const setup = async function() {
                 anchor.onTargetLost = () => {
                     targetFound = false;
                     if (elements[i].audioElement) {
-                        elements[i].audioElement.setVolume(0);
+                        elements[i].audioElement.pause();
                     }
                     mindarThree.ui.showScanning();
                     saveMetrics("targetlost");
@@ -207,6 +184,7 @@ const setup = async function() {
         }
         renderer.render(scene, camera);
     });
+
     hideSplash();
 }
 
@@ -231,13 +209,11 @@ const stop = async function () {
     showSplash();
     await mindarThree.stop();
 
-    // Stop all audio
-    changeSound(0);
+    stopAllAudio();
 
     // Fixing a bug in the AR system, when the camera switches
-    for (const element of mindarThree.anchors) {
-        element.group.visible=false; // Do I really need this?
-        element.group.updateWorldMatrix(null);
+    for (let index=0; index < mindarThree.anchors.length; index++) {
+        mindarThree.anchors[index].group.visible=false;
     }
 }
 
@@ -247,7 +223,7 @@ const stop = async function () {
  */
 const restart = function() {
     stop();
-    start();
+    setTimeout(start(), 500);
 }
 
 /**
@@ -266,6 +242,11 @@ document.addEventListener('DOMContentLoaded', async function() {
     window.cameraFacing = localStorage.getItem('cameraFacing');
     // Get the show started
     window.location.hash = "";
+
+    // Init the recording streams
+    canvas = document.getElementById('record');
+    const canvasStream = canvas.captureStream(frameRate);
+    streamArray = [...canvasStream.getVideoTracks()];
 
     if (artwork) {
         setup();
@@ -326,13 +307,13 @@ document.addEventListener('DOMContentLoaded', async function() {
      * If there is audio, mute and unmute it 
      */
     document.getElementById("soundBtn").addEventListener('click', function() {
-        changeSound(0);
+        changeSound(volOff);
         isMuted = true;
         showMuteBtn();
     });
 
     document.getElementById("muteBtn").addEventListener('click', function() {
-        changeSound(1);
+        changeSound(volOn);
         isMuted = false;
         hideMuteBtn();
     });
@@ -344,20 +325,20 @@ document.addEventListener('DOMContentLoaded', async function() {
         hideRecBtn();
         recordedChunks = [];
         videoBlob = null;
-        const canvas = document.getElementById('record');
         copyRenderedCanvas(canvas);
         const poster = canvas.toDataURL();
-        const canvasStream = canvas.captureStream(frameRate);
-        const streamArray = [...canvasStream.getVideoTracks()];
-        for (const element of elements) {
-            if (element.audioElement) {
-                const context = element.audioElement.context;
-                const destination = context.createMediaStreamDestination();
-                element.audioElement.listener.getInput().connect(destination);
-                element.audioElement.gain.connect(destination);
+
+        if (!audioCtx) {
+            audioCtx = new AudioContext();
+            for (const element of elements) {
+                const source = audioCtx.createMediaElementSource(element.audioElement);
+                source.connect(audioCtx.destination);
+                const destination = audioCtx.createMediaStreamDestination();
+                source.connect(destination);
                 streamArray.push(...destination.stream.getAudioTracks());
             }
         }
+
         const combinedStream = new MediaStream(streamArray);
         mediaRecorder = new MediaRecorder(combinedStream, {
             // audioBitsPerSecond: 128000,
@@ -376,6 +357,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         mediaRecorder.addEventListener("stop", function() {
             showRecBtn();
             if (recordedChunks.length == 0) {
+                console.log("No data was recorded!");
                 return;
             }
             videoBlob = new Blob(recordedChunks, {type: videoMimeType}); 
@@ -392,7 +374,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const photoWrapper = document.getElementById("videoWrapper");
                 photoWrapper.appendChild(recVideo);
                 showVideo();
-                changeSound(0); // Stop the background sound
+                if (!isMuted) {
+                    changeSound(volOff); // Stop the background sound
+                }
 
                 // Set the has of the page
                 hashLocation = Date.now();
@@ -450,11 +434,9 @@ document.addEventListener('DOMContentLoaded', async function() {
      * Shares the video
      */
     document.getElementById("shareVideoBtn").addEventListener('click', function() {
-        let mime = {mimeType: videoMimeType}; 
-        let ext = videoExt;
-        const filename = artwork.tagline + "-" + hashLocation + ext;
+        const filename = artwork.tagline + "-" + hashLocation + videoExt;
         const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
-        const file = new File([videoBlob], sanitized, mime);
+        const file = new File([videoBlob], sanitized, {mimeType: videoMimeType});
         const files = [file];
         if (navigator.canShare && navigator.canShare({files})) {
             try {
@@ -496,16 +478,8 @@ window.addEventListener('pageshow', function(event) {
     if (event.persisted) {
         window.location.reload();
     }
-    if (isPaused) {
-        isPaused = false;
-        mindarThree.unpause();
-    }
 });
 
-window.addEventListener('pagehide', function(event) {
-    isPaused = true;
-    mindarThree.pause();
-});
 
 /**
  * If you go back on the history we need to hide the photo wrapper and the buttons and show the AR system
@@ -524,8 +498,8 @@ window.addEventListener("hashchange", function() {
     }
 
     // Restart the sound if it is not muted
-    if (!isMuted && targetFound) {
-        changeSound(1);
+    if (!isMuted) {
+        changeSound(volOn);
     }
 
     // Hide the video wrapper
@@ -581,11 +555,20 @@ function saveMetrics(type) {
  * UI helpers
  */
 
+function stopAllAudio()
+{
+    for (const element of elements) {
+        if (element.audioElement) {
+            element.audioElement.pause();
+        }
+    }
+}
+
 function changeSound(vol)
 {
     for (const element of elements) {
         if (element.audioElement) {
-            element.audioElement.setVolume(vol);
+            element.audioElement.volume = vol;
         }
     }
 }
