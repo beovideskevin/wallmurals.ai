@@ -73,21 +73,21 @@ app.use(
     ["/metrics", /\/metrics\.*/i, "/contact", /\/contact\.*/i], // any URLs we want to exclude, either as strings or regexp
   )
 );
-if (process.env.NODE_ENV != 'development') {
-  app.use(minifyHTML({
-    override: true,
-    exception_url: false,
-    htmlMinifier: {
-        removeComments: true,
-        collapseWhitespace: true,
-        collapseBooleanAttributes: true,
-        removeAttributeQuotes: true,
-        removeEmptyAttributes: true,
-        minifyJS: true,
-        minifyCSS: true,
-    }
-  }));
-  app.use(compression());
+if (process.env.NODE_ENV != 'development!') {
+  // app.use(minifyHTML({
+  //   override: true,
+  //   exception_url: false,
+  //   htmlMinifier: {
+  //       removeComments: true,
+  //       collapseWhitespace: true,
+  //       collapseBooleanAttributes: true,
+  //       removeAttributeQuotes: true,
+  //       removeEmptyAttributes: true,
+  //       minifyJS: true,
+  //       minifyCSS: true,
+  //   }
+  // }));
+  // app.use(compression());
 }
 app.use(express.static('public'));
 
