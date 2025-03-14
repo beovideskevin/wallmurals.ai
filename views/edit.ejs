@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es-ES">
+<head>
+    <% include partials/head.ejs %>
+
+    <style>
+        @media only screen and (min-width: 768px) {
+            .formBtns {
+                grid-column: 1 / 3;
+            }
+        }
+    </style>
+</head>
+<body>
+    <% include partials/navigation.ejs %>
+
+    <section class="relative pt-32 pb-20" id="editSection">
+        <div class="container">
+            <% if (message) { %>
+                <div class="flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                    <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                    </svg>
+                    <span class="sr-only">Info</span>
+                    <div>
+                        <span class="font-medium"><%= message %></span>
+                    </div>
+                </div>
+            <% } %>
+
+            <h2 class="text-3xl md:text-4xl/tight font-semibold mt-4 mb-8 text-center">Edit Mural</h2>
+
+            <form id="editMuralForm" method="POST" action="/dashboard/edit" onsubmit="return checkMuralForm();" enctype='multipart/form-data'>
+                <div class="shadow-2xl rounded-xl bg-white p-6">
+                    <div class="flex items-center mb-2 qrContainer" style="background: url('<%= artwork.animations[0].poster %>') no-repeat center; min-height: <%= artwork.animations[0].height %>px; background-size: cover; background-color: rgba(0,0,0,0.5); background-blend-mode: darken;">
+
+                    </div>
+
+                    <div class="gap-6 mt-8 grid grid-cols-1 md:grid-cols-2">
+                        <div class="mb-2">
+                            <label for="formTarget" class="block text-sm/normal font-semibold text-black mb-2">Target:</label>
+                            <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="target" id="formTarget">
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="formPoster" class="block text-sm/normal font-semibold text-black mb-2">Poster:</label>
+                            <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="poster" id="formPoster">
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="formVideo" class="block text-sm/normal font-semibold text-black mb-2">Video:</label>
+                            <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="video" id="formVideo">
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="formModel" class="block text-sm/normal font-semibold text-black mb-2">Model:</label>
+                            <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="model" id="formModel">
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="formAudio" class="block text-sm/normal font-semibold text-black mb-2">Audio:</label>
+                            <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="audio" id="formAudio">
+                        </div>
+
+                        <div class="mb-2"></div>
+
+                        <div class="mb-2">
+                            <label for="formWidth" class="block text-sm/normal font-semibold text-black mb-2">Width:</label>
+                            <input type="text" value="<%= artwork.animations[0].width %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="width" id="formWidth" placeholder="Type the width...">
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="formHeight" class="block text-sm/normal font-semibold text-black mb-2">Height:</label>
+                            <input type="text" value="<%= artwork.animations[0].height %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="height" id="formHeight" placeholder="Type the height...">
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="formChroma" class="block text-sm/normal font-semibold text-black mb-2">Mask:</label>
+                            <input type="text" value="<%= artwork.animations[0].chroma %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="chroma" id="formChroma" placeholder="Type the mask color (#00ff00)...">
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="formRoute" class="block text-sm/normal font-semibold text-black mb-2">Quick link:</label>
+                            <input type="text" value="<%= artwork.route %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="route" id="formRoute" placeholder="Type the direct route...">
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="formLatitude" class="block text-sm/normal font-semibold text-black mb-2">Latitude:</label>
+                            <input type="text" value="<%= artwork.lat %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="lat" id="formLatitude" placeholder="Type the latitude...">
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="formLongitude" class="block text-sm/normal font-semibold text-black mb-2">Longitude:</label>
+                            <input type="text" value="<%= artwork.lon %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="lon" id="formLongitude" placeholder="Type the longitude...">
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="formLocation" class="block text-sm/normal font-semibold text-black mb-2">Location:</label>
+                            <input type="text" value="<%= artwork.location %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="location" id="formLocation" placeholder="Type the location..." required="">
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="formTagline" class="block text-sm/normal font-semibold text-black mb-2">Tagline:</label>
+                            <input type="text" value="<%= artwork.tagline %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="tagline" id="formTagline" placeholder="Type the tagline..." required="">
+                        </div>
+
+                        <div class="flex flex-wrap items-center justify-center text-center gap-3 formBtns">
+                            <button type="submit" class="w-1/2 py-2 px-6 rounded-md text-baseitems-center justify-center border border-primary text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium">Save Mural</button>
+                            <a class="w-1/2 py-2 px-6 rounded-md text-baseitems-center justify-center border border-red-50 text-red-800 bg-red-50 hover:bg-red-200 transition-all duration-500 font-medium" href="/dashboard">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" name="_csrf" value="<%= csrf %>">
+                <input type="hidden" name="id" value="<%= artwork.id %>">
+            </form>
+
+        </div>
+    </section>
+
+    <% include partials/footer.ejs %>
+
+    <script>
+        function checkMuralForm() {
+            let formLocation = document.getElementById("formLocation");
+            let formTagline = document.getElementById("formTagline");
+            return formLocation.value != "" && formTagline.value != "";
+        }
+    </script>
+</body>
+</html>

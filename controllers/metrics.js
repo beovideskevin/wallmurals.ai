@@ -13,7 +13,7 @@ const list = async function(req, res, next) {
         return;
     }
 
-    let artworks = await Artwork.find({user: req.session.user});
+    const artworks = await Artwork.find({user: req.session.user});
     if (!artworks.length) {
         res.status(403);
         res.json({});
@@ -82,8 +82,8 @@ const list = async function(req, res, next) {
             data: interactionsData
         });
     }
-    
-    let metrics = {visits, engagement, interactions};
+
+    const metrics = {visits, engagement, interactions};
     res.set('Content-Type', 'application/json')
     res.status(200);
     res.json(metrics);
@@ -91,7 +91,7 @@ const list = async function(req, res, next) {
 
 /* POST save metrics. */
 const save = function(req, res, next) {
-    let body = req.body;
+    const body = req.body;
     if (!body.uuid || !body.id || !body.data || !body.metricType) {
         console.log("Bad form");
         res.status(400);
@@ -99,11 +99,10 @@ const save = function(req, res, next) {
         return;
     }
 
-    let metricType = sanitize(body.metricType);
-    let id = sanitize(body.id);
-    let data = sanitize(body.data);
-    let uuid = sanitize(body.uuid);
-    let result = null;
+    const metricType = sanitize(body.metricType);
+    const id = sanitize(body.id);
+    const data = sanitize(body.data);
+    const uuid = sanitize(body.uuid);
     Metric.find({uuid: uuid}).then(function (metrics) {
         // If the uuid is fake or bad return 400
         if (!metrics.length) {

@@ -1,3 +1,6 @@
+const fs = require('fs');
+const unzipper = require('unzipper');
+const {v4: uuidv4} = require('uuid');
 const Subscription = require('../models/subscription');
 const Metric = require('../models/metric');
 
@@ -115,11 +118,153 @@ const isCloseToPlace = function (userLat, userLon, targetLat, targetLon) {
     return calculatedDistance <= MIN_DISTANCE;
 }
 
+const collectFiles = async function(req) {
+    const uuid = uuidv4();
+    const user = req.session.user;
+    let target = "";
+    let video = "";
+    let poster = "";
+    let model = "";
+    let audio = "";
+
+    // Copy the files to the uploads/user folders
+    if (req.files) {
+        // Create the folders
+        let baseDir = process.cwd();
+
+        try {
+            let directoryPath = `${baseDir}/public/uploads/${user}/targets/${uuid}`;
+            fs.mkdirSync(directoryPath, { recursive: true });
+            directoryPath = `${baseDir}/public/uploads/${user}/posters/${uuid}`;
+            fs.mkdirSync(directoryPath, { recursive: true });
+            directoryPath = `${baseDir}/public/uploads/${user}/videos/${uuid}`;
+            fs.mkdirSync(directoryPath, { recursive: true });
+            directoryPath = `${baseDir}/public/uploads/${user}/models/${uuid}`;
+            fs.mkdirSync(directoryPath, { recursive: true });
+            directoryPath = `${baseDir}/public/uploads/${user}/audios/${uuid}`;
+            fs.mkdirSync(directoryPath, { recursive: true });
+        } catch (error) {
+            console.error(`Error creating directory: ${error.message}`);
+            return {target, video, poster, model, audio};
+        }
+
+        // Target file
+        const targetFile = req.files.target ? req.files.target : null;
+        if (targetFile) {
+            target = `/uploads/${user}/targets/${uuid}/` + sanitizeFilename(targetFile.name);
+
+            if (targetFile.name.endsWith(".mind")) {
+                targetFile.mv(`${baseDir}/public${target}`, err => {
+                    if (err) {
+                        console.error(err);
+                    }
+                });
+            }
+            else {
+                target += ".mind"
+                import('./targetCompiler.mjs')
+                    .then(module => {
+                        module.run([targetFile.tempFilePath], `${baseDir}/public${target}`);
+                    });
+            }
+        }
+
+        // Video file
+        const videoFile = req.files.video ? req.files.video : null;
+        if (videoFile) {
+            video = `/uploads/${user}/videos/${uuid}/` + sanitizeFilename(videoFile.name);
+            videoFile.mv(`${baseDir}/public${video}`, err => {
+                if (err) {
+                    console.error(err);
+                }
+            });
+        }
+
+        // Poster file
+        const posterFile = req.files.poster ? req.files.poster : null;
+        if (posterFile) {
+            poster = `/uploads/${user}/posters/${uuid}/` + sanitizeFilename(posterFile.name);
+            posterFile.mv(`${baseDir}/public${poster}`, err => {
+                if (err) {
+                    console.error(err);
+                }
+            });
+        }
+
+        // Model file
+        const modelFile = req.files.model ? req.files.model : null;
+        if (modelFile) {
+            if (modelFile.name.endsWith(".zip")) {
+                const directory = await unzipper.Open.file(modelFile.tempFilePath);
+                let dest = `${baseDir}/public/uploads/${user}/models/${uuid}/`;
+                await directory.extract({ path: dest });
+
+                if (directory.files.length === 1 && directory.files[0].type == "Directory") {
+                    dest += directory.files[0].path + "/";
+                    const mainFile = fs.readdirSync(dest).find(
+                        file => file.path.endsWith('.gltf')
+                            || file.path.endsWith('.glTFz')
+                            || file.path.endsWith('.glb')
+                            || file.path.endsWith('.glb2')
+                            || file.path.endsWith('.gl')
+                    );
+                    model = mainFile ? `/public/uploads/${user}/models/${uuid}/${mainFile}`
+                        : "I can't find the main model file in the zip archive.";
+                }
+                else {
+                    const mainFile = directory.files.find(
+                        file => file.path.endsWith('.gltf')
+                            || file.path.endsWith('.glTFz')
+                            || file.path.endsWith('.glb')
+                            || file.path.endsWith('.glb2')
+                            || file.path.endsWith('.gl')
+                    );
+                    model = mainFile ? `/public/uploads/${user}/models/${uuid}/${mainFile.path}`
+                        : "I can't find the main model file in the zip archive.";
+                }
+            }
+            else {
+                model = `/uploads/${user}/models/${uuid}/` + sanitizeFilename(modelFile.name);
+                modelFile.mv(`${baseDir}/public${model}`, err => {
+                    if (err) {
+                        console.error(err);
+                    }
+                });
+            }
+        }
+
+        // Audio file
+        const audioFile = req.files.audio ? req.files.audio : null;
+        if (audioFile) {
+            audio = `/uploads/${user}/audios/${uuid}/` + sanitizeFilename(audioFile.name);
+            audioFile.mv(`${baseDir}/public${audio}`, err => {
+                if (err) {
+                    console.error(err);
+                }
+            });
+        }
+    }
+
+    return {target, video, poster, model, audio};
+}
+
+function sanitizeFilename(filename) {
+    // Remove control characters and reserved characters
+    const sanitized = filename.replace(/[\x00-\x1f\x80-\x9f/\\?%*:|"<>]/g, "");
+    // Replace spaces with underscores or hyphens
+    const noSpaces = sanitized.replace(/\s/g, "_");
+    // Remove or replace other potentially problematic characters as needed
+    const furtherSanitized = noSpaces.replace(/[\[\]{}'`;]/g, "");
+    // Truncate to a reasonable length (e.g., 255 characters)
+    return furtherSanitized.slice(0, 255);
+}
+
 module.exports = {
     getSubscriptionLastDate,
     getMonthNameArray,
     checkViews,
     saveMetric,
     openMetric,
-    isCloseToPlace
+    isCloseToPlace,
+    collectFiles
 };

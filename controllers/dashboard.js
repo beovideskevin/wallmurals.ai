@@ -4,16 +4,17 @@ const Artwork = require('../models/artwork');
 const Subscription = require('../models/subscription');
 const User = require('../models/user');
 const { urlencoded } = require('express');
+const { collectFiles } = require('../helpers/utils');
 
 /* GET dashboard page. */
 const index = async function(req, res, next) {
     console.log("DASHBOARD - FULL SESSION: ", req.session);
 
-    let error = req.params.error || false;
-    let message = req.params.message || "";
+    const error = req.params.error || false;
+    const message = req.params.message || "";
 
     if (req.session.user) {
-        let artworks = await Artwork.find({user: req.session.user});
+        const artworks = await Artwork.find({user: req.session.user});
         res.render('dashboard', {
             csrf: req.csrfToken(),
             artworks: artworks,
@@ -26,40 +27,151 @@ const index = async function(req, res, next) {
     }
 }
 
-/* POST update artwork tagline */
-const updateTagLine = async function(req, res, next) {
+/* GET edit artwork page */
+const editArtwork = async function(req, res, next) {
     console.log("DASHBOARD - FULL SESSION: ", req.session);
 
     if (req.session.user) {
-        let artworks = await Artwork.find({user: req.session.user});
-        
-        let body = req.body;
-        if (body.id == "" || body.formTagline == "")  {
-            console.log("NO ARGS ", body);
-            res.redirect('/dashboard/' + encodeURIComponent("There was an error while updating the tagline.") + '/true');
-            return;
-        }
-
-        let id = sanitize(body.id);
+        const id = sanitize(req.params.id);
         const artwork = await Artwork.findById(id);
+
         if (!artwork || artwork == []) {
-            console.log("NO ARTWORK ", body);
             console.log("NOT FOUND ID: " + req.params.id);
             res.redirect('/dashboard/' + encodeURIComponent("The artwork was not found by the id.") + '/true');
             return;
         }
 
-        artwork.tagline = sanitize(body.formTagline);
+        const message = sanitize(req.params.message) || "";
+        res.render('edit', {
+            csrf: req.csrfToken(),
+            message: message,
+            artwork: artwork,
+        });
+    }
+    else {
+        res.redirect('/home');
+    }
+}
+
+/* POST new artwork */
+const storeArtwork = async function(req, res, next) {
+    console.log("DASHBOARD - FULL SESSION: ", req.session);
+    if (req.session.user) {
+        const user = req.session.user;
+        const body = req.body;
+
+        const animation = await collectFiles(req);
+
+        Artwork.create({
+            animations: [{
+                video: animation.video !== "" ? animation.video : "",
+                poster: animation.poster !== "" ? animation.poster : "",
+                width: body.width,
+                height: body.height,
+                chroma: body.chroma,
+                model: animation.model !== "" ? animation.model : "",
+                audio: animation.audio !== "" ? animation.audio : ""
+            }],
+            target: animation.target !== "" ? animation.target : "",
+            lat: body.lat,
+            loc: body.loc,
+            location: body.location,
+            tagline: body.tagline,
+            route: body.route,
+            user: user
+        }).then(function (newArtwork) {
+            console.log("Artwork created!", newArtwork);
+            res.redirect('/dashboard/' + encodeURIComponent("The mural was created."));
+        }).catch(function (error) {
+            if(error.name === 'ValidationError') {
+                const messages = Object.values(error.errors).map(val => val.message);
+                console.log("VALIDATION ERROR: " + messages);
+            }
+            else {
+                console.log("ERROR: " + error);
+            }
+            res.redirect('/dashboard/' + encodeURIComponent("There was an error while creating the mural.") + "/true");
+        });
+    }
+    else {
+        res.redirect('/home');
+    }
+}
+
+/* POST save artwork */
+const updateArtwork = async function(req, res, next) {
+    console.log("DASHBOARD - FULL SESSION: ", req.session);
+
+    if (req.session.user) {
+        const body = req.body;
+        if (body.id == "")  {
+            console.log("NO ARGS ", body);
+            res.redirect('/dashboard/' + encodeURIComponent("There was an error while saving the artwork.") + '/true');
+            return;
+        }
+
+        const id = sanitize(body.id);
+        const artwork = await Artwork.findById(id);
+        if (!artwork || artwork == []) {
+            console.log("NOT FOUND ID: " + req.params.id);
+            res.redirect('/dashboard/' + encodeURIComponent("The artwork was not found by the id.") + '/true');
+            return;
+        }
+
+        const animation = await collectFiles(req);
+        artwork.animations = [{
+            video: animation.video !== "" ? animation.video: artwork.animations[0].video,
+            poster: animation.poster !== "" ? animation.poster : artwork.animations[0].poster,
+            width: body.width,
+            height: body.height,
+            chroma: body.chroma,
+            model: animation.model !== "" ? animation.model : artwork.animations[0].model,
+            audio: animation.audio !== "" ? animation.audio : artwork.animations[0].audio
+        }];
+        artwork.target = animation.target !== "" ? animation.target : artwork.target;
+        artwork.lat = body.lat;
+        artwork.loc = body.loc;
+        artwork.location = body.location;
+        artwork.tagline = body.tagline;
+        artwork.route = body.route;
         artwork.save()
-            .then(async function(artwork) {
-                console.log("IT WORKS: " + artwork);
-                artworks = await Artwork.find({user: req.session.user});
-                res.redirect('/dashboard/' + encodeURIComponent("Tagline updated."));
+            .then(function(artwork) {
+                console.log("IT WORKS ", artwork);
+                res.redirect('/dashboard/' + encodeURIComponent("The mural was updated."));
             })
             .catch(function(error) {
-                console.log("ERROR: " + error);
-                res.redirect('/dashboard/' + encodeURIComponent("There was an error while updating the tagline.") + '/true');
+                console.log("IT FAILED ", error);
+                res.redirect(`/dashboard/edit/${id}/` + encodeURIComponent("There was an error while updating the mural."));
             });
+    }
+    else {
+        res.redirect('/home');
+    }
+}
+
+/* POST delete artwork. */
+const deleteArtwork = async function(req, res, next) {
+    console.log("DASHBOARD - FULL SESSION: ", req.session);
+
+    if (req.session.user) {
+        const body = req.body;
+        if (body.id === "")  {
+            console.log("NO ARGS ", body);
+            res.redirect('/dashboard/' + encodeURIComponent("There was an error while deleting the artwork.") + '/true');
+            return;
+        }
+
+        const id = sanitize(body.id);
+        const artwork = await Artwork.findByIdAndDelete(id);
+
+        if (!artwork || artwork == []) {
+            console.log("NOT FOUND ID: " + req.params.id);
+            res.redirect('/dashboard/' + encodeURIComponent("The artwork was not found by the id.") + '/true');
+            return;
+        }
+
+        console.log("IT WORKS");
+        res.redirect('/dashboard/' + encodeURIComponent("Mural deleted."));
     }
     else {
         res.redirect('/home');
@@ -82,8 +194,8 @@ const metrics = function(req, res, next) {
 const account = async function(req, res, next) {
     console.log("ACCOUNT - FULL SESSION: ", req.session);
 
-    let error = req.params.error || false;
-    let message = req.params.message || "";
+    const error = req.params.error || false;
+    const message = req.params.message || "";
 
     if (req.session.user) {
         let subscriptions = await Subscription.find({user: req.session.user});
@@ -105,9 +217,7 @@ const changePassword = async function(req, res, next) {
     console.log("DASHBOARD - FULL SESSION: ", req.session);
 
     if (req.session.user) {
-        let subscriptions = await Subscription.find({user: req.session.user});
-
-        let body = req.body;
+        const body = req.body;
         if (body.formNewPassword == "" || 
             body.formNewPassword2 == "")
         {
@@ -160,9 +270,7 @@ const closeAccount = async function(req, res, next) {
     console.log("DASHBOARD - FULL SESSION: ", req.session);
 
     if (req.session.user) {
-        let subscriptions = await Subscription.find({user: req.session.user});
-
-        let body = req.body;
+        const body = req.body;
         if (body.formPassword == "" || 
             body.formReason == "")  
         {
@@ -206,7 +314,10 @@ const closeAccount = async function(req, res, next) {
 
 module.exports = {
     index,
-    updateTagLine,
+    storeArtwork,
+    editArtwork,
+    updateArtwork,
+    deleteArtwork,
     metrics,
     account,
     changePassword,

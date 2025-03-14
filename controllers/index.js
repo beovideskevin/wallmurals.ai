@@ -7,7 +7,9 @@ const { checkViews, openMetric } = require('../helpers/utils');
 
 
 const index = function (req, res, next) {
-    res.redirect('/home');
+    res.render('index', {});
+    // res.redirect('/home');
+    // Or maybe redirect to /AR
 }
 
 const home = function (req, res, next) {
@@ -38,8 +40,8 @@ const contact = async function (req, res, next) {
         return;
     }
 
-    let text = `name: ${body.firstName} ${body.lastName} -- email: ${body.email} -- phone: ${body.phone}\n\n\n${body.message}`; 
-    let mailOptions = {
+    const text = `name: ${body.firstName} ${body.lastName} -- email: ${body.email} -- phone: ${body.phone}\n\n\n${body.message}`;
+    const mailOptions = {
         from: 'info@wallmurals.ai',
         to: 'thisisupperwestsidemurals@gmail.com',
         cc: 'kevinbcasas@gmail.com',

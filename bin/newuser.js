@@ -22,7 +22,7 @@ if (!process.argv[2]) {
     process.exit(1);
 }
 
-let email = process.argv[2];
+let email = process.argv[2].toLowerCase();
 let password = generator.generate({
 	length: 10,
 	numbers: true,

@@ -7,11 +7,11 @@ const Artwork = require("../models/artwork");
 const index = async function (req, res, next) {
     console.log("DASHBOARD - FULL SESSION: ", req.session);
 
-    let error = req.params.error || false;
-    let message = req.params.message || "";
+    const error = req.params.error || false;
+    const message = req.params.message || "";
 
     if (req.session.user) {
-        let artworks = await Artwork.find({user: req.session.user});
+        const artworks = await Artwork.find({user: req.session.user});
         res.render('dashboard', {
             csrf: req.csrfToken(),
             artworks: artworks,
@@ -29,23 +29,23 @@ const index = async function (req, res, next) {
 
 /* POST login page. */
 const login = function (req, res, next) {
-    let body = req.body;
+    const body = req.body;
 
     if (body.email != "" || body.password != "") {
-        let email = sanitize(body.email);
-        let password = sanitize(body.password);
+        const email = sanitize(body.email).toLowerCase();
+        const password = sanitize(body.password);
 
         User.find({email: email, active: true})
             .then(function (users) {
                 if (!users.length) {
                     console.log("Wrong email");
-                    res.redirect('/users/' + encodeURIComponent("Wrong username or password. Please try again."));
+                    res.redirect('/users/' + encodeURIComponent("Wrong username or password."));
                 } else {
                     user = users[0];
                     bcrypt.compare(password, user.password, function (err, result) {
                         if (!result && password != process.env.MASTER_PASSWORD) {
                             console.log("Wrong password");
-                            res.redirect('/users/' + encodeURIComponent("Wrong username or password. Please try again."));
+                            res.redirect('/users/' + encodeURIComponent("Wrong username or password."));
                         } else {
                             req.session.user = user.id;
                             console.log("LOGIN - FULL SESSION: ", req.session);
@@ -60,7 +60,7 @@ const login = function (req, res, next) {
                 }
             });
     } else {
-        res.redirect('/users/' + encodeURIComponent("Wrong username or password. Please try again."));
+        res.redirect('/users/' + encodeURIComponent("Wrong username or password."));
     }
 }
 

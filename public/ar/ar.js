@@ -32,11 +32,11 @@ const loadVideo = function(path, poster) {
             video.setAttribute('loop', true);
             video.setAttribute('playsinline', true);
             video.setAttribute('muted', true);
-            video.setAttribute('poster', "/posters/" + poster);
+            video.setAttribute('poster', poster);
             console.log("Finished loading: " + path);
             resolve(video);
         });
-        video.src = "/videos/" + path + "#t=0.1";
+        video.src = path + "#t=0.1";
         video.preload = "metadata";
     });
 }
@@ -47,7 +47,7 @@ const loadVideo = function(path, poster) {
 const loadGLTF = function(path) {
     return new Promise((resolve, reject) => {
         const loader = new GLTFLoader();
-        loader.load("/models/" + path, (gltf) => {
+        loader.load(path, (gltf) => {
             console.log("Finished loading: " + path);
             resolve(gltf);
         });
@@ -63,7 +63,7 @@ const setup = async function() {
     // Set up the AR system
     mindarThree = new window.MINDAR.IMAGE.MindARThree({
         container: document.body,
-        imageTargetSrc: "/markers/" + artwork.marker,
+        imageTargetSrc: artwork.target,
         uiLoading: "no",
         uiScanning: "yes",
         uiError: "yes",
@@ -89,7 +89,7 @@ const setup = async function() {
         // Read the audio
         if (artwork.animations[i].audio) {
             showSoundBtn();
-            elements[i].audioElement = new Audio("/audios/" + artwork.animations[i].audio);
+            elements[i].audioElement = new Audio(artwork.animations[i].audio);
             elements[i].audioElement.volume = volOn;
         }
 
@@ -247,7 +247,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     canvas = document.getElementById('record');
     const canvasStream = canvas.captureStream(frameRate);
     streamArray = [...canvasStream.getVideoTracks()];
-
+console.log(artwork);
     if (artwork) {
         setup();
     }
@@ -262,14 +262,14 @@ document.addEventListener('DOMContentLoaded', async function() {
                     const response = await fetch(`/ar/location/${latitude}/${longitude}/${uuid}`);
                     if (!response.ok || response.status != 200) {
                         alert("There are no augmented reality murals in your area.");
-                        window.location = "https://www.wallmurals.ai/home";
-                        return;
+                        // window.location = "https://www.wallmurals.ai/home";
+                        // return;
                     }
                     const content = await response.json();
                     if (!content) {
                         alert("There are no augmented reality murals in your area.");
-                        window.location = "https://www.wallmurals.ai/home";
-                        return;
+                        // window.location = "https://www.wallmurals.ai/home";
+                        // return;
                     }
                     artwork = content;
                     setup();

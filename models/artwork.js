@@ -6,9 +6,9 @@ const artworkSchema = mongoose.Schema(
       type: String,
       required: false,
     },
-    marker: {
+    target: {
       type: String,
-      required: [true, 'Please add a marker value'],
+      required: [true, 'Please add a target value'],
     },
     animations: [{
       video: {

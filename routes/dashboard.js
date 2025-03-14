@@ -2,8 +2,10 @@ var express = require('express');
 var router = express.Router();
 const {
     index,
-    updateLocation,
-    updateTagLine,
+    storeArtwork,
+    editArtwork,
+    updateArtwork,
+    deleteArtwork,
     metrics,
     account,
     changePassword,
@@ -22,10 +24,19 @@ router.post('/changepassword', changePassword);
 /* POST close account. */
 router.post('/closeaccount', closeAccount);
 
-/* GET dashboard page. */
-router.get('/:message?/:error?', index);
+/* GET dashboard edit page. */
+router.get('/edit/:id/:message?', editArtwork);
+
+/* POST dashboard new artwork. */
+router.post('/new', storeArtwork);
+
+/* POST dashboard save artwork. */
+router.post('/edit', updateArtwork);
 
 /* POST update tagline form. */
-router.post('/updatetagline', updateTagLine); 
+router.post('/delete', deleteArtwork);
+
+/* GET dashboard page. */
+router.get('/:message?/:error?', index);
 
 module.exports = router;
