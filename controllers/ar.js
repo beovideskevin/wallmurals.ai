@@ -22,7 +22,7 @@ const arRoute = async function (req, res, next) {
         return;
     }
 
-    openMetric(req, artwork.id, uuid);
+    openMetric(req, artwork.user, artwork.id, uuid);
 
     res.render('ar', {
         uuid: uuid,
@@ -50,7 +50,7 @@ const arId = async function (req, res, next) {
                 return;
             }
 
-            openMetric(req, artwork.id, uuid);
+            openMetric(req, artwork.user, artwork.id, uuid);
 
             res.render('ar', {
                 uuid: uuid,
@@ -97,7 +97,7 @@ const arLoc = async function (req, res, next) {
                 return;
             }
 
-            openMetric(req, artwork.id, uuid);
+            openMetric(req, artwork.user, artwork.id, uuid);
             res.status(200);
             res.json(artwork);
             return;

@@ -90,7 +90,7 @@ const list = async function(req, res, next) {
 }
 
 /* POST save metrics. */
-const save = function(req, res, next) {
+const save = async function(req, res, next) {
     const body = req.body;
     if (!body.uuid || !body.id || !body.data || !body.metricType) {
         console.log("Bad form");
@@ -103,16 +103,24 @@ const save = function(req, res, next) {
     const id = sanitize(body.id);
     const data = sanitize(body.data);
     const uuid = sanitize(body.uuid);
+    const artwork = await Artwork.findById(id);
+    if (!artwork) {
+        console.log("not found artwork!");
+        res.status(400);
+        res.json({success: false});
+        return;
+    }
+    const user = artwork.user;
     Metric.find({uuid: uuid}).then(function (metrics) {
         // If the uuid is fake or bad return 400
         if (!metrics.length) {
-            console.log("not found!");
+            console.log("not found metric!");
             res.status(400);
             res.json({success: false});
             return;
         }
         // All good, save the metric
-        saveMetric({metricType, id, data, uuid});
+        saveMetric({metricType, user, id, data, uuid});
         res.status(200);
         res.json({success: true});
     });

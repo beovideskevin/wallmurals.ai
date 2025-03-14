@@ -61,12 +61,13 @@ checkViews = async function(artwork) {
 }
 
 saveMetric = (values) => {
-    const {metricType, id, data, uuid} = values;
+    const {metricType, user, id, data, uuid} = values;
     Metric.create({
         type: metricType,
         data: data,
         uuid: uuid,
-        artwork: id
+        artwork: id,
+        user: user
     }).then(function (newMetric) {
         console.log("Metric created!", newMetric);
     }).catch(function (error) {
@@ -80,13 +81,14 @@ saveMetric = (values) => {
     });
 }
 
-const openMetric = function(req, id, uuid) {
+const openMetric = function(req, user, id, uuid) {
     const forwardedFor = req.headers['x-forwarded-for'] || req.connection.remoteAddress || "no IP";
     saveMetric({
         metricType: "open",
         data: forwardedFor,
         uuid: uuid,
-        id: id
+        id: id,
+        user: user
     });
 }
 

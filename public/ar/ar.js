@@ -247,7 +247,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     canvas = document.getElementById('record');
     const canvasStream = canvas.captureStream(frameRate);
     streamArray = [...canvasStream.getVideoTracks()];
-console.log(artwork);
+
     if (artwork) {
         setup();
     }
