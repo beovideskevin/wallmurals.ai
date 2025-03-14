@@ -74,20 +74,20 @@ app.use(
   )
 );
 if (process.env.NODE_ENV != 'development!') {
-  // app.use(minifyHTML({
-  //   override: true,
-  //   exception_url: false,
-  //   htmlMinifier: {
-  //       removeComments: true,
-  //       collapseWhitespace: true,
-  //       collapseBooleanAttributes: true,
-  //       removeAttributeQuotes: true,
-  //       removeEmptyAttributes: true,
-  //       minifyJS: true,
-  //       minifyCSS: true,
-  //   }
-  // }));
-  // app.use(compression());
+  app.use(minifyHTML({
+    override: true,
+    exception_url: false,
+    htmlMinifier: {
+        removeComments: true,
+        collapseWhitespace: true,
+        collapseBooleanAttributes: true,
+        removeAttributeQuotes: true,
+        removeEmptyAttributes: true,
+        minifyJS: true,
+        minifyCSS: true,
+    }
+  }));
+  app.use(compression());
 }
 app.use(express.static('public'));
 
