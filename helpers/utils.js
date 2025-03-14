@@ -50,7 +50,7 @@ checkViews = async function(artwork) {
     }
     let count = await Metric.countDocuments({
         type: "open",
-        artwork: artwork.id,
+        user: artwork.user,
         createdAt: { $gt: targetDate }
     });
     if (count > max) {
