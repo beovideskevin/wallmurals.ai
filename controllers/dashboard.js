@@ -74,7 +74,7 @@ const storeArtwork = async function(req, res, next) {
             }],
             target: animation.target !== "" ? animation.target : "",
             lat: body.lat,
-            loc: body.loc,
+            lon: body.lon,
             location: body.location,
             tagline: body.tagline,
             route: body.route,
@@ -130,7 +130,7 @@ const updateArtwork = async function(req, res, next) {
         }];
         artwork.target = animation.target !== "" ? animation.target : artwork.target;
         artwork.lat = body.lat;
-        artwork.loc = body.loc;
+        artwork.lon = body.lon;
         artwork.location = body.location;
         artwork.tagline = body.tagline;
         artwork.route = body.route;
