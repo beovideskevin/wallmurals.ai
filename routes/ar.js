@@ -14,13 +14,4 @@ router.get('/:route', arRoute);
 /* GET AR by location. */
 router.get('/', ar);
 
-/* GET AR page. */
-router.post('/:id', createAr);
-
-/* GET AR page. */
-router.put('/:id', editAr);
-
-/* GET AR page. */
-router.delete('/:id', deleteAr);
-
 module.exports = router;
