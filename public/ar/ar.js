@@ -32,6 +32,7 @@ const loadVideo = function(path, poster) {
         const video = document.createElement("video");
         video.addEventListener('loadedmetadata', () => {
             video.setAttribute('loop', '');
+            video.setAttribute('autoPlay', '');
             video.setAttribute('playsinline', '');
             video.setAttribute('muted', '');
             video.setAttribute('poster', poster);
