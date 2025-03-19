@@ -447,6 +447,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     files: files,
                     title: artwork.tagline,
                     text: artwork.tagline,
+                    url: "https://wallmurals.ai",
                 })
                 .catch((error) => {
                     console.log("Error sharing video:", error);

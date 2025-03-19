@@ -5,7 +5,7 @@
 
     <style>
         @media only screen and (min-width: 768px) {
-            .formBtns {
+            .formBtns, #outerMessage {
                 grid-column: 1 / 3;
             }
         }
@@ -104,6 +104,16 @@
                             <input type="text" value="<%= artwork.tagline %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="tagline" id="formTagline" placeholder="Type the tagline..." required="">
                         </div>
 
+                        <div class="hidden flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert" id="outerMessage">
+                            <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                            </svg>
+                            <span class="sr-only">Info</span>
+                            <div>
+                                <span class="font-medium" id="innerMessage"></span>
+                            </div>
+                        </div>
+
                         <div class="flex flex-wrap items-center justify-center text-center gap-3 formBtns">
                             <button type="submit" class="w-1/2 py-2 px-6 rounded-md text-baseitems-center justify-center border border-primary text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium">Save Mural</button>
                             <a class="w-1/2 py-2 px-6 rounded-md text-baseitems-center justify-center border border-red-50 text-red-800 bg-red-50 hover:bg-red-200 transition-all duration-500 font-medium" href="/dashboard">Cancel</a>
@@ -120,7 +130,27 @@
     <% include partials/footer.ejs %>
 
     <script>
+        function showValidationMessage(message) {
+            document.getElementById("innerMessage").textContent = message;
+            document.getElementById("outerMessage").classList.remove("hidden");
+        }
+
         function checkMuralForm() {
+            const formVideo = document.getElementById("formVideo");
+            const formModel = document.getElementById("formModel");
+
+            if (formVideo.files.length !== 0 && formModel.files.length !== 0) {
+                showValidationMessage("You can not have a model and a video at the same time.");
+                return false;
+            }
+
+            const formWidth = document.getElementById("formWidth");
+            const formHeight = document.getElementById("formHeight");
+            if (formVideo.files.length !== 0 && (formWidth.value === "" || formHeight.value === "")) {
+                showValidationMessage("A video needs width and height.");
+                return false;
+            }
+
             let formLocation = document.getElementById("formLocation");
             let formTagline = document.getElementById("formTagline");
             return formLocation.value != "" && formTagline.value != "";

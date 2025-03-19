@@ -62,6 +62,21 @@ const storeArtwork = async function(req, res, next) {
 
         const animation = await collectFiles(req);
 
+        if (animation.target === "") {
+            res.redirect('/dashboard/' + encodeURIComponent("You must upload a target.") + '/true');
+            return;
+        }
+
+        if (animation.video === "" && animation.model === "") {
+            res.redirect('/dashboard/' + encodeURIComponent("You must upload a video or a model.") + '/true');
+            return;
+        }
+
+        if (animation.video !== "" && animation.model !== "") {
+            res.redirect('/dashboard/' + encodeURIComponent("You can not have a video and a model at the same time.") + '/true');
+            return;
+        }
+
         Artwork.create({
             animations: [{
                 video: animation.video !== "" ? animation.video : "",
@@ -119,6 +134,19 @@ const updateArtwork = async function(req, res, next) {
         }
 
         const animation = await collectFiles(req);
+
+        if (animation.video !== "" && animation.model !== "") {
+            res.redirect('/dashboard/' + encodeURIComponent("You can not have a video and a model at the same time.") + '/true');
+            return;
+        }
+
+        if (animation.video !== "") {
+            artwork.animations[0].model = "";
+        }
+        else if (animation.model !== "") {
+            artwork.animations[0].video = "";
+        }
+
         artwork.animations = [{
             video: animation.video !== "" ? animation.video: artwork.animations[0].video,
             poster: animation.poster !== "" ? animation.poster : artwork.animations[0].poster,
