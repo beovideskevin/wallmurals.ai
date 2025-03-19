@@ -38,7 +38,7 @@ const loadVideo = function(path, poster) {
             console.log("Finished loading: " + path);
             resolve(video);
         });
-        video.src = path + "#t=0.1";
+        video.src = path; //  + "#t=0.1";
         video.preload = "metadata";
     });
 }
@@ -92,7 +92,7 @@ const setup = async function() {
         if (artwork.animations[i].audio) {
             showSoundBtn();
             elements[i].audioElement = new Audio(artwork.animations[i].audio);
-            elements[i].audioElement.volume = volOn;
+            elements[i].audioElement.volume = volOff;
         }
 
         if (artwork.animations[i].video) {
@@ -614,7 +614,7 @@ function hideSplash()
 
 function showSoundBtn() {
     document.getElementById("noSoundBtn").style.display = "none";
-    document.getElementById("soundBtn").style.display = "block";
+    document.getElementById("muteBtn").style.display = "block";
 }
 
 function showMuteBtn()
