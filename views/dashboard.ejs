@@ -77,18 +77,20 @@
 
                 <div class="gap-6 mt-8 grid grid-cols-1 md:grid-cols-2">
                     <div class="mb-2 overflow-hidden">
-                        <h3>Quick link:</h3> <% if (artwork.route) { %><a href="/ar/<%= artwork.route %>" target="_blank">wallmurals.ai/ar/<%= artwork.route %></a><% } else { %> N/A <% } %>
+                        <h3>AR urls:</h3> <% if (artwork.route) { %><a href="/ar/<%= artwork.route %>" target="_blank">wallmurals.ai/ar/<%= artwork.route %></a><br><% } %>
+                        <a href="/ar/id/<%= artwork.id %>" target="_blank">wallmurals.ai/ar/id/<%= artwork.id %></a>
                     </div>
 
-                    <div class="mb-2 overflow-hidden"><h3>Full route:</h3> <a href="/ar/id/<%= artwork.id %>" target="_blank">wallmurals.ai/ar/id/<%= artwork.id %></a></div>
+                    <div class="mb-2 overflow-hidden"><h3>Location:</h3> <%= artwork.location %></div>
 
-                    <%  
+                    <%
                         let videos = [];
                         let models = [];
                         let audios = [];
                         let posters = [];
                         let width = [];
                         let height = [];
+                        let chroma = [];
 
                         artwork.animations.forEach(function (animation) { 
                             if (animation.video) {
@@ -109,6 +111,9 @@
                             if (animation.height) {
                                 height.push(animation.height);
                             }
+                            if (animation.chroma) {
+                                chroma.push(animation.chroma);
+                            }
                         }); 
                     %>
 
@@ -116,13 +121,13 @@
 
                     <div class="mb-2 overflow-hidden"><h3>Posters:</h3> <%- posters.join("<br>") %></div>
 
-                    <div class="mb-2 overflow-hidden"><h3>Videos:</h3> <%- videos.join("<br>") %> </div>
-
                     <div class="mb-2 overflow-hidden"><h3>Models:</h3> <%- models.join("<br>") %> </div>
 
                     <div class="mb-2 overflow-hidden"><h3>Audios:</h3> <%- audios.join("<br>") %> </div>
 
-                    <div class="mb-2"></div>
+                    <div class="mb-2 overflow-hidden"><h3>Videos:</h3> <%- videos.join("<br>") %> </div>
+
+                    <div class="mb-2"><h3>Mask:</h3><%- chroma.join("<br>") %></div>
 
                     <div class="mb-2"><h3>Width:</h3><%- width.join("<br>") %></div>
 
@@ -132,9 +137,9 @@
 
                     <div class="mb-2 overflow-hidden"><h3>Longitude:</h3> <%= artwork.lon %></div>
 
-                    <div class="mb-2 overflow-hidden"><h3>Location:</h3> <%= artwork.location %></div>
-
                     <div class="mb-2 overflow-hidden"><h3>Tagline:</h3> <%= artwork.tagline %></div>
+
+                    <div class="mb-2 overflow-hidden"><h3>Website:</h3> <%= artwork.website %></div>
 
 
                     <div class="flex flex-wrap items-center justify-center text-center gap-3 artworkBtns">
@@ -199,11 +204,6 @@
                         </div>
 
                         <div class="mb-2">
-                            <label for="formVideo" class="block text-sm/normal font-semibold text-black mb-2">Video:</label>
-                            <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="video" id="formVideo">
-                        </div>
-
-                        <div class="mb-2">
                             <label for="formModel" class="block text-sm/normal font-semibold text-black mb-2">Model:</label>
                             <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="model" id="formModel">
                         </div>
@@ -213,7 +213,15 @@
                             <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="audio" id="formAudio">
                         </div>
 
-                        <div class="mb-2"></div>
+                        <div class="mb-2">
+                            <label for="formVideo" class="block text-sm/normal font-semibold text-black mb-2">Video:</label>
+                            <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="video" id="formVideo">
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="formChroma" class="block text-sm/normal font-semibold text-black mb-2">Mask:</label>
+                            <input type="text" value="" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="chroma" id="formChroma" placeholder="Type the mask color (#00ff00)...">
+                        </div>
 
                         <div class="mb-2">
                             <label for="formWidth" class="block text-sm/normal font-semibold text-black mb-2">Width:</label>
@@ -226,13 +234,13 @@
                         </div>
 
                         <div class="mb-2">
-                            <label for="formChroma" class="block text-sm/normal font-semibold text-black mb-2">Mask:</label>
-                            <input type="text" value="" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="chroma" id="formChroma" placeholder="Type the mask color (#00ff00)...">
+                            <label for="formRoute" class="block text-sm/normal font-semibold text-black mb-2">Quick link:</label>
+                            <input type="text" value="" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="route" id="formRoute" placeholder="Type the direct route...">
                         </div>
 
                         <div class="mb-2">
-                            <label for="formRoute" class="block text-sm/normal font-semibold text-black mb-2">Quick link:</label>
-                            <input type="text" value="" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="route" id="formRoute" placeholder="Type the direct route...">
+                            <label for="formLocation" class="block text-sm/normal font-semibold text-black mb-2">Location:</label>
+                            <input type="text" value="" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="location" id="formLocation" placeholder="Type the location..." required="">
                         </div>
 
                         <div class="mb-2">
@@ -246,13 +254,13 @@
                         </div>
 
                         <div class="mb-2">
-                            <label for="formLocation" class="block text-sm/normal font-semibold text-black mb-2">Location:</label>
-                            <input type="text" value="" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="location" id="formLocation" placeholder="Type the location..." required="">
+                            <label for="formTagline" class="block text-sm/normal font-semibold text-black mb-2">Tagline:</label>
+                            <input type="text" value="" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="tagline" id="formTagline" placeholder="Type the tagline..." required="">
                         </div>
 
                         <div class="mb-2">
-                            <label for="formTagline" class="block text-sm/normal font-semibold text-black mb-2">Tagline:</label>
-                            <input type="text" value="" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="tagline" id="formTagline" placeholder="Type the tagline..." required="">
+                            <label for="formWebsite" class="block text-sm/normal font-semibold text-black mb-2">Website:</label>
+                            <input type="text" value="" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="website" id="formWebsite" placeholder="Type the website...">
                         </div>
 
                         <div class="hidden flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert" id="outerMessage">

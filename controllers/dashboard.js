@@ -60,6 +60,15 @@ const storeArtwork = async function(req, res, next) {
         const user = req.session.user;
         const body = req.body;
 
+        if (body.route !== "") {
+            const routeCheck = await Artwork.findOne({route: body.route});
+            if (routeCheck) {
+                console.log("ROUTE MUST BE UNIQUE", body.route);
+                res.redirect('/dashboard/' + encodeURIComponent("The route must be unique.") + '/true');
+                return;
+            }
+        }
+
         const animation = await collectFiles(req);
 
         if (animation.target === "") {
@@ -92,6 +101,7 @@ const storeArtwork = async function(req, res, next) {
             lon: body.lon,
             location: body.location,
             tagline: body.tagline,
+            website: body.website,
             route: body.route,
             user: user
         }).then(function (newArtwork) {
@@ -129,14 +139,23 @@ const updateArtwork = async function(req, res, next) {
         const artwork = await Artwork.findById(id);
         if (!artwork || artwork == []) {
             console.log("NOT FOUND ID: " + req.params.id);
-            res.redirect('/dashboard/' + encodeURIComponent("The artwork was not found by the id.") + '/true');
+            res.redirect(`/dashboard/edit/${id}/` + encodeURIComponent("The artwork was not found by the id.") + '/true');
             return;
+        }
+
+        if (body.route !== "") {
+            const routeCheck = await Artwork.findOne({route: body.route});
+            if (routeCheck && routeCheck.id !== artwork.id) {
+                console.log("ROUTE MUST BE UNIQUE", body.route);
+                res.redirect(`/dashboard/edit/${id}/` + encodeURIComponent("The route must be unique.") + '/true');
+                return;
+            }
         }
 
         const animation = await collectFiles(req);
 
         if (animation.video !== "" && animation.model !== "") {
-            res.redirect('/dashboard/' + encodeURIComponent("You can not have a video and a model at the same time.") + '/true');
+            res.redirect(`/dashboard/edit/${id}/` + encodeURIComponent("You can not have a video and a model at the same time.") + '/true');
             return;
         }
 
@@ -162,6 +181,7 @@ const updateArtwork = async function(req, res, next) {
         artwork.location = body.location;
         artwork.tagline = body.tagline;
         artwork.route = body.route;
+        artwork.website = body.website;
         artwork.save()
             .then(function(artwork) {
                 console.log("IT WORKS ", artwork);
