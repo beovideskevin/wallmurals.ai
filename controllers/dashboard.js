@@ -102,7 +102,7 @@ const storeArtwork = async function(req, res, next) {
             location: body.location,
             tagline: body.tagline,
             website: body.website,
-            route: body.route,
+            route: body.route.replace("/", ""),
             user: user
         }).then(function (newArtwork) {
             console.log("Artwork created!", newArtwork);
@@ -180,7 +180,7 @@ const updateArtwork = async function(req, res, next) {
         artwork.lon = body.lon;
         artwork.location = body.location;
         artwork.tagline = body.tagline;
-        artwork.route = body.route;
+        artwork.route = body.route.replace("/", "");
         artwork.website = body.website;
         artwork.save()
             .then(function(artwork) {

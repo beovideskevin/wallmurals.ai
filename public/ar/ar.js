@@ -9,7 +9,7 @@ var elements = [];
 var hashLocation = "";
 var targetFound = false;
 var refresh = false;
-var isMuted = false;
+var isMuted = true;
 var recFrameId = null;
 var mediaRecorder = null;
 var canvas = null;
@@ -325,13 +325,13 @@ document.addEventListener('DOMContentLoaded', async function() {
      */
     document.getElementById("soundBtn").addEventListener('click', function() {
         isMuted = true;
-        changeSound(isMuted);
+        setMuted(isMuted);
         showMuteBtn();
     });
 
     document.getElementById("muteBtn").addEventListener('click', function() {
         isMuted = false;
-        changeSound(isMuted);
+        setMuted(isMuted);
         hideMuteBtn();
     });
 
@@ -392,7 +392,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 photoWrapper.appendChild(recVideo);
                 showVideo();
                 if (!isMuted) {
-                    changeSound(true); // Stop the background sound
+                    setMuted(true); // Stop the background sound
                 }
 
                 // Set the has of the page
@@ -527,7 +527,7 @@ window.addEventListener("hashchange", function() {
 
     // Restart the sound if it is not muted
     if (!isMuted) {
-        changeSound(false);
+        setMuted(false);
     }
 
     // Hide the video wrapper
@@ -592,7 +592,7 @@ function saveMetrics(type) {
 //     }
 // }
 
-function changeSound(muted)
+function setMuted(muted)
 {
     for (const element of elements) {
         if (element.audioElement) {
