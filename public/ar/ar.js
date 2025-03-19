@@ -30,11 +30,11 @@ const volOff = 0.0;
 const loadVideo = function(path, poster) {
     return new Promise((resolve, reject) => {
         const video = document.createElement("video");
-        video.addEventListener('loadeddata', () => {
-            video.setAttribute('loop', true);
-            video.setAttribute('playsinline', true);
-            video.setAttribute('muted', true);
-            // video.setAttribute('poster', poster);
+        video.addEventListener('loadedmetadata', () => {
+            video.setAttribute('loop', '');
+            video.setAttribute('playsinline', '');
+            video.setAttribute('muted', '');
+            video.setAttribute('poster', poster);
             console.log("Finished loading: " + path);
             resolve(video);
         });
