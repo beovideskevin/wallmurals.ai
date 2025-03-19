@@ -442,8 +442,8 @@ document.getElementById("shareVideoBtn").addEventListener('click', function() {
     const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
     const file = new File([videoBlob], sanitized, {mimeType: videoMimeShare});
     const files = [file];
-    if (navigator.canShare && navigator.canShare({files})) {
-        try {
+    // if (navigator.canShare && navigator.canShare({files})) {
+        // try {
             navigator.share({
                 files: files,
                 title: artwork.tagline,
@@ -454,12 +454,12 @@ document.getElementById("shareVideoBtn").addEventListener('click', function() {
                     alert(error);
                 });
             saveMetrics("sharevideo");
-        }
-        catch (error) {
-            console.error('Error navigator.canShare:', error);
-            alert(error);
-        }
-    }
+        // }
+        // catch (error) {
+        //     console.error('Error navigator.canShare:', error);
+        //     alert(error);
+        // }
+    // }
 });
 
 /**
