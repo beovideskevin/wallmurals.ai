@@ -451,11 +451,13 @@ document.addEventListener('DOMContentLoaded', async function() {
                 })
                 .catch((error) => {
                     console.log("Error sharing video:", error);
+                    alert(error);
                 });
                 saveMetrics("sharevideo");
             } 
             catch (error) {
                 console.error('Error navigator.canShare:', error);
+                alert(error);
             }
         }
     });
