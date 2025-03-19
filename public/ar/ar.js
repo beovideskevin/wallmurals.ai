@@ -294,173 +294,172 @@ document.addEventListener('DOMContentLoaded', async function() {
             locError.style.display = "flex";
         }
     }
+});
 
-    /** 
-     * Switches the camera from environment to user. 
-     * I had to badly patch the file ar-image-three.prof.js to make this work.
-     */ 
-    document.getElementById("switchBtn").addEventListener('click', function() {
-        // If the value is null, the result should be user since the default is environment
-        window.cameraFacing = window.cameraFacing == "user" ? "environment" : "user";
-        localStorage.setItem('cameraFacing', window.cameraFacing);
-        restart();
-    });
+/**
+ * Switches the camera from environment to user.
+ * I had to badly patch the file ar-image-three.prof.js to make this work.
+ */
+document.getElementById("switchBtn").addEventListener('click', function() {
+    // If the value is null, the result should be user since the default is environment
+    window.cameraFacing = window.cameraFacing == "user" ? "environment" : "user";
+    localStorage.setItem('cameraFacing', window.cameraFacing);
+    restart();
+});
 
-    /** 
-     * If there is audio, mute and unmute it 
-     */
-    document.getElementById("soundBtn").addEventListener('click', function() {
-        changeSound(volOff);
-        isMuted = true;
-        showMuteBtn();
-    });
+/**
+ * If there is audio, mute and unmute it
+ */
+document.getElementById("soundBtn").addEventListener('click', function() {
+    changeSound(volOff);
+    isMuted = true;
+    showMuteBtn();
+});
 
-    document.getElementById("muteBtn").addEventListener('click', function() {
-        changeSound(volOn);
-        isMuted = false;
-        hideMuteBtn();
-    });
+document.getElementById("muteBtn").addEventListener('click', function() {
+    changeSound(volOn);
+    isMuted = false;
+    hideMuteBtn();
+});
 
-    /**
-     * Saves the video and shows video wrapper
-     */
-    document.getElementById("recVideoBtn").addEventListener('click', function() {
-        hideRecBtn();
-        recordedChunks = [];
-        videoBlob = null;
-        copyRenderedCanvas(canvas);
-        const poster = canvas.toDataURL();
+/**
+ * Saves the video and shows video wrapper
+ */
+document.getElementById("recVideoBtn").addEventListener('click', function() {
+    hideRecBtn();
+    recordedChunks = [];
+    videoBlob = null;
+    copyRenderedCanvas(canvas);
+    const poster = canvas.toDataURL();
 
-        if (!audioCtx) {
-            audioCtx = new AudioContext();
-            for (const element of elements) {
-                const source = audioCtx.createMediaElementSource(element.audioElement);
-                source.connect(audioCtx.destination);
-                const destination = audioCtx.createMediaStreamDestination();
-                source.connect(destination);
-                streamArray.push(...destination.stream.getAudioTracks());
-            }
+    if (!audioCtx) {
+        audioCtx = new AudioContext();
+        for (const element of elements) {
+            const source = audioCtx.createMediaElementSource(element.audioElement);
+            source.connect(audioCtx.destination);
+            const destination = audioCtx.createMediaStreamDestination();
+            source.connect(destination);
+            streamArray.push(...destination.stream.getAudioTracks());
         }
+    }
 
-        const combinedStream = new MediaStream(streamArray);
-        mediaRecorder = new MediaRecorder(combinedStream, {
-            // audioBitsPerSecond: 128000,
-            // videoBitsPerSecond: 5000000, // 2500000,
-            mimeType: videoMimeType
-        });
-        mediaRecorder.onerror = (event) => {
-            console.log(event);
-            showRecBtn();
-        };
-        mediaRecorder.addEventListener("dataavailable", function(event) {
-            if (event.data.size > 0) {
-                recordedChunks.push(event.data);
+    const combinedStream = new MediaStream(streamArray);
+    mediaRecorder = new MediaRecorder(combinedStream, {
+        // audioBitsPerSecond: 128000,
+        // videoBitsPerSecond: 5000000, // 2500000,
+        mimeType: videoMimeType
+    });
+    mediaRecorder.onerror = (event) => {
+        console.log(event);
+        showRecBtn();
+    };
+    mediaRecorder.addEventListener("dataavailable", function(event) {
+        if (event.data.size > 0) {
+            recordedChunks.push(event.data);
+        }
+    });
+    mediaRecorder.addEventListener("stop", function() {
+        showRecBtn();
+        if (recordedChunks.length == 0) {
+            console.log("No data was recorded!");
+            return;
+        }
+        videoBlob = new Blob(recordedChunks, {type: videoMimeType});
+        const url = URL.createObjectURL(videoBlob);
+        const recVideo = document.createElement("video");
+        recVideo.addEventListener('loadedmetadata', () => {
+            // Set the details of the video
+            recVideo.setAttribute('id', 'videoCanvas');
+            recVideo.setAttribute('loop', 'true');
+            recVideo.setAttribute('playsinline', 'true');
+            recVideo.setAttribute('poster', poster);
+
+            // Assign the video to an element in the UI
+            const photoWrapper = document.getElementById("videoWrapper");
+            photoWrapper.appendChild(recVideo);
+            showVideo();
+            if (!isMuted) {
+                changeSound(volOff); // Stop the background sound
             }
+
+            // Set the has of the page
+            hashLocation = Date.now();
+            window.location.hash = hashLocation;
         });
-        mediaRecorder.addEventListener("stop", function() {
-            showRecBtn();
-            if (recordedChunks.length == 0) {
-                console.log("No data was recorded!");
-                return;
-            }
-            videoBlob = new Blob(recordedChunks, {type: videoMimeType}); 
-            const url = URL.createObjectURL(videoBlob);
-            const recVideo = document.createElement("video");
-            recVideo.addEventListener('loadedmetadata', () => {
-                // Set the details of the video
-                recVideo.setAttribute('id', 'videoCanvas');
-                recVideo.setAttribute('loop', 'true');
-                recVideo.setAttribute('playsinline', 'true');
-                recVideo.setAttribute('poster', poster);
-
-                // Assign the video to an element in the UI 
-                const photoWrapper = document.getElementById("videoWrapper");
-                photoWrapper.appendChild(recVideo);
-                showVideo();
-                if (!isMuted) {
-                    changeSound(volOff); // Stop the background sound
-                }
-
-                // Set the has of the page
-                hashLocation = Date.now();
-                window.location.hash = hashLocation;
-            });
-            recVideo.src = url;
-            recVideo.preload = "metadata";
-            saveMetrics("recvideo");
-        });
-        mediaRecorder.start();
-        recFrameId = setInterval(function() {
-            copyRenderedCanvas(canvas);
-        }, 1000 / frameRate);      
+        recVideo.src = url;
+        recVideo.preload = "metadata";
+        saveMetrics("recvideo");
     });
+    mediaRecorder.start();
+    recFrameId = setInterval(function() {
+        copyRenderedCanvas(canvas);
+    }, 1000 / frameRate);
+});
 
-    /**
-     * Stops video recording
-     */
-    document.getElementById("stopRecVideoBtn").addEventListener('click', function() {
-        clearInterval(recFrameId);
-        recFrameId = null;
-        mediaRecorder.stop();
-    });
-    
-    /**
-     * The back button just goes back in the history, the onhashchange event ius the one that modifies the UI
-     */
-    document.getElementById("backVideoBtn").addEventListener('click', function() {
-        history.back();
-    });
+/**
+ * Stops video recording
+ */
+document.getElementById("stopRecVideoBtn").addEventListener('click', function() {
+    clearInterval(recFrameId);
+    recFrameId = null;
+    mediaRecorder.stop();
+});
 
-    /**
-     *  Play the video
-     */
-    document.getElementById("playVideoBtn").addEventListener('click', function() {
-        hidePlayBtn();
-        const recVideo = document.getElementById("videoCanvas");
-        recVideo.loop = true;
-        recVideo.playsinline = true;
-        recVideo.muted = false;
-        recVideo.play();
-    });
+/**
+ * The back button just goes back in the history, the onhashchange event ius the one that modifies the UI
+ */
+document.getElementById("backVideoBtn").addEventListener('click', function() {
+    history.back();
+});
 
-    /**
-     * Stop the video
-     */
-    document.getElementById("stopVideoBtn").addEventListener('click', function() {
-        showPlayBtn();
-        const recVideo = document.getElementById("videoCanvas");
-        recVideo.pause();
-        recVideo.muted = true;
-    });
+/**
+ *  Play the video
+ */
+document.getElementById("playVideoBtn").addEventListener('click', function() {
+    hidePlayBtn();
+    const recVideo = document.getElementById("videoCanvas");
+    recVideo.loop = true;
+    recVideo.playsinline = true;
+    recVideo.muted = false;
+    recVideo.play();
+});
 
-    /**
-     * Shares the video
-     */
-    document.getElementById("shareVideoBtn").addEventListener('click', function() {
-        const filename = hashLocation + videoExt;
-        const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
-        const file = new File([videoBlob], sanitized, {mimeType: videoMimeShare});
-        const files = [file];
-        if (navigator.canShare && navigator.canShare({files})) {
-            try {
-                navigator.share({
-                    files: files,
-                    title: artwork.tagline,
-                    text: artwork.tagline,
-                    url: "https://wallmurals.ai",
-                })
+/**
+ * Stop the video
+ */
+document.getElementById("stopVideoBtn").addEventListener('click', function() {
+    showPlayBtn();
+    const recVideo = document.getElementById("videoCanvas");
+    recVideo.pause();
+    recVideo.muted = true;
+});
+
+/**
+ * Shares the video
+ */
+document.getElementById("shareVideoBtn").addEventListener('click', function() {
+    const filename = hashLocation + videoExt;
+    const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
+    const file = new File([videoBlob], sanitized, {mimeType: videoMimeShare});
+    const files = [file];
+    if (navigator.canShare && navigator.canShare({files})) {
+        try {
+            navigator.share({
+                files: files,
+                title: artwork.tagline,
+                text: artwork.tagline,
+            })
                 .catch((error) => {
                     console.log("Error sharing video:", error);
                     alert(error);
                 });
-                saveMetrics("sharevideo");
-            } 
-            catch (error) {
-                console.error('Error navigator.canShare:', error);
-                alert(error);
-            }
+            saveMetrics("sharevideo");
         }
-    });
+        catch (error) {
+            console.error('Error navigator.canShare:', error);
+            alert(error);
+        }
+    }
 });
 
 /**
