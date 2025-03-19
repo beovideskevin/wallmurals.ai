@@ -107,24 +107,9 @@ const arLoc = async function (req, res, next) {
     res.json(null);
 }
 
-/* POST AR page. */
-const createAr = async function (req, res, next) {
-}
-
-/* PUT AR page. */
-const editAr = async function (req, res, next) {
-}
-
-/* DELETE AR page. */
-const deleteAr = async function (req, res, next) {
-}
-
 module.exports = {
     arLoc,
     arRoute,
     arId,
     ar,
-    createAr,
-    editAr,
-    deleteAr
 };

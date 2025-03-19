@@ -3,6 +3,7 @@ import { GLTFLoader } from "/ar/GLTFLoader.js";
 
 // Declarations
 window.cameraFacing = false;
+const ttl = 30 * 60 * 1000; // 30 min in milliseconds
 var mindarThree = null;
 var elements = [];
 var hashLocation = "";
@@ -192,40 +193,40 @@ const setup = async function() {
 /**
  * Start the AR system
  */
-const start = async function() {
-    if (!mindarThree) {
-        return;
-    }
-    await mindarThree.start();
-    hideSplash();
-}
+// const start = async function() {
+//     if (!mindarThree) {
+//         return;
+//     }
+//     await mindarThree.start();
+//     hideSplash();
+// }
 
 /**
  * Stop the AR system
  */
-const stop = async function () {
-    if (!mindarThree) {
-        return;
-    }
-    showSplash();
-    await mindarThree.stop();
-
-    stopAllAudio();
-
-    // Fixing a bug in the AR system, when the camera switches
-    for (let index=0; index < mindarThree.anchors.length; index++) {
-        mindarThree.anchors[index].group.visible=false;
-    }
-}
+// const stop = async function () {
+//     if (!mindarThree) {
+//         return;
+//     }
+//     showSplash();
+//     await mindarThree.stop();
+//
+//     stopAllAudio();
+//
+//     // Fixing a bug in the AR system, when the camera switches
+//     for (let index=0; index < mindarThree.anchors.length; index++) {
+//         mindarThree.anchors[index].group.visible=false;
+//     }
+// }
 
 /** 
  * Very destructive restart, needed because of a bug with the AR system, when you switched cameras 
  * the video didn't go away 
  */
-const restart = function() {
-    stop();
-    setTimeout(start(), 500);
-}
+// const restart = function() {
+//     stop();
+//     setTimeout(start(), 500);
+// }
 
 /**
  * This is where everything starts
@@ -241,8 +242,11 @@ document.addEventListener('DOMContentLoaded', async function() {
             videoExt = ".mp4";
         }
     }
+
     // Get the camera setting
-    window.cameraFacing = localStorage.getItem('cameraFacing');
+    // window.cameraFacing = localStorage.getItem('cameraFacing');
+    window.cameraFacing = getWithExpiry('cameraFacing');
+
     // Get the show started
     window.location.hash = "";
 
@@ -251,6 +255,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     const canvasStream = canvas.captureStream(frameRate);
     streamArray = [...canvasStream.getVideoTracks()];
 
+    // Get the artwork from the storage if needed
+    artwork = artwork || getWithExpiry('artwork');
     if (artwork) {
         setup();
     }
@@ -275,6 +281,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                         return;
                     }
                     artwork = content;
+                    setWithExpiry('artwork', artwork);
                     setup();
                 }, 
                 // Error
@@ -302,8 +309,14 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById("switchBtn").addEventListener('click', function() {
         // If the value is null, the result should be user since the default is environment
         window.cameraFacing = window.cameraFacing == "user" ? "environment" : "user";
-        localStorage.setItem('cameraFacing', window.cameraFacing);
-        restart();
+        // localStorage.setItem('cameraFacing', window.cameraFacing);
+        setWithExpiry('cameraFacing', window.cameraFacing);
+
+        // This doesn't work, the bug is that the target does not dissappear
+        // restart();
+
+        // Try to refresh using the cache
+        window.location.reload(false);
     });
 
     /**
@@ -472,7 +485,12 @@ screen.orientation.addEventListener("change", function(event) {
         refresh = !refresh;
         return;
     }
-    restart();
+
+    // This doesn't work, the bug is that the target does not dissappear
+    // restart();
+
+    // Try to refresh using the cache
+    window.location.reload(false);
 });
 
 /**
@@ -481,7 +499,7 @@ screen.orientation.addEventListener("change", function(event) {
  */
 window.addEventListener('pageshow', function(event) {
     if (event.persisted) {
-        window.location.reload();
+        window.location.reload(false);
     }
 });
 
@@ -499,7 +517,11 @@ window.addEventListener("hashchange", function() {
     // There is a pending refresh
     if (refresh) {
         refresh = false;
-        restart();
+        // This doesn't work, the bug is that the target does not dissappear
+        // restart();
+
+        // Try to refresh using the cache
+        window.location.reload(false);
     }
 
     // Restart the sound if it is not muted
@@ -644,4 +666,30 @@ function hidePlayBtn()
 {
     document.getElementById("playVideoBtn").style.display = "none";
     document.getElementById("stopVideoBtn").style.display = "block";
+}
+
+/**
+ * Storage helpers
+ */
+function setWithExpiry(key, value) {
+    const now = new Date();
+    const item = {
+        value: value,
+        expiry: now.getTime() + ttl,
+    };
+    localStorage.setItem(key, JSON.stringify(item));
+}
+
+function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key);
+    if (!itemStr) {
+        return null;
+    }
+    const item = JSON.parse(itemStr);
+    const now = new Date();
+    if (now.getTime() > item.expiry) {
+        localStorage.removeItem(key);
+        return null;
+    }
+    return item.value;
 }
