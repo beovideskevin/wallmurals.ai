@@ -258,6 +258,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Get the artwork from the storage if needed
     artwork = artwork || getWithExpiry('artwork');
     if (artwork) {
+        console.log("from storage", artwork);
         setup();
     }
     else {
@@ -281,6 +282,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                         return;
                     }
                     artwork = content;
+                    console.log("from network", artwork);
                     setWithExpiry('artwork', artwork);
                     setup();
                 }, 
@@ -316,7 +318,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         // restart();
 
         // Try to refresh using the cache
-        window.location.reload(false);
+        window.location.reload();
     });
 
     /**
@@ -490,7 +492,7 @@ screen.orientation.addEventListener("change", function(event) {
     // restart();
 
     // Try to refresh using the cache
-    window.location.reload(false);
+    window.location.reload();
 });
 
 /**
@@ -499,7 +501,7 @@ screen.orientation.addEventListener("change", function(event) {
  */
 window.addEventListener('pageshow', function(event) {
     if (event.persisted) {
-        window.location.reload(false);
+        window.location.reload();
     }
 });
 
@@ -521,7 +523,7 @@ window.addEventListener("hashchange", function() {
         // restart();
 
         // Try to refresh using the cache
-        window.location.reload(false);
+        window.location.reload();
     }
 
     // Restart the sound if it is not muted
@@ -685,11 +687,17 @@ function getWithExpiry(key) {
     if (!itemStr) {
         return null;
     }
-    const item = JSON.parse(itemStr);
-    const now = new Date();
-    if (now.getTime() > item.expiry) {
-        localStorage.removeItem(key);
+    try {
+        const item = JSON.parse(itemStr);
+        const now = new Date();
+        if (now.getTime() > item.expiry) {
+            localStorage.removeItem(key);
+            return null;
+        }
+        return item.value;
+    }
+    catch(e) {
+        console.log("Invalid item in storage:", itemStr);
         return null;
     }
-    return item.value;
 }
