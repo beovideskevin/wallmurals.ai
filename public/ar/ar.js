@@ -90,7 +90,7 @@ const setup = async function() {
         if (artwork.animations[i].audio) {
             showSoundBtn();
             elements[i].audioElement = new Audio(artwork.animations[i].audio);
-            elements[i].audioElement.muted = true;
+            elements[i].audioElement.muted = isMuted;
         }
 
         if (artwork.animations[i].video) {
@@ -350,6 +350,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             for (const element of elements) {
                 const source = audioCtx.createMediaElementSource(element.audioElement);
                 source.connect(audioCtx.destination);
+                source.muted = isMuted;
                 const destination = audioCtx.createMediaStreamDestination();
                 source.connect(destination);
                 streamArray.push(...destination.stream.getAudioTracks());
