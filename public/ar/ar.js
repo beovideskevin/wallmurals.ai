@@ -17,6 +17,7 @@ var streamArray = []
 var recordedChunks = [];
 var videoBlob = null;
 var videoMimeType = "video/webm; codecs=vp9,opus";
+var videoMimeShare = "video/webm";
 var videoExt = ".webm";
 const frameRate = 30; // FPS
 const volOn = 0.5;
@@ -233,8 +234,10 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Change the mime type for iPhone and safari
     if (!MediaRecorder.isTypeSupported(videoMimeType)) {
         videoMimeType = "video/webm; codecs=avc1,opus";
+        videoMimeShare = "video/webm";
         if (!MediaRecorder.isTypeSupported(videoMimeType)) {
             videoMimeType = "video/mp4;codecs:h264";
+            videoMimeShare = "video/mp4";
             videoExt = ".mp4";
         }
     }
@@ -434,9 +437,9 @@ document.addEventListener('DOMContentLoaded', async function() {
      * Shares the video
      */
     document.getElementById("shareVideoBtn").addEventListener('click', function() {
-        const filename = artwork.tagline + "-" + hashLocation + videoExt;
+        const filename = hashLocation + videoExt;
         const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
-        const file = new File([videoBlob], sanitized, {mimeType: videoMimeType});
+        const file = new File([videoBlob], sanitized, {mimeType: videoMimeShare});
         const files = [file];
         if (navigator.canShare && navigator.canShare({files})) {
             try {
@@ -447,12 +450,12 @@ document.addEventListener('DOMContentLoaded', async function() {
                     url: "https://wallmurals.ai",
                 })
                 .catch((error) => {
-                    console.log(error);
+                    console.log("Error sharing video:", error);
                 });
                 saveMetrics("sharevideo");
             } 
             catch (error) {
-                console.error('Error sharing video:', error);
+                console.error('Error navigator.canShare:', error);
             }
         }
     });
