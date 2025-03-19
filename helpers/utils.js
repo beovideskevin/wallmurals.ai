@@ -211,7 +211,7 @@ const collectFiles = async function(req) {
                             || file.path.endsWith('.glb2')
                             || file.path.endsWith('.gl')
                     );
-                    model = mainFile ? `/public/uploads/${user}/models/${uuid}/${mainFile}`
+                    model = mainFile ? `/uploads/${user}/models/${uuid}/${mainFile}`
                         : "I can't find the main model file in the zip archive.";
                 }
                 else {
@@ -222,7 +222,7 @@ const collectFiles = async function(req) {
                             || file.path.endsWith('.glb2')
                             || file.path.endsWith('.gl')
                     );
-                    model = mainFile ? `/public/uploads/${user}/models/${uuid}/${mainFile.path}`
+                    model = mainFile ? `/uploads/${user}/models/${uuid}/${mainFile.path}`
                         : "I can't find the main model file in the zip archive.";
                 }
             }
