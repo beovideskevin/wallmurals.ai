@@ -584,14 +584,14 @@ function saveMetrics(type) {
  * UI helpers
  */
 
-function stopAllAudio()
-{
-    for (const element of elements) {
-        if (element.audioElement) {
-            element.audioElement.pause();
-        }
-    }
-}
+// function stopAllAudio()
+// {
+//     for (const element of elements) {
+//         if (element.audioElement) {
+//             element.audioElement.pause();
+//         }
+//     }
+// }
 
 function changeSound(vol)
 {

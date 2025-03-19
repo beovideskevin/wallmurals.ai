@@ -24,6 +24,7 @@ const arRoute = async function (req, res, next) {
 
     openMetric(req, artwork.user, artwork.id, uuid);
 
+    // Cache-Control: max-age=3600
     res.render('ar', {
         uuid: uuid,
         artwork: JSON.stringify(artwork)
@@ -52,6 +53,7 @@ const arId = async function (req, res, next) {
 
             openMetric(req, artwork.user, artwork.id, uuid);
 
+            // Cache-Control: max-age=3600
             res.render('ar', {
                 uuid: uuid,
                 artwork: JSON.stringify(artwork)
