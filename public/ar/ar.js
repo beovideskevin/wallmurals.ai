@@ -32,10 +32,9 @@ const loadVideo = function(path, poster) {
         const video = document.createElement("video");
         video.addEventListener('loadedmetadata', () => {
             video.setAttribute('loop', '');
-            video.setAttribute('autoPlay', '');
             video.setAttribute('playsInline', '');
             video.setAttribute('muted', '');
-            // video.setAttribute('poster', poster);
+            video.setAttribute('poster', poster);
             console.log("Finished loading: " + path);
             resolve(video);
         });
@@ -116,6 +115,7 @@ const setup = async function() {
                     targetFound = true;
                     if (elements[i].videoElement) {
                         elements[i].videoElement.currentTime = 0;
+                        elements[i].videoElement.muted = true;
                         elements[i].videoElement.play();
                     }
                     if (elements[i].audioElement) {
