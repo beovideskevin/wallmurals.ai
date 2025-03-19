@@ -33,9 +33,9 @@ const loadVideo = function(path, poster) {
         video.addEventListener('loadedmetadata', () => {
             video.setAttribute('loop', '');
             video.setAttribute('autoPlay', '');
-            video.setAttribute('playsinline', '');
+            video.setAttribute('playsInline', '');
             video.setAttribute('muted', '');
-            video.setAttribute('poster', poster);
+            // video.setAttribute('poster', poster);
             console.log("Finished loading: " + path);
             resolve(video);
         });
