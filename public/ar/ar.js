@@ -21,8 +21,6 @@ var videoMimeType = "video/webm; codecs=vp9,opus"; // video/mp4; codecs="avc1.42
 var videoMimeShare = "video/webm";
 var videoExt = ".webm";
 const frameRate = 30; // FPS
-const volOn = 0.5;
-const volOff = 0.0;
 
 /**
  * Loads the video
@@ -92,7 +90,7 @@ const setup = async function() {
         if (artwork.animations[i].audio) {
             showSoundBtn();
             elements[i].audioElement = new Audio(artwork.animations[i].audio);
-            elements[i].audioElement.volume = volOff;
+            elements[i].audioElement.muted = true;
         }
 
         if (artwork.animations[i].video) {
@@ -326,14 +324,14 @@ document.addEventListener('DOMContentLoaded', async function() {
      * If there is audio, mute and unmute it
      */
     document.getElementById("soundBtn").addEventListener('click', function() {
-        changeSound(volOff);
         isMuted = true;
+        changeSound(isMuted);
         showMuteBtn();
     });
 
     document.getElementById("muteBtn").addEventListener('click', function() {
-        changeSound(volOn);
         isMuted = false;
+        changeSound(isMuted);
         hideMuteBtn();
     });
 
@@ -394,7 +392,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 photoWrapper.appendChild(recVideo);
                 showVideo();
                 if (!isMuted) {
-                    changeSound(volOff); // Stop the background sound
+                    changeSound(true); // Stop the background sound
                 }
 
                 // Set the has of the page
@@ -529,7 +527,7 @@ window.addEventListener("hashchange", function() {
 
     // Restart the sound if it is not muted
     if (!isMuted) {
-        changeSound(volOn);
+        changeSound(false);
     }
 
     // Hide the video wrapper
@@ -594,11 +592,11 @@ function saveMetrics(type) {
 //     }
 // }
 
-function changeSound(vol)
+function changeSound(muted)
 {
     for (const element of elements) {
         if (element.audioElement) {
-            element.audioElement.volume = vol;
+            element.audioElement.muted = muted;
         }
     }
 }
