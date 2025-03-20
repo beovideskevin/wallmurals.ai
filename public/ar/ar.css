@@ -61,7 +61,7 @@ body {
   border-top: 2px solid #ffffff;
 }
 
-#locError {
+#locError, #muralsError {
   position: absolute;
   display: none;
   align-items: center;
@@ -77,7 +77,7 @@ body {
   background-color: #000;
 }
 
-#locError .content {
+#locError .content, #muralsError .content {
   background: #000;
   color: #fff;
   opacity: .8;
@@ -87,7 +87,7 @@ body {
   min-height: 50vh;
 }
 
-#locError h1 {
+#locError h1, #muralsError h1 {
   display: block;
   font-size: 2em;
   margin-block-start: 0.67em;
@@ -98,7 +98,7 @@ body {
   unicode-bidi: isolate;
 }
 
-#locError p {
+#locError p, #muralsError p {
   display: block;
   margin-block-start: 1em;
   margin-block-end: 1em;
@@ -107,7 +107,7 @@ body {
   unicode-bidi: isolate;
 }
 
-#locError a {
+#locError a, #muralsError a {
   color: #ffffff;
 }
 

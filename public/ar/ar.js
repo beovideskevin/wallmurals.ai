@@ -221,6 +221,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
     else {
         const locError = document.getElementById('locError');
+        const muralsError = document.getElementById('muralsError');
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 // Success
@@ -229,14 +230,12 @@ document.addEventListener('DOMContentLoaded', async function() {
                     const longitude = position.coords.longitude;
                     const response = await fetch(`/ar/location/${latitude}/${longitude}/${uuid}`);
                     if (!response.ok || response.status != 200) {
-                        alert("There are no augmented reality murals in your area.");
-                        window.location = "https://www.wallmurals.ai/home";
+                        muralsError.style.display = "flex";
                         return;
                     }
                     const content = await response.json();
                     if (!content) {
-                        alert("There are no augmented reality murals in your area.");
-                        window.location = "https://www.wallmurals.ai/home";
+                        muralsError.style.display = "flex";
                         return;
                     }
                     artwork = content;
@@ -321,6 +320,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             });
             mediaRecorder.onerror = (event) => {
                 console.log(event);
+                alert("There was an error recording the video :(");
                 showRecBtn();
             };
             mediaRecorder.addEventListener("dataavailable", function(event) {
@@ -332,6 +332,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 showRecBtn();
                 if (recordedChunks.length == 0) {
                     console.log("No data was recorded!");
+                    alert("There was an error recording the video :(");
                     return;
                 }
                 videoBlob = new Blob(recordedChunks, {type: videoMimeType});
@@ -359,10 +360,15 @@ document.addEventListener('DOMContentLoaded', async function() {
             });
         }
 
-        mediaRecorder.start();
-        recFrameId = setInterval(function() {
-            copyRenderedCanvas(canvas);
-        }, 1000 / frameRate);
+        if (mediaRecorder) {
+            mediaRecorder.start();
+            recFrameId = setInterval(function() {
+                copyRenderedCanvas(canvas);
+            }, 1000 / frameRate);
+        }
+        else {
+            alert("There was an error recording the video :(");
+        }
     });
 
     /**
@@ -440,7 +446,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 screen.orientation.addEventListener("change", function(event) {
     if (window.location.hash != "") {
         // Don't refresh when user is watching and sharing the video
-        refresh = !refresh;
+        refresh = !refresh; // Needs testing, what happens when I rotate the phone two times?
         return;
     }
 
