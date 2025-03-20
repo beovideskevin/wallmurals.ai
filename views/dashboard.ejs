@@ -144,7 +144,7 @@
 
                     <div class="flex flex-wrap items-center justify-center text-center gap-3 artworkBtns">
                         <a class="w-1/2 py-2 px-6 rounded-md text-baseitems-center justify-center border border-primary text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium" href="/dashboard/edit/<%= artwork.id %>">Edit Mural</a>
-                        <a class="w-1/2 py-2 px-6 rounded-md text-baseitems-center justify-center border border-red-50 text-red-800 bg-red-50 hover:bg-red-200 transition-all duration-500 font-medium" href="javascript:;" onclick="submitDel('<%= artwork.id %>')">Delete Mural</a>
+                        <a class="w-1/2 py-2 px-6 rounded-md text-baseitems-center justify-center border border-red-50 text-red-800 bg-red-50 hover:bg-red-200 transition-all duration-500 font-medium" href="javascript:" onclick="submitDel('<%= artwork.id %>')">Delete Mural</a>
                         <form class="hidden" id="delete<%= artwork.id %>" method="POST" action="/dashboard/delete">
                             <input type="hidden" name="_csrf" value="<%= csrf %>">
                             <input type="hidden" value="<%= artwork.id %>" name="id">

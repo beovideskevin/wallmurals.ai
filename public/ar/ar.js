@@ -7,7 +7,6 @@ const ttl = 30 * 60 * 1000; // 30 min in milliseconds
 var mindarThree = null;
 var elements = [];
 var hashLocation = "";
-var targetFound = false;
 var refresh = false;
 var isMuted = true;
 var currentlyPlaying = null;
@@ -91,10 +90,11 @@ const setup = async function() {
         if (artwork.animations[i].audio) {
             showSoundBtn();
             elements[i].audioElement = new Audio(artwork.animations[i].audio);
+            elements[i].audioElement.currentTime = 0;
         }
 
+        // If the artwork is a video
         if (artwork.animations[i].video) {
-            // If the artwork is a video
             loadVideo(artwork.animations[i].video, artwork.animations[i].poster).then(function(videoElement) {
                 let texture = new window.MINDAR.IMAGE.THREE.VideoTexture(videoElement);
                 let geometry = new window.MINDAR.IMAGE.THREE.PlaneGeometry(1, artwork.animations[i].height / artwork.animations[i].width);
@@ -104,21 +104,19 @@ const setup = async function() {
                 let plane = new window.MINDAR.IMAGE.THREE.Mesh(geometry, material);
                 anchor.group.add(plane);
                 elements[i].videoElement = videoElement;
-                
+                elements[i].videoElement.currentTime = 0;
+                elements[i].videoElement.muted = true;
+
                 // Set the events
                 anchor.onTargetFound = () => {
                     if (window.location.hash != "") {
                         return;
                     }
-                    targetFound = true;
                     if (elements[i].videoElement) {
-                        elements[i].videoElement.currentTime = 0;
-                        elements[i].videoElement.muted = true;
                         elements[i].videoElement.play();
                     }
                     if (elements[i].audioElement) {
                         currentlyPlaying = elements[i].audioElement;
-                        elements[i].audioElement.currentTime = 0;
                         if (!isMuted) {
                             elements[i].audioElement.play();
                         }
@@ -126,21 +124,23 @@ const setup = async function() {
                     saveMetrics("targetfound");
                 }
                 anchor.onTargetLost = () => {
-                    targetFound = false;
                     if (elements[i].videoElement) {
                         elements[i].videoElement.pause();
+                        elements[i].videoElement.currentTime = 0;
                     }
                     if (elements[i].audioElement) {
                         currentlyPlaying = null;
                         elements[i].audioElement.pause();
+                        elements[i].audioElement.currentTime = 0;
                     }
                     mindarThree.ui.showScanning();
                     saveMetrics("targetlost");
                 }
             });
         }
-        else if (artwork.animations[i].model) {
-            // If the artwork is a model
+
+        // If the artwork is a model
+        if (artwork.animations[i].model) {
             loadGLTF(artwork.animations[i].model).then(function(modelElement) {
                 modelElement.scene.scale.set(0.1, 0.1, 0.1);
                 modelElement.scene.position.set(0, -0.4, 0);
@@ -154,10 +154,8 @@ const setup = async function() {
                     if (window.location.hash != "") {
                         return;
                     }
-                    targetFound = true;
                     if (elements[i].audioElement) {
                         currentlyPlaying = elements[i].audioElement;
-                        elements[i].audioElement.currentTime = 0;
                         if (!isMuted) {
                             elements[i].audioElement.play();
                         }
@@ -165,19 +163,15 @@ const setup = async function() {
                     saveMetrics("targetfound");
                 }
                 anchor.onTargetLost = () => {
-                    targetFound = false;
                     if (elements[i].audioElement) {
                         currentlyPlaying = null;
                         elements[i].audioElement.pause();
+                        elements[i].audioElement.currentTime = 0;
                     }
                     mindarThree.ui.showScanning();
                     saveMetrics("targetlost");
                 }
             });   
-        }
-        else {
-            alert("CRITICAL: NO RESOURCE TO DISPLAY");
-            return;
         }
     }
 
@@ -198,44 +192,6 @@ const setup = async function() {
 }
 
 /**
- * Start the AR system
- */
-// const start = async function() {
-//     if (!mindarThree) {
-//         return;
-//     }
-//     await mindarThree.start();
-//     hideSplash();
-// }
-
-/**
- * Stop the AR system
- */
-// const stop = async function () {
-//     if (!mindarThree) {
-//         return;
-//     }
-//     showSplash();
-//     await mindarThree.stop();
-//
-//     stopAllAudio();
-//
-//     // Fixing a bug in the AR system, when the camera switches
-//     for (let index=0; index < mindarThree.anchors.length; index++) {
-//         mindarThree.anchors[index].group.visible=false;
-//     }
-// }
-
-/** 
- * Very destructive restart, needed because of a bug with the AR system, when you switched cameras 
- * the video didn't go away 
- */
-// const restart = function() {
-//     stop();
-//     setTimeout(start(), 500);
-// }
-
-/**
  * This is where everything starts
  */
 document.addEventListener('DOMContentLoaded', async function() {
@@ -251,7 +207,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     // Get the camera setting
-    // window.cameraFacing = localStorage.getItem('cameraFacing');
     window.cameraFacing = getWithExpiry('cameraFacing');
 
     // Get the show started
@@ -289,7 +244,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                         return;
                     }
                     artwork = content;
-                    console.log("from network", artwork);
                     setWithExpiry('artwork', artwork);
                     setup();
                 }, 
@@ -318,11 +272,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById("switchBtn").addEventListener('click', function() {
         // If the value is null, the result should be user since the default is environment
         window.cameraFacing = window.cameraFacing == "user" ? "environment" : "user";
-        // localStorage.setItem('cameraFacing', window.cameraFacing);
         setWithExpiry('cameraFacing', window.cameraFacing);
-
-        // This doesn't work, the bug is that the target does not dissappear
-        // restart();
 
         // Try to refresh using the cache
         window.location.reload();
@@ -335,6 +285,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         isMuted = true;
         if (currentlyPlaying) {
             currentlyPlaying.pause();
+            currentlyPlaying.currentTime = 0;
         }
         showMuteBtn();
     });
@@ -342,7 +293,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById("muteBtn").addEventListener('click', function() {
         isMuted = false;
         if (currentlyPlaying) {
-            currentlyPlaying.currentTime = 0;
             currentlyPlaying.play();
         }
         hideMuteBtn();
@@ -367,12 +317,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                 source.connect(destination);
                 streamArray.push(...destination.stream.getAudioTracks());
             }
-
-            // if (currentlyPlaying) {
-            //     showMuteBtn();
-            //     isMuted = false;
-            //     currentlyPlaying.play();
-            // }
         }
 
         const combinedStream = new MediaStream(streamArray);
@@ -413,6 +357,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 isMuted = true;
                 if (currentlyPlaying) {
                     currentlyPlaying.pause();
+                    currentlyPlaying.currentTime = 0;
                 }
 
                 // Set the has of the page
@@ -464,6 +409,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         showPlayBtn();
         const recVideo = document.getElementById("videoCanvas");
         recVideo.pause();
+        recVideo.currentTime = 0;
         recVideo.muted = true;
     });
 
@@ -485,13 +431,13 @@ document.addEventListener('DOMContentLoaded', async function() {
                 })
                 .catch((error) => {
                     console.log("Error sharing video:", error);
-                    alert(error);
+                    alert("Your device can not share the video.");
                 });
                 saveMetrics("sharevideo");
             }
             catch (error) {
                 console.error('Error navigator.canShare:', error);
-                alert(error);
+                alert("Your device can not share the video.");
             }
         }
     });
@@ -506,9 +452,6 @@ screen.orientation.addEventListener("change", function(event) {
         refresh = !refresh;
         return;
     }
-
-    // This doesn't work, the bug is that the target does not dissappear
-    // restart();
 
     // Try to refresh using the cache
     window.location.reload();
@@ -538,8 +481,6 @@ window.addEventListener("hashchange", function() {
     // There is a pending refresh
     if (refresh) {
         refresh = false;
-        // This doesn't work, the bug is that the target does not dissappear
-        // restart();
 
         // Try to refresh using the cache
         window.location.reload();
@@ -602,26 +543,7 @@ function saveMetrics(type) {
 /**
  * UI helpers
  */
-
-// function stopAllAudio()
-// {
-//     for (const element of elements) {
-//         if (element.audioElement) {
-//             element.audioElement.pause();
-//         }
-//     }
-// }
-
-function setMuted()
-{
-    for (const element of elements) {
-        if (element.audioElement) {
-            element.audioElement.pause();
-        }
-    }
-}
-
-function showSplash() 
+function showSplash()
 {
     document.getElementById("splash").style.display = "flex";
 }
