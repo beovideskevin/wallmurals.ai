@@ -125,13 +125,13 @@ const setup = async function() {
                 }
                 anchor.onTargetLost = () => {
                     if (elements[i].videoElement) {
-                        elements[i].videoElement.pause();
                         elements[i].videoElement.currentTime = 0;
+                        elements[i].videoElement.pause();
                     }
                     if (elements[i].audioElement) {
                         currentlyPlaying = null;
-                        elements[i].audioElement.pause();
                         elements[i].audioElement.currentTime = 0;
+                        elements[i].audioElement.pause();
                     }
                     mindarThree.ui.showScanning();
                     saveMetrics("targetlost");
@@ -165,8 +165,8 @@ const setup = async function() {
                 anchor.onTargetLost = () => {
                     if (elements[i].audioElement) {
                         currentlyPlaying = null;
-                        elements[i].audioElement.pause();
                         elements[i].audioElement.currentTime = 0;
+                        elements[i].audioElement.pause();
                     }
                     mindarThree.ui.showScanning();
                     saveMetrics("targetlost");
@@ -284,8 +284,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById("soundBtn").addEventListener('click', function() {
         isMuted = true;
         if (currentlyPlaying) {
-            currentlyPlaying.pause();
             currentlyPlaying.currentTime = 0;
+            currentlyPlaying.pause();
         }
         showMuteBtn();
     });
@@ -356,8 +356,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                 showVideo();
                 isMuted = true;
                 if (currentlyPlaying) {
-                    currentlyPlaying.pause();
                     currentlyPlaying.currentTime = 0;
+                    currentlyPlaying.pause();
                 }
 
                 // Set the has of the page
@@ -408,9 +408,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById("stopVideoBtn").addEventListener('click', function() {
         showPlayBtn();
         const recVideo = document.getElementById("videoCanvas");
-        recVideo.pause();
         recVideo.currentTime = 0;
         recVideo.muted = true;
+        recVideo.pause();
     });
 
     /**
