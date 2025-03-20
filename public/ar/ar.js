@@ -9,7 +9,8 @@ var elements = [];
 var hashLocation = "";
 var refresh = false;
 var isMuted = true;
-var currentlyPlaying = null;
+var currentlyPlayingVideo = null;
+var currentlyPlayingAudio = null;
 var recFrameId = null;
 var mediaRecorder = null;
 var canvas = null;
@@ -113,10 +114,13 @@ const setup = async function() {
                         return;
                     }
                     if (elements[i].videoElement) {
+                        currentlyPlayingVideo = elements[i].videoElement;
+                        elements[i].videoElement.currentTime = 0;
                         elements[i].videoElement.play();
                     }
                     if (elements[i].audioElement) {
-                        currentlyPlaying = elements[i].audioElement;
+                        currentlyPlayingAudio = elements[i].audioElement;
+                        elements[i].audioElement.currentTime = 0;
                         if (!isMuted) {
                             elements[i].audioElement.play();
                         }
@@ -125,13 +129,14 @@ const setup = async function() {
                 }
                 anchor.onTargetLost = () => {
                     if (elements[i].videoElement) {
-                        elements[i].videoElement.currentTime = 0;
+                        currentlyPlayingVideo = null;
                         elements[i].videoElement.pause();
+                        elements[i].videoElement.currentTime = 0;
                     }
                     if (elements[i].audioElement) {
-                        currentlyPlaying = null;
-                        elements[i].audioElement.currentTime = 0;
+                        currentlyPlayingAudio = null;
                         elements[i].audioElement.pause();
+                        elements[i].audioElement.currentTime = 0;
                     }
                     mindarThree.ui.showScanning();
                     saveMetrics("targetlost");
@@ -155,7 +160,8 @@ const setup = async function() {
                         return;
                     }
                     if (elements[i].audioElement) {
-                        currentlyPlaying = elements[i].audioElement;
+                        currentlyPlayingAudio = elements[i].audioElement;
+                        elements[i].audioElement.currentTime = 0;
                         if (!isMuted) {
                             elements[i].audioElement.play();
                         }
@@ -164,9 +170,9 @@ const setup = async function() {
                 }
                 anchor.onTargetLost = () => {
                     if (elements[i].audioElement) {
-                        currentlyPlaying = null;
-                        elements[i].audioElement.currentTime = 0;
+                        currentlyPlayingAudio = null;
                         elements[i].audioElement.pause();
+                        elements[i].audioElement.currentTime = 0;
                     }
                     mindarThree.ui.showScanning();
                     saveMetrics("targetlost");
@@ -283,17 +289,18 @@ document.addEventListener('DOMContentLoaded', async function() {
      */
     document.getElementById("soundBtn").addEventListener('click', function() {
         isMuted = true;
-        if (currentlyPlaying) {
-            currentlyPlaying.currentTime = 0;
-            currentlyPlaying.pause();
+        if (currentlyPlayingAudio) {
+            currentlyPlayingAudio.pause();
+            currentlyPlayingAudio.currentTime = 0;
         }
         showMuteBtn();
     });
 
     document.getElementById("muteBtn").addEventListener('click', function() {
         isMuted = false;
-        if (currentlyPlaying) {
-            currentlyPlaying.play();
+        if (currentlyPlayingAudio) {
+            currentlyPlayingAudio.currentTime = 0;
+            currentlyPlayingAudio.play();
         }
         hideMuteBtn();
     });
@@ -355,9 +362,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                 photoWrapper.appendChild(recVideo);
                 showVideo();
                 isMuted = true;
-                if (currentlyPlaying) {
-                    currentlyPlaying.currentTime = 0;
-                    currentlyPlaying.pause();
+                if (currentlyPlayingAudio) {
+                    currentlyPlayingAudio.pause();
+                    currentlyPlayingAudio.currentTime = 0;
                 }
 
                 // Set the has of the page
@@ -487,8 +494,15 @@ window.addEventListener("hashchange", function() {
     }
 
     isMuted = false;
-    if (currentlyPlaying) {
-        currentlyPlaying.play();
+    if (currentlyPlayingAudio) {
+        currentlyPlayingAudio.currentTime = 0;
+        currentlyPlayingAudio.play();
+    }
+    // Try to sync video and audio, this won't work for models
+    if (currentlyPlayingVideo) {
+        currentlyPlayingVideo.pause();
+        currentlyPlayingVideo.currentTime = 0;
+        currentlyPlayingVideo.play();
     }
 
     // Hide the video wrapper
