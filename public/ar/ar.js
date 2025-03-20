@@ -3,7 +3,6 @@ import { GLTFLoader } from "/ar/GLTFLoader.js";
 
 // Declarations
 window.cameraFacing = false;
-const ttl = 30 * 60 * 1000; // 30 min in milliseconds
 var mindarThree = null;
 var elements = [];
 var hashLocation = "";
@@ -13,12 +12,12 @@ var currentlyPlayingVideo = null;
 var currentlyPlayingAudio = null;
 var recFrameId = null;
 var mediaRecorder = null;
-var recordedChunks = [];
 var videoBlob = null;
 var videoMimeType = "video/webm; codecs=vp9,opus"; // video/mp4; codecs="avc1.424028, mp4a.40.2"
 var videoMimeShare = "video/webm";
 var videoExt = ".webm";
 const frameRate = 30; // FPS
+const ttl = 30 * 60 * 1000; // 30 min in milliseconds
 
 /**
  * Loads the video
@@ -302,9 +301,8 @@ document.addEventListener('DOMContentLoaded', async function() {
      */
     document.getElementById("recVideoBtn").addEventListener('click', function() {
         hideRecBtn();
-        recordedChunks = [];
         videoBlob = null;
-
+        const recordedChunks = [];
         const canvas = document.getElementById('record');
         const canvasStream = canvas.captureStream(frameRate);
         const streamArray = [...canvasStream.getVideoTracks()];
