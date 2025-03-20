@@ -92,7 +92,6 @@ const setup = async function() {
         if (artwork.animations[i].audio) {
             showSoundBtn();
             elements[i].audioElement = new Audio(artwork.animations[i].audio);
-            elements[i].audioElement.currentTime = 0;
         }
 
         // If the artwork is a video
@@ -114,15 +113,10 @@ const setup = async function() {
                         return;
                     }
                     if (elements[i].videoElement) {
-                        elements[i].videoElement.currentTime = 0;
                         elements[i].videoElement.play();
                     }
                     if (elements[i].audioElement) {
                         currentlyPlaying = elements[i].audioElement;
-                        elements[i].audioElement.currentTime = 0;
-                        if (source) {
-                            source.currentTime = 0;
-                        }
                         if (!isMuted) {
                             elements[i].audioElement.play();
                         }
@@ -160,10 +154,6 @@ const setup = async function() {
                     }
                     if (elements[i].audioElement) {
                         currentlyPlaying = elements[i].audioElement;
-                        elements[i].audioElement.currentTime = 0;
-                        if (source) {
-                            source.currentTime = 0;
-                        }
                         if (!isMuted) {
                             elements[i].audioElement.play();
                         }
@@ -291,7 +281,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         isMuted = true;
         if (currentlyPlaying) {
             currentlyPlaying.pause();
-            currentlyPlaying.currentTime = 0;
         }
         showMuteBtn();
     });
@@ -299,7 +288,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById("muteBtn").addEventListener('click', function() {
         isMuted = false;
         if (currentlyPlaying) {
-            currentlyPlaying.currentTime = 0;
             currentlyPlaying.play();
         }
         hideMuteBtn();
@@ -384,10 +372,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         clearInterval(recFrameId);
         recFrameId = null;
         mediaRecorder.stop();
-        isMuted = true;
         if (currentlyPlaying) {
             currentlyPlaying.pause();
-            currentlyPlaying.currentTime = 0;
         }
     });
 
@@ -404,9 +390,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById("playVideoBtn").addEventListener('click', function() {
         hidePlayBtn();
         const recVideo = document.getElementById("videoCanvas");
-        recVideo.loop = true;
-        recVideo.playsinline = true;
         recVideo.muted = false;
+        recVideo.currentTime = 0;
         recVideo.play();
     });
 
@@ -417,8 +402,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         showPlayBtn();
         const recVideo = document.getElementById("videoCanvas");
         recVideo.pause();
-        recVideo.currentTime = 0;
-        recVideo.muted = true;
     });
 
     /**
@@ -494,9 +477,7 @@ window.addEventListener("hashchange", function() {
         window.location.reload();
     }
 
-    isMuted = false;
     if (currentlyPlaying) {
-        currentlyPlaying.currentTime = 0;
         currentlyPlaying.play();
     }
 
