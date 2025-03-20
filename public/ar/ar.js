@@ -227,7 +227,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Get the artwork from the storage if needed
     artwork = artwork || getWithExpiry('artwork');
     if (artwork) {
-        console.log("from storage", artwork);
         setup();
     }
     else {
