@@ -8,10 +8,13 @@ var elements = [];
 var hashLocation = "";
 var refresh = false;
 var isMuted = true;
-var currentlyPlayingVideo = null;
-var currentlyPlayingAudio = null;
+var currentlyPlaying = null;
 var recFrameId = null;
 var mediaRecorder = null;
+var canvas = null;
+var audioCtx = null;
+var streamArray = []
+var recordedChunks = [];
 var videoBlob = null;
 var videoMimeType = "video/webm; codecs=vp9,opus"; // video/mp4; codecs="avc1.424028, mp4a.40.2"
 var videoMimeShare = "video/webm";
@@ -101,7 +104,6 @@ const setup = async function() {
                 let plane = new window.MINDAR.IMAGE.THREE.Mesh(geometry, material);
                 anchor.group.add(plane);
                 elements[i].videoElement = videoElement;
-                elements[i].videoElement.currentTime = 0;
                 elements[i].videoElement.muted = true;
 
                 // Set the events
@@ -110,12 +112,11 @@ const setup = async function() {
                         return;
                     }
                     if (elements[i].videoElement) {
-                        currentlyPlayingVideo = elements[i].videoElement;
                         elements[i].videoElement.currentTime = 0;
                         elements[i].videoElement.play();
                     }
                     if (elements[i].audioElement) {
-                        currentlyPlayingAudio = elements[i].audioElement;
+                        currentlyPlaying = elements[i].audioElement;
                         elements[i].audioElement.currentTime = 0;
                         if (!isMuted) {
                             elements[i].audioElement.play();
@@ -125,14 +126,11 @@ const setup = async function() {
                 }
                 anchor.onTargetLost = () => {
                     if (elements[i].videoElement) {
-                        currentlyPlayingVideo = null;
                         elements[i].videoElement.pause();
-                        elements[i].videoElement.currentTime = 0;
                     }
                     if (elements[i].audioElement) {
-                        currentlyPlayingAudio = null;
+                        currentlyPlaying = null;
                         elements[i].audioElement.pause();
-                        elements[i].audioElement.currentTime = 0;
                     }
                     mindarThree.ui.showScanning();
                     saveMetrics("targetlost");
@@ -156,7 +154,7 @@ const setup = async function() {
                         return;
                     }
                     if (elements[i].audioElement) {
-                        currentlyPlayingAudio = elements[i].audioElement;
+                        currentlyPlaying = elements[i].audioElement;
                         elements[i].audioElement.currentTime = 0;
                         if (!isMuted) {
                             elements[i].audioElement.play();
@@ -166,9 +164,8 @@ const setup = async function() {
                 }
                 anchor.onTargetLost = () => {
                     if (elements[i].audioElement) {
-                        currentlyPlayingAudio = null;
+                        currentlyPlaying = null;
                         elements[i].audioElement.pause();
-                        elements[i].audioElement.currentTime = 0;
                     }
                     mindarThree.ui.showScanning();
                     saveMetrics("targetlost");
@@ -213,6 +210,11 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // Get the show started
     window.location.hash = "";
+
+    // Init the recording streams
+    canvas = document.getElementById('record');
+    const canvasStream = canvas.captureStream(frameRate);
+    streamArray = [...canvasStream.getVideoTracks()];
 
     // Get the artwork from the storage if needed
     artwork = artwork || getWithExpiry('artwork');
@@ -280,18 +282,18 @@ document.addEventListener('DOMContentLoaded', async function() {
      */
     document.getElementById("soundBtn").addEventListener('click', function() {
         isMuted = true;
-        if (currentlyPlayingAudio) {
-            currentlyPlayingAudio.pause();
-            currentlyPlayingAudio.currentTime = 0;
+        if (currentlyPlaying) {
+            currentlyPlaying.pause();
+            currentlyPlaying.currentTime = 0;
         }
         showMuteBtn();
     });
 
     document.getElementById("muteBtn").addEventListener('click', function() {
         isMuted = false;
-        if (currentlyPlayingAudio) {
-            currentlyPlayingAudio.currentTime = 0;
-            currentlyPlayingAudio.play();
+        if (currentlyPlaying) {
+            currentlyPlaying.currentTime = 0;
+            currentlyPlaying.play();
         }
         hideMuteBtn();
     });
@@ -301,73 +303,67 @@ document.addEventListener('DOMContentLoaded', async function() {
      */
     document.getElementById("recVideoBtn").addEventListener('click', function() {
         hideRecBtn();
+        recordedChunks = [];
         videoBlob = null;
-        const recordedChunks = [];
-        const canvas = document.getElementById('record');
-        const canvasStream = canvas.captureStream(frameRate);
-        const streamArray = [...canvasStream.getVideoTracks()];
         copyRenderedCanvas(canvas);
         const poster = canvas.toDataURL();
 
-        const audioCtx = new AudioContext();
-        for (const element of elements) {
-            const source = audioCtx.createMediaElementSource(element.audioElement);
-            source.connect(audioCtx.destination);
-            const destination = audioCtx.createMediaStreamDestination();
-            source.connect(destination);
-            streamArray.push(...destination.stream.getAudioTracks());
+        if (!audioCtx && !mediaRecorder) {
+            audioCtx = new AudioContext();
+            for (const element of elements) {
+                const source = audioCtx.createMediaElementSource(element.audioElement);
+                source.connect(audioCtx.destination);
+                const destination = audioCtx.createMediaStreamDestination();
+                source.connect(destination);
+                streamArray.push(...destination.stream.getAudioTracks());
+            }
+
+            const combinedStream = new MediaStream(streamArray);
+            mediaRecorder = new MediaRecorder(combinedStream, {
+                // audioBitsPerSecond: 128000,
+                // videoBitsPerSecond: 5000000, // 2500000,
+                mimeType: videoMimeType
+            });
+            mediaRecorder.onerror = (event) => {
+                console.log(event);
+                showRecBtn();
+            };
+            mediaRecorder.addEventListener("dataavailable", function(event) {
+                if (event.data.size > 0) {
+                    recordedChunks.push(event.data);
+                }
+            });
+            mediaRecorder.addEventListener("stop", function() {
+                showRecBtn();
+                if (recordedChunks.length == 0) {
+                    console.log("No data was recorded!");
+                    return;
+                }
+                videoBlob = new Blob(recordedChunks, {type: videoMimeType});
+                const url = URL.createObjectURL(videoBlob);
+                const recVideo = document.createElement("video");
+                recVideo.addEventListener('loadedmetadata', () => {
+                    // Set the details of the video
+                    recVideo.setAttribute('id', 'videoCanvas');
+                    recVideo.setAttribute('loop', 'true');
+                    recVideo.setAttribute('playsinline', 'true');
+                    recVideo.setAttribute('poster', poster);
+
+                    // Assign the video to an element in the UI
+                    const photoWrapper = document.getElementById("videoWrapper");
+                    photoWrapper.appendChild(recVideo);
+                    showVideo();
+
+                    // Set the has of the page
+                    hashLocation = Date.now();
+                    window.location.hash = hashLocation;
+                });
+                recVideo.src = url;
+                recVideo.preload = "metadata";
+                saveMetrics("recvideo");
+            });
         }
 
-        const combinedStream = new MediaStream(streamArray);
-        mediaRecorder = new MediaRecorder(combinedStream, {
-            // audioBitsPerSecond: 128000,
-            // videoBitsPerSecond: 5000000, // 2500000,
-            mimeType: videoMimeType
-        });
-        mediaRecorder.onerror = (event) => {
-            console.log(event);
-            showRecBtn();
-        };
-        mediaRecorder.addEventListener("dataavailable", function(event) {
-            if (event.data.size > 0) {
-                recordedChunks.push(event.data);
-            }
-        });
-        mediaRecorder.addEventListener("stop", function() {
-            showRecBtn();
-            if (recordedChunks.length == 0) {
-                console.log("No data was recorded!");
-                return;
-            }
-            videoBlob = new Blob(recordedChunks, {type: videoMimeType});
-            const url = URL.createObjectURL(videoBlob);
-            const recVideo = document.createElement("video");
-            recVideo.addEventListener('loadedmetadata', () => {
-                // Set the details of the video
-                recVideo.setAttribute('id', 'videoCanvas');
-                recVideo.setAttribute('loop', 'true');
-                recVideo.setAttribute('playsinline', 'true');
-                recVideo.setAttribute('poster', poster);
-
-                // Assign the video to an element in the UI
-                const photoWrapper = document.getElementById("videoWrapper");
-                photoWrapper.appendChild(recVideo);
-                showVideo();
-                audioCtx.close();
-                isMuted = true;
-                if (currentlyPlayingAudio) {
-                    currentlyPlayingAudio.pause();
-                    currentlyPlayingAudio.currentTime = 0;
-                }
-
-                // Set the has of the page
-                hashLocation = Date.now();
-                window.location.hash = hashLocation;
-            });
-            recVideo.src = url;
-            recVideo.preload = "metadata";
-            saveMetrics("recvideo");
-        });
         mediaRecorder.start();
         recFrameId = setInterval(function() {
             copyRenderedCanvas(canvas);
@@ -381,6 +377,11 @@ document.addEventListener('DOMContentLoaded', async function() {
         clearInterval(recFrameId);
         recFrameId = null;
         mediaRecorder.stop();
+        isMuted = true;
+        if (currentlyPlaying) {
+            currentlyPlaying.pause();
+            currentlyPlaying.currentTime = 0;
+        }
     });
 
     /**
@@ -408,9 +409,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById("stopVideoBtn").addEventListener('click', function() {
         showPlayBtn();
         const recVideo = document.getElementById("videoCanvas");
+        recVideo.pause();
         recVideo.currentTime = 0;
         recVideo.muted = true;
-        recVideo.pause();
     });
 
     /**
@@ -487,14 +488,9 @@ window.addEventListener("hashchange", function() {
     }
 
     isMuted = false;
-    if (currentlyPlayingAudio) {
-        currentlyPlayingAudio.currentTime = 0;
-        currentlyPlayingAudio.play();
-    }
-    // Try to sync video and audio, this won't work for models,
-    // and maybe it freezes the video on the first frame?
-    if (currentlyPlayingVideo) {
-        currentlyPlayingVideo.currentTime = 0;
+    if (currentlyPlaying) {
+        currentlyPlaying.currentTime = 0;
+        currentlyPlaying.play();
     }
 
     // Hide the video wrapper
