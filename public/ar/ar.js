@@ -13,9 +13,6 @@ var currentlyPlayingVideo = null;
 var currentlyPlayingAudio = null;
 var recFrameId = null;
 var mediaRecorder = null;
-var canvas = null;
-var audioCtx = null;
-var streamArray = []
 var recordedChunks = [];
 var videoBlob = null;
 var videoMimeType = "video/webm; codecs=vp9,opus"; // video/mp4; codecs="avc1.424028, mp4a.40.2"
@@ -218,11 +215,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Get the show started
     window.location.hash = "";
 
-    // Init the recording streams
-    canvas = document.getElementById('record');
-    const canvasStream = canvas.captureStream(frameRate);
-    streamArray = [...canvasStream.getVideoTracks()];
-
     // Get the artwork from the storage if needed
     artwork = artwork || getWithExpiry('artwork');
     if (artwork) {
@@ -312,18 +304,20 @@ document.addEventListener('DOMContentLoaded', async function() {
         hideRecBtn();
         recordedChunks = [];
         videoBlob = null;
+
+        const canvas = document.getElementById('record');
+        const canvasStream = canvas.captureStream(frameRate);
+        const streamArray = [...canvasStream.getVideoTracks()];
         copyRenderedCanvas(canvas);
         const poster = canvas.toDataURL();
 
-        if (!audioCtx) {
-            audioCtx = new AudioContext();
-            for (const element of elements) {
-                const source = audioCtx.createMediaElementSource(element.audioElement);
-                source.connect(audioCtx.destination);
-                const destination = audioCtx.createMediaStreamDestination();
-                source.connect(destination);
-                streamArray.push(...destination.stream.getAudioTracks());
-            }
+        const audioCtx = new AudioContext();
+        for (const element of elements) {
+            const source = audioCtx.createMediaElementSource(element.audioElement);
+            source.connect(audioCtx.destination);
+            const destination = audioCtx.createMediaStreamDestination();
+            source.connect(destination);
+            streamArray.push(...destination.stream.getAudioTracks());
         }
 
         const combinedStream = new MediaStream(streamArray);
@@ -498,11 +492,10 @@ window.addEventListener("hashchange", function() {
         currentlyPlayingAudio.currentTime = 0;
         currentlyPlayingAudio.play();
     }
-    // Try to sync video and audio, this won't work for models
+    // Try to sync video and audio, this won't work for models,
+    // and maybe it freezes the video on the first frame?
     if (currentlyPlayingVideo) {
-        currentlyPlayingVideo.pause();
         currentlyPlayingVideo.currentTime = 0;
-        currentlyPlayingVideo.play();
     }
 
     // Hide the video wrapper
