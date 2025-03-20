@@ -14,6 +14,7 @@ var mediaRecorder = null;
 var canvas = null;
 var poster = null;
 var audioCtx = null;
+var source = null;
 var streamArray = []
 var recordedChunks = [];
 var videoBlob = null;
@@ -119,6 +120,9 @@ const setup = async function() {
                     if (elements[i].audioElement) {
                         currentlyPlaying = elements[i].audioElement;
                         elements[i].audioElement.currentTime = 0;
+                        if (source) {
+                            source.currentTime = 0;
+                        }
                         if (!isMuted) {
                             elements[i].audioElement.play();
                         }
@@ -157,6 +161,9 @@ const setup = async function() {
                     if (elements[i].audioElement) {
                         currentlyPlaying = elements[i].audioElement;
                         elements[i].audioElement.currentTime = 0;
+                        if (source) {
+                            source.currentTime = 0;
+                        }
                         if (!isMuted) {
                             elements[i].audioElement.play();
                         }
@@ -312,7 +319,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (!audioCtx && !mediaRecorder) {
             audioCtx = new AudioContext();
             for (const element of elements) {
-                const source = audioCtx.createMediaElementSource(element.audioElement);
+                source = audioCtx.createMediaElementSource(element.audioElement);
                 source.connect(audioCtx.destination);
                 const destination = audioCtx.createMediaStreamDestination();
                 source.connect(destination);
