@@ -353,6 +353,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const photoWrapper = document.getElementById("videoWrapper");
                 photoWrapper.appendChild(recVideo);
                 showVideo();
+                audioCtx.close();
                 isMuted = true;
                 if (currentlyPlayingAudio) {
                     currentlyPlayingAudio.pause();
