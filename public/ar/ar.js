@@ -12,6 +12,7 @@ var currentlyPlaying = null;
 var recFrameId = null;
 var mediaRecorder = null;
 var canvas = null;
+var poster = null;
 var audioCtx = null;
 var streamArray = []
 var recordedChunks = [];
@@ -306,7 +307,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         recordedChunks = [];
         videoBlob = null;
         copyRenderedCanvas(canvas);
-        const poster = canvas.toDataURL();
+        poster = canvas.toDataURL();
 
         if (!audioCtx && !mediaRecorder) {
             audioCtx = new AudioContext();
