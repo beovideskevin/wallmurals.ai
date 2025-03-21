@@ -27,8 +27,7 @@ const app = express();
 if (process.env.NODE_ENV != 'development') {
     // Initialize client.
     let redisClient = createClient({
-        host: 'localhost',
-        port: 6379
+        url: 'redis://127.0.0.1:6379',
     });
     redisClient.connect().catch(console.error);
 
