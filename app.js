@@ -2,6 +2,8 @@ const dotenv = require('dotenv').config();
 const createError = require('http-errors');
 const express = require('express');
 const session = require('express-session');
+const redis = require('redis');
+const connectRedis = require('connect-redis');
 const path = require('path');
 const fileUpload = require('express-fileupload');
 const csrf = require('tiny-csrf');
@@ -21,30 +23,48 @@ connectDB();
 
 const app = express();
 
-// @TODO I NEED TO SECURE THE SESSION WITH HTTPS AND STORE IT WITH REDIS
-// var sess = {
-//   secret: process.env.SESSION_KEY,
-//   resave: false,
-//   saveUninitialized: true,
-//   cookie: {
-//     maxAge: 60000
-//   }
-// }
-// if (process.env.NODE_ENV != 'development') {
-//   app.set('trust proxy', 1) // trust first proxy
-//   sess.cookie.secure = true // serve secure cookies
-// }
-// app.use(session(sess))
+// Configure Redis client
+const redisClient = redis.createClient({
+  host: '127.0.01',
+  port: 6379
+});
+redisClient.on('error', function (err) {
+  console.log('Could not establish a connection with redis. ' + err);
+});
+redisClient.on('connect', function (err) {
+  console.log('Connected to redis successfully');
+});
 
-app.use(session({
-  secret: process.env.SESSION_KEY,
-  resave: false,
-  saveUninitialized: true,
-  cookie: { 
-    maxAge: null, // maxAge: should be something else, a number 
-    secure: false // process.env.NODE_ENV === 'development' ? false : true
-  } 
-}));
+// Configure connect-redis
+const RedisStore = connectRedis(session);
+
+// Configure express-session
+if (process.env.NODE_ENV != 'development') {
+  const sess = {
+    store: new RedisStore({ client: redisClient }),
+    secret: process.env.SESSION_KEY,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: true,
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 // 24 hours
+    }
+  };
+  app.set('trust proxy', 1) // trust first proxy
+  app.use(session(sess));
+}
+else {
+  app.use(session({
+    secret: process.env.SESSION_KEY,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      maxAge: null, // maxAge: should be something else, a number
+      secure: false
+    }
+  }));
+}
 
 app.locals.node_env = process.env.NODE_ENV;
 app.locals.site = "Wall Murals AI";
