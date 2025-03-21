@@ -47,7 +47,7 @@ if (process.env.NODE_ENV != 'development') {
         saveUninitialized: true,
         cookie: {
             secure: true,
-            httpOnly: true,
+            // httpOnly: true,
             sameSite: true,
             maxAge: 1000 * 60 * 60 * 24 * 2 // 48 hours
         }
