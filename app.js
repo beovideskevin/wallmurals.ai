@@ -2,8 +2,8 @@ const dotenv = require('dotenv').config();
 const createError = require('http-errors');
 const express = require('express');
 const session = require('express-session');
-const redis = require('redis');
-const RedisStore = require("connect-redis").default;
+const {createClient} = require('redis');
+const {RedisStore} = require('connect-redis');
 const path = require('path');
 const fileUpload = require('express-fileupload');
 const csrf = require('tiny-csrf');
@@ -23,42 +23,41 @@ connectDB();
 
 const app = express();
 
-const redisClient = redis.createClient({
-  url: "redis://redis:6379",
-});
-
-redisClient.connect().catch(console.error);
-
-let redisStore = new RedisStore({
-  client: redisClient,
-});
-
 // Configure express-session
 if (process.env.NODE_ENV != 'development') {
-  const sess = {
-    store: redisStore,
-    secret: process.env.SESSION_KEY,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: true,
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24 // 24 hours
-    }
-  };
-  app.set('trust proxy', 1) // trust first proxy
-  app.use(session(sess));
-}
-else {
-  app.use(session({
-    secret: process.env.SESSION_KEY,
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      maxAge: null, // maxAge: should be something else, a number
-      secure: false
-    }
-  }));
+    // Initialize client.
+    let redisClient = createClient()
+    redisClient.connect().catch(console.error)
+
+    // Initialize store.
+    let redisStore = new RedisStore({
+        client: redisClient,
+        prefix: "myapp:",
+    })
+
+    const sess = {
+        store: redisStore,
+        secret: process.env.SESSION_KEY,
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            secure: true,
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24 // 24 hours
+        }
+    };
+    app.set('trust proxy', 1) // trust first proxy
+    app.use(session(sess));
+} else {
+    app.use(session({
+        secret: process.env.SESSION_KEY,
+        resave: false,
+        saveUninitialized: true,
+        cookie: {
+            maxAge: null, // maxAge: should be something else, a number
+            secure: false
+        }
+    }));
 }
 
 app.locals.node_env = process.env.NODE_ENV;
@@ -75,34 +74,34 @@ app.set('view engine', 'ejs');
 // more middleware
 app.use(logger('dev'));
 app.use(fileUpload({
-  useTempFiles : true,
-  tempFileDir : __dirname + '/tmp/'
+    useTempFiles: true,
+    tempFileDir: __dirname + '/tmp/'
 }));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({extended: false}));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(
-  csrf(
-    process.env.CSRF, // secret -- must be 32 bits or chars in length
-    ["POST"], // the request methods we want CSRF protection for
-    ["/metrics", /\/metrics\.*/i, "/contact", /\/contact\.*/i], // any URLs we want to exclude, either as strings or regexp
-  )
+    csrf(
+        process.env.CSRF, // secret -- must be 32 bits or chars in length
+        ["POST"], // the request methods we want CSRF protection for
+        ["/metrics", /\/metrics\.*/i, "/contact", /\/contact\.*/i], // any URLs we want to exclude, either as strings or regexp
+    )
 );
 if (process.env.NODE_ENV != 'development!') {
-  app.use(minifyHTML({
-    override: true,
-    exception_url: false,
-    htmlMinifier: {
-        removeComments: true,
-        collapseWhitespace: true,
-        collapseBooleanAttributes: true,
-        removeAttributeQuotes: true,
-        removeEmptyAttributes: true,
-        minifyJS: true,
-        minifyCSS: true,
-    }
-  }));
-  app.use(compression());
+    app.use(minifyHTML({
+        override: true,
+        exception_url: false,
+        htmlMinifier: {
+            removeComments: true,
+            collapseWhitespace: true,
+            collapseBooleanAttributes: true,
+            removeAttributeQuotes: true,
+            removeEmptyAttributes: true,
+            minifyJS: true,
+            minifyCSS: true,
+        }
+    }));
+    app.use(compression());
 }
 app.use(express.static('public'));
 
@@ -114,29 +113,27 @@ app.use('/dashboard', dashboardRouter);
 app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+app.use(function (req, res, next) {
+    next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
-  if (req.app.get('env') === 'development') {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = err;
+app.use(function (err, req, res, next) {
+    if (req.app.get('env') === 'development') {
+        // set locals, only providing error in development
+        res.locals.message = err.message;
+        res.locals.error = err;
 
-    // render the error page
-    res.status(err.status || 500);
-    res.render('error');
-  }
-  else {
-    if (req.session.user) {
-      res.redirect('/dashboard');
-    } 
-    else {
-      res.redirect('/');
+        // render the error page
+        res.status(err.status || 500);
+        res.render('error');
+    } else {
+        if (req.session.user) {
+            res.redirect('/dashboard');
+        } else {
+            res.redirect('/');
+        }
     }
-  }
 });
 
 module.exports = app;
