@@ -246,11 +246,11 @@ const account = async function(req, res, next) {
     const message = req.params.message || "";
 
     if (req.session.user) {
-        let subscriptions = await Subscription.find({user: req.session.user});
+        let subscription = await Subscription.findOne({user: req.session.user});
         res.render('account', { 
             csrf: req.csrfToken(),
             user: req.session.user,
-            plan: subscriptions.length? subscriptions[0] : null,
+            plan: subscription || null,
             error: error,
             message: message,
         });

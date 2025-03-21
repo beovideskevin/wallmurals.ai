@@ -50,7 +50,7 @@ const sparkFilters= [
     },
     {   // posterize
         filter: () => {
-            let levels = 8;
+            let levels = 6;
             return window.ImageFilters.Posterize(sparkImageData, levels);
         }
     },
