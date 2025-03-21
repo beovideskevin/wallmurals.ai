@@ -54,12 +54,17 @@ const list = async function(req, res, next) {
             engagementData.push({month: monthsArray[month], count: countEngagement});
 
             // Interactions
-            let countInteractions = await Metric.countDocuments({
+            let countVideoInteractions = await Metric.countDocuments({
                 type: "sharevideo",
                 artwork: artwork.id,
                 createdAt: { $gt: startDate, $lte: endDate } 
             });
-            interactionsData.push({month: monthsArray[month], count: countInteractions});
+            let countPhotoInteractions = await Metric.countDocuments({
+                type: "sharephoto",
+                artwork: artwork.id,
+                createdAt: { $gt: startDate, $lte: endDate }
+            });
+            interactionsData.push({month: monthsArray[month], count: countVideoInteractions + countPhotoInteractions});
         }
         // Visits
         visits.push({

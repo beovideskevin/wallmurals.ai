@@ -553,6 +553,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Set the hashtag of the page
         hashLocation = Date.now();
         window.location.hash = hashLocation;
+
+        saveMetrics("photo");
     });
 
     /**
@@ -592,6 +594,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     }).catch((error) => {
                         console.error('Error sharing photo:', error);
                     });
+                    saveMetrics("sharephoto");
                 }
                 catch (error) {
                     console.error('Error navigator.canShare:', error);
