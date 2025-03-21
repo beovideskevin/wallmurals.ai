@@ -23,7 +23,6 @@ connectDB();
 
 const app = express();
 
-// Configure express-session
 if (process.env.NODE_ENV != 'development') {
     // Initialize client.
     let redisClient = createClient({
@@ -40,6 +39,7 @@ if (process.env.NODE_ENV != 'development') {
         client: redisClient,
     });
 
+    // Configure express-session
     const sess = {
         store: redisStore,
         secret: process.env.SESSION_KEY,
@@ -47,12 +47,14 @@ if (process.env.NODE_ENV != 'development') {
         saveUninitialized: true,
         cookie: {
             secure: true,
-            // httpOnly: true,
+            httpOnly: true,
             sameSite: true,
-            maxAge: 1000 * 60 * 60 * 24 * 2 // 48 hours
+            maxAge: 1000 * 60 * 60 * 24 // 24 hours
         }
     };
-    app.set('trust proxy', 1); // trust first proxy
+
+    // trust first proxy
+    app.set('trust proxy', 1);
     app.use(session(sess));
 }
 else {
