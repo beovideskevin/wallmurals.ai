@@ -5,7 +5,7 @@ import { GLTFLoader } from "/ar/GLTFLoader.js";
 var mindarThree = null;
 var elements = [];
 var hashLocation = "";
-var refresh = false;
+// var refresh = false;
 var isMuted = true;
 var currentlyPlayingVideo = null;
 var currentlyPlayingAudio = null;
@@ -608,13 +608,13 @@ document.addEventListener('DOMContentLoaded', async function() {
 screen.orientation.addEventListener("change", function(event) {
     if (window.location.hash != "") {
         // Don't refresh when user is watching and sharing the video
-        refresh = true;
+        // refresh = true;
         return;
     }
 
     // Try to refresh using the cache
     // window.location.reload();
-    restart();
+    // restart();
 });
 
 /**
@@ -640,11 +640,11 @@ window.addEventListener("hashchange", function() {
 
     // There is a pending refresh
     if (refresh) {
-        refresh = false;
+        // refresh = false;
 
         // Try to refresh using the cache
         // window.location.reload();
-        restart();
+        // restart();
     }
 
     if (currentlyPlayingAudio) {
