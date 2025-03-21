@@ -3,7 +3,7 @@ const createError = require('http-errors');
 const express = require('express');
 const session = require('express-session');
 const redis = require('redis');
-const connectRedis = require('connect-redis');
+const RedisStore = require("connect-redis").default;
 const path = require('path');
 const fileUpload = require('express-fileupload');
 const csrf = require('tiny-csrf');
@@ -23,25 +23,20 @@ connectDB();
 
 const app = express();
 
-// Configure Redis client
 const redisClient = redis.createClient({
-  host: '127.0.01',
-  port: 6379
-});
-redisClient.on('error', function (err) {
-  console.log('Could not establish a connection with redis. ' + err);
-});
-redisClient.on('connect', function (err) {
-  console.log('Connected to redis successfully');
+  url: "redis://redis:6379",
 });
 
-// Configure connect-redis
-const RedisStore = connectRedis(session);
+redisClient.connect().catch(console.error);
+
+let redisStore = new RedisStore({
+  client: redisClient,
+});
 
 // Configure express-session
 if (process.env.NODE_ENV != 'development') {
   const sess = {
-    store: new RedisStore({ client: redisClient }),
+    store: redisStore,
     secret: process.env.SESSION_KEY,
     resave: false,
     saveUninitialized: false,
