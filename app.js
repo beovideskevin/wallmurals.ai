@@ -29,7 +29,11 @@ if (process.env.NODE_ENV != 'development') {
     let redisClient = createClient({
         url: 'redis://127.0.0.1:6379',
     });
-    redisClient.connect().catch(console.error);
+    redisClient.connect().then(() => {
+        console.log('Connected to Redis with options');
+    }).catch(err => {
+        console.error('Redis connection error:', err);
+    });
 
     // Initialize store.
     let redisStore = new RedisStore({
