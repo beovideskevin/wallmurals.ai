@@ -46,9 +46,9 @@ if (process.env.NODE_ENV != 'development') {
         resave: false,
         saveUninitialized: true,
         cookie: {
-            secure: true,
-            httpOnly: true,
-            sameSite: true,
+            secure: false,
+            // httpOnly: true,
+            // sameSite: true,
             maxAge: 1000 * 60 * 60 * 24 // 24 hours
         }
     };
