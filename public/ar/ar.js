@@ -34,29 +34,36 @@ const sparkFilters= [
             return window.ImageFilters.Enrich(sparkImageData);
         }
     },
+    {   // brightness
+        filter: () => {
+            let brightness = -20;
+            let contrast = 20;
+            return window.ImageFilters.BrightnessContrastPhotoshop (sparkImageData, brightness, contrast);
+        }
+    },
+    {   // brightness 2
+        filter: () => {
+            let brightness = 20;
+            let contrast = -10;
+            return window.ImageFilters.BrightnessContrastPhotoshop (sparkImageData, brightness, contrast);
+        }
+    },
     {   // posterize
         filter: () => {
             let levels = 8;
             return window.ImageFilters.Posterize(sparkImageData, levels);
         }
     },
-    {   // oil
-        filter: () => {
-            let range = 3;
-            let levels = 48;
-            return window.ImageFilters.Oil(sparkImageData, range, levels);
-        }
-    },
+    // {   // oil
+    //     filter: () => {
+    //         let range = 3;
+    //         let levels = 48;
+    //         return window.ImageFilters.Oil(sparkImageData, range, levels);
+    //     }
+    // },
     {   // emboss
         filter: () => {
             return window.ImageFilters.Emboss(sparkImageData);
-        }
-    },
-    {   // brightness
-        filter: () => {
-            let brightness = -20;
-            let contrast = 20;
-            return window.ImageFilters.BrightnessContrastPhotoshop (sparkImageData, brightness, contrast);
         }
     },
     {   // sepia
