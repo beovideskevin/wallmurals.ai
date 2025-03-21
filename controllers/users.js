@@ -49,12 +49,7 @@ const login = function (req, res, next) {
                         } else {
                             req.session.user = user.id;
                             console.log("LOGIN - FULL SESSION: ", req.session);
-                            req.session.save((err) => {
-                                if (err) {
-                                    console.log(err);
-                                }
-                                res.redirect('/dashboard');
-                            });
+                            res.redirect('/dashboard');
                         }
                     });
                 }
@@ -66,12 +61,8 @@ const login = function (req, res, next) {
 
 /* GET logout page. */
 const logout = function (req, res, next) {
-    req.session.destroy((err) => {
-        if (err) {
-            console.log(err);
-        }
-        res.redirect('/home');
-    });
+    req.session.destroy();
+    res.redirect('/home');
 }
 
 module.exports = {

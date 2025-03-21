@@ -41,10 +41,11 @@ if (process.env.NODE_ENV != 'development') {
     });
 
     const sess = {
+        name: "WMAI",
         store: redisStore,
         secret: process.env.SESSION_KEY,
         resave: false,
-        saveUninitialized: false,
+        saveUninitialized: true,
         cookie: {
             secure: true,
             httpOnly: true,
