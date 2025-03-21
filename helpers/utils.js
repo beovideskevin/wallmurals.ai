@@ -3,6 +3,7 @@ const unzipper = require('unzipper');
 const {v4: uuidv4} = require('uuid');
 const Subscription = require('../models/subscription');
 const Metric = require('../models/metric');
+const User = require('../models/user');
 
 getMonthNameArray = function () {
     let fullArray = [];
@@ -38,12 +39,24 @@ checkViews = async function(artwork) {
     const MAX_FREE_VIEWS = 1000;
     const MAX_PRO_VIEWS = 100000;
 
+    // Check the user exists and it is active
+    let user = await User.findById(artwork.user);
+    if (!user) {
+        console.log("User not found when checking artwork view: " + artwork.user);
+        return false;
+    }
+    if (!user.active) {
+        console.log("User is not active when checking artwork view: " + artwork.id);
+        return false;
+    }
+
+    // Check the view for the artwork
     let max = MAX_FREE_VIEWS;
     let targetDate = getSubscriptionLastDate(1);
-    let subscriptions = await Subscription.find({user: artwork.user, active: true});
-    if (subscriptions.length) {
+    let subscriptions = await Subscription.findOne({user: artwork.user, active: true});
+    if (subscriptions) {
         max = MAX_PRO_VIEWS;
-        let start = new Date(subscriptions[0].start);
+        let start = new Date(subscriptions.start);
         // @TODO implement better deal here
         let day = start.getDate() > 28 ? 28 : start.getDate();
         targetDate = getSubscriptionLastDate(day);

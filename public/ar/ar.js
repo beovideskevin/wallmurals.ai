@@ -18,9 +18,9 @@ var source = null;
 var streamArray = []
 var recordedChunks = [];
 var videoBlob = null;
-var videoMimeType = "video/webm; codecs=vp9,opus"; // video/mp4; codecs="avc1.424028, mp4a.40.2"
-var videoMimeShare = "video/webm";
-var videoExt = ".webm";
+var videoMimeType = 'video/mp4; codecs="avc1.424028, mp4a.40.2"'
+var videoMimeShare = "video/mp4";
+var videoExt = ".mp4";
 const photoMimeType = "image/jpeg";
 const photoExt = '.jpeg';
 const frameRate = 30; // FPS
@@ -283,14 +283,20 @@ const restart = function() {
 document.addEventListener('DOMContentLoaded', async function() {
     // Change the mime type for iPhone and safari
     if (!MediaRecorder.isTypeSupported(videoMimeType)) {
-        videoMimeType = "video/webm; codecs=avc1,opus";
+        videoMimeType = "video/webm; codecs=vp9,opus";
         videoMimeShare = "video/webm";
+        videoExt = ".webm";
         if (!MediaRecorder.isTypeSupported(videoMimeType)) {
-            videoMimeType = "video/mp4;codecs:h264";
-            videoMimeShare = "video/mp4";
-            videoExt = ".mp4";
+            videoMimeType = "video/webm; codecs=avc1,opus";
+            videoMimeShare = "video/webm";
+            if (!MediaRecorder.isTypeSupported(videoMimeType)) {
+                videoMimeType = "video/mp4;codecs:h264";
+                videoMimeShare = "video/mp4";
+                videoExt = ".mp4";
+            }
         }
     }
+
 
     // Get the show started
     window.location.hash = "";
