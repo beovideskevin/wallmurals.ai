@@ -26,14 +26,17 @@ const app = express();
 // Configure express-session
 if (process.env.NODE_ENV != 'development') {
     // Initialize client.
-    let redisClient = createClient()
-    redisClient.connect().catch(console.error)
+    let redisClient = createClient({
+        host: 'localhost',
+        port: 6379
+    });
+    redisClient.connect().catch(console.error);
 
     // Initialize store.
     let redisStore = new RedisStore({
         client: redisClient,
         prefix: "myapp:",
-    })
+    });
 
     const sess = {
         store: redisStore,
@@ -46,15 +49,16 @@ if (process.env.NODE_ENV != 'development') {
             maxAge: 1000 * 60 * 60 * 24 // 24 hours
         }
     };
-    app.set('trust proxy', 1) // trust first proxy
+    app.set('trust proxy', 1); // trust first proxy
     app.use(session(sess));
-} else {
+}
+else {
     app.use(session({
         secret: process.env.SESSION_KEY,
         resave: false,
         saveUninitialized: true,
         cookie: {
-            maxAge: null, // maxAge: should be something else, a number
+            maxAge: 1000 * 60 * 60 * 24,
             secure: false
         }
     }));
