@@ -44,7 +44,7 @@ if (process.env.NODE_ENV != 'development') {
         name: "WMAI",
         store: redisStore,
         secret: process.env.SESSION_KEY,
-        resave: false,
+        resave: true,
         saveUninitialized: true,
         cookie: {
             secure: true,
