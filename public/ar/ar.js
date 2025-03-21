@@ -2,13 +2,13 @@ import { createChromaMaterial } from '/ar/chroma-video.js';
 import { GLTFLoader } from "/ar/GLTFLoader.js";
 
 // Declarations
-window.cameraFacing = false;
 var mindarThree = null;
 var elements = [];
 var hashLocation = "";
 var refresh = false;
 var isMuted = true;
-var currentlyPlaying = null;
+var currentlyPlayingVideo = null;
+var currentlyPlayingAudio = null;
 var recFrameId = null;
 var mediaRecorder = null;
 var canvas = null;
@@ -21,8 +21,60 @@ var videoBlob = null;
 var videoMimeType = "video/webm; codecs=vp9,opus"; // video/mp4; codecs="avc1.424028, mp4a.40.2"
 var videoMimeShare = "video/webm";
 var videoExt = ".webm";
+const photoMimeType = "image/jpeg";
+const photoExt = '.jpeg';
 const frameRate = 30; // FPS
 const ttl = 30 * 60 * 1000; // 30 min in milliseconds
+const shutter = new Audio('/assets/sounds/shutter.mp3');
+var sparkImageData = null;
+var sparkIndex = 0;
+const sparkFilters= [
+    {   // enrich
+        filter: () => {
+            return window.ImageFilters.Enrich(sparkImageData);
+        }
+    },
+    {   // posterize
+        filter: () => {
+            let levels = 8;
+            return window.ImageFilters.Posterize(sparkImageData, levels);
+        }
+    },
+    {   // oil
+        filter: () => {
+            let range = 3;
+            let levels = 48;
+            return window.ImageFilters.Oil(sparkImageData, range, levels);
+        }
+    },
+    {   // emboss
+        filter: () => {
+            return window.ImageFilters.Emboss(sparkImageData);
+        }
+    },
+    {   // brightness
+        filter: () => {
+            let brightness = -20;
+            let contrast = 20;
+            return window.ImageFilters.BrightnessContrastPhotoshop (sparkImageData, brightness, contrast);
+        }
+    },
+    {   // sepia
+        filter: () => {
+            return window.ImageFilters.Sepia(sparkImageData);
+        }
+    },
+    {   //gray scale
+        filter: () => {
+            return window.ImageFilters.GrayScale(sparkImageData);
+        }
+    },
+    {   // none
+        filter: () => {
+            return sparkImageData;
+        }
+    },
+];
 
 /**
  * Loads the video
@@ -113,10 +165,11 @@ const setup = async function() {
                         return;
                     }
                     if (elements[i].videoElement) {
+                        currentlyPlayingVideo = elements[i].videoElement;
                         elements[i].videoElement.play();
                     }
                     if (elements[i].audioElement) {
-                        currentlyPlaying = elements[i].audioElement;
+                        currentlyPlayingAudio = elements[i].audioElement;
                         if (!isMuted) {
                             elements[i].audioElement.play();
                         }
@@ -128,7 +181,7 @@ const setup = async function() {
                         elements[i].videoElement.pause();
                     }
                     if (elements[i].audioElement) {
-                        currentlyPlaying = null;
+                        currentlyPlayingAudio = null;
                         elements[i].audioElement.pause();
                     }
                     mindarThree.ui.showScanning();
@@ -153,7 +206,7 @@ const setup = async function() {
                         return;
                     }
                     if (elements[i].audioElement) {
-                        currentlyPlaying = elements[i].audioElement;
+                        currentlyPlayingAudio = elements[i].audioElement;
                         if (!isMuted) {
                             elements[i].audioElement.play();
                         }
@@ -162,7 +215,7 @@ const setup = async function() {
                 }
                 anchor.onTargetLost = () => {
                     if (elements[i].audioElement) {
-                        currentlyPlaying = null;
+                        currentlyPlayingAudio = null;
                         elements[i].audioElement.pause();
                     }
                     mindarThree.ui.showScanning();
@@ -189,6 +242,42 @@ const setup = async function() {
 }
 
 /**
+ * Start the AR system
+ */
+const start = async function() {
+    if (!mindarThree) {
+        return;
+    }
+    await mindarThree.start();
+    hideSplash();
+}
+
+/**
+ * Stop the AR system
+ */
+const stop = async function () {
+    if (!mindarThree) {
+        return;
+    }
+    showSplash();
+    if (currentlyPlayingVideo) {
+        currentlyPlayingVideo.pause();
+    }
+    if (currentlyPlayingAudio) {
+        currentlyPlayingAudio.pause();
+    }
+    await mindarThree.stop();
+}
+
+/**
+ * Restart the AR system
+ */
+const restart = function() {
+    stop();
+    start();
+}
+
+/**
  * This is where everything starts
  */
 document.addEventListener('DOMContentLoaded', async function() {
@@ -202,9 +291,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             videoExt = ".mp4";
         }
     }
-
-    // Get the camera setting
-    window.cameraFacing = getWithExpiry('cameraFacing');
 
     // Get the show started
     window.location.hash = "";
@@ -261,33 +347,20 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     /**
-     * Switches the camera from environment to user.
-     * I had to badly patch the file ar-image-three.prof.js to make this work.
-     */
-    document.getElementById("switchBtn").addEventListener('click', function() {
-        // If the value is null, the result should be user since the default is environment
-        window.cameraFacing = window.cameraFacing == "user" ? "environment" : "user";
-        setWithExpiry('cameraFacing', window.cameraFacing);
-
-        // Try to refresh using the cache
-        window.location.reload();
-    });
-
-    /**
      * If there is audio, mute and unmute it
      */
     document.getElementById("soundBtn").addEventListener('click', function() {
         isMuted = true;
-        if (currentlyPlaying) {
-            currentlyPlaying.pause();
+        if (currentlyPlayingAudio) {
+            currentlyPlayingAudio.pause();
         }
         showMuteBtn();
     });
 
     document.getElementById("muteBtn").addEventListener('click', function() {
         isMuted = false;
-        if (currentlyPlaying) {
-            currentlyPlaying.play();
+        if (currentlyPlayingAudio) {
+            currentlyPlayingAudio.play();
         }
         hideMuteBtn();
     });
@@ -346,11 +419,11 @@ document.addEventListener('DOMContentLoaded', async function() {
                     recVideo.setAttribute('poster', poster);
 
                     // Assign the video to an element in the UI
-                    const photoWrapper = document.getElementById("videoWrapper");
-                    photoWrapper.appendChild(recVideo);
+                    const videoWrapper = document.getElementById("videoWrapper");
+                    videoWrapper.appendChild(recVideo);
                     showVideo();
 
-                    // Set the has of the page
+                    // Set the hashtag of the page
                     hashLocation = Date.now();
                     window.location.hash = hashLocation;
                 });
@@ -378,8 +451,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         clearInterval(recFrameId);
         recFrameId = null;
         mediaRecorder.stop();
-        if (currentlyPlaying) {
-            currentlyPlaying.pause();
+        if (currentlyPlayingAudio) {
+            currentlyPlayingAudio.pause();
         }
     });
 
@@ -414,7 +487,7 @@ document.addEventListener('DOMContentLoaded', async function() {
      * Shares the video
      */
     document.getElementById("shareVideoBtn").addEventListener('click', function() {
-        const filename = hashLocation + videoExt;
+        const filename = artwork.tagline + "-" + hashLocation + videoExt;
         const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
         const file = new File([videoBlob], sanitized, {type: videoMimeShare});
         const files = [file];
@@ -428,7 +501,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                 })
                 .catch((error) => {
                     console.log("Error sharing video:", error);
-                    alert("Your device can not share the video.");
                 });
                 saveMetrics("sharevideo");
             }
@@ -437,6 +509,83 @@ document.addEventListener('DOMContentLoaded', async function() {
                 alert("Your device can not share the video.");
             }
         }
+    });
+
+    /**
+     * Saves the image and shows the photo wrapper
+     */
+    document.getElementById("photoBtn").addEventListener('click', function() {
+        shutter.play();
+
+        // Create a canvas and draw the photo
+        const photoCanvas = document.createElement('canvas');
+        photoCanvas.setAttribute("id", "photoCanvas");
+        copyRenderedCanvas(photoCanvas);
+
+        // Assign the photo  to an element in the UI
+        const photoWrapper = document.getElementById("photoWrapper");
+        photoWrapper.appendChild(photoCanvas);
+        showPhoto();
+
+        // Make copy for spark filters
+        const sparkPhoto = document.createElement('canvas');
+        sparkPhoto.setAttribute("id", "sparkPhoto");
+        const sparkContext = sparkPhoto.getContext('2d');
+        sparkPhoto.width = photoCanvas.width;
+        sparkPhoto.height = photoCanvas.height;
+        sparkContext.drawImage(photoCanvas, 0, 0, photoCanvas.width, photoCanvas.height);
+        sparkImageData = sparkContext.getImageData(0, 0, photoCanvas.width, photoCanvas.height);
+        sparkIndex = 0;
+
+        // Set the hashtag of the page
+        hashLocation = Date.now();
+        window.location.hash = hashLocation;
+    });
+
+    /**
+     * The back button just goes back in the history, the onhashchange event ius the one that modifies the UI
+     */
+    document.getElementById("backPhotoBtn").addEventListener('click', function() {
+        history.back();
+    });
+
+    /**
+     * Apply filters
+     */
+    document.getElementById("sparkPhotoBtn").addEventListener('click', function() {
+        const photoCanvas = document.getElementById("photoCanvas");
+        const ctx = photoCanvas.getContext('2d');
+        ctx.putImageData(sparkFilters[sparkIndex].filter(), 0, 0);
+        sparkIndex = ++sparkIndex >= sparkFilters.length ? 0 : sparkIndex;
+    });
+
+    /**
+     * Shares the photo
+     */
+    document.getElementById("sharePhotoBtn").addEventListener('click', function() {
+        const photoCanvas = document.getElementById("photoCanvas");
+        photoCanvas.toBlob((blob) => {
+            const filename = artwork.tagline + "-" + hashLocation + photoExt;
+            const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
+            const file = new File([blob], sanitized, {type: photoMimeType});
+            const files = [file];
+            if (navigator.canShare && navigator.canShare({files})) {
+                try {
+                    navigator.share({
+                        files: files,
+                        title: artwork.tagline,
+                        text: artwork.tagline,
+                        url: "https://wallmurals.ai",
+                    }).catch((error) => {
+                        console.error('Error sharing photo:', error);
+                    });
+                }
+                catch (error) {
+                    console.error('Error navigator.canShare:', error);
+                    alert("Your device can not share the photo.");
+                }
+            }
+        })
     });
 });
 
@@ -451,7 +600,8 @@ screen.orientation.addEventListener("change", function(event) {
     }
 
     // Try to refresh using the cache
-    window.location.reload();
+    // window.location.reload();
+    restart();
 });
 
 /**
@@ -483,12 +633,12 @@ window.addEventListener("hashchange", function() {
         window.location.reload();
     }
 
-    if (currentlyPlaying) {
-        currentlyPlaying.play();
+    if (currentlyPlayingAudio) {
+        currentlyPlayingAudio.play();
     }
 
     // Hide the video wrapper
-    hideVideo();
+    showARHideAll();
 });
 
 /**
@@ -566,6 +716,21 @@ function hideMuteBtn()
     document.getElementById("soundBtn").style.display = "block";
 }
 
+function showPhoto()
+{
+    document.getElementById("photoWrapper").style.display = "flex";
+    document.getElementById("arBtnsWrapper").style.display = "none";
+    document.getElementById("photoBtnsWrapper").style.display = "flex";
+}
+
+function hidePhoto()
+{
+    const photoWrapper = document.getElementById("photoWrapper");
+    photoWrapper.style.display = "none";
+    photoWrapper.innerHTML = "";
+    document.getElementById("photoBtnsWrapper").style.display = "none";
+}
+
 function showVideo() 
 {
     document.getElementById("videoWrapper").style.display = "flex";
@@ -573,13 +738,24 @@ function showVideo()
     document.getElementById("videoBtnsWrapper").style.display = "flex";
 }
 
-function hideVideo() 
+function hideVideo()
 {
-    showPlayBtn();
     const videoWrapper = document.getElementById("videoWrapper");
     videoWrapper.style.display = "none";
     videoWrapper.innerHTML = "";
     document.getElementById("videoBtnsWrapper").style.display = "none";
+}
+
+function showARHideAll()
+{
+    // Hide video wrapper and btns wrapper
+    showPlayBtn();
+    hideVideo();
+
+    // Hide photo wrapper and btns wrapper
+    hidePhoto();
+
+    // Show main controls
     document.getElementById("arBtnsWrapper").style.display = "flex";
 }
 

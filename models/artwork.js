@@ -61,7 +61,7 @@ const artworkSchema = mongoose.Schema(
         website: {
             type: String,
             required: false,
-            default: 'https://www.wallmurals.ai/'
+            default: 'https://www.wallmurals.ai/ar'
         },
         user: {
             type: mongoose.Schema.Types.ObjectId,

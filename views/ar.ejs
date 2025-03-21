@@ -85,7 +85,7 @@
 
 <div id="arBtnsWrapper">
     <a id="soundBtn" href="javascript:">
-        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
              class="lucide lucide-volume-2">
             <path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/>
@@ -94,7 +94,7 @@
         </svg>
     </a>
     <a id="muteBtn" href="javascript:">
-        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
              class="lucide lucide-volume-off">
             <path d="M16 9a5 5 0 0 1 .95 2.293"/>
@@ -105,7 +105,7 @@
         </svg>
     </a>
     <a id="noSoundBtn" href="javascript:">
-        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
              class="lucide lucide-volume-x">
             <path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/>
@@ -131,15 +131,12 @@
         </svg>
     </a>
 
-    <a id="switchBtn" href="javascript:">
+    <a id="photoBtn" href="javascript:">
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
-             class="lucide lucide-switch-camera">
-            <path d="M11 19H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5"/>
-            <path d="M13 5h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-5"/>
-            <circle cx="12" cy="12" r="3"/>
-            <path d="m18 22-3-3 3-3"/>
-            <path d="m6 2 3 3-3 3"/>
+             class="lucide lucide-camera">
+            <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
+            <circle cx="12" cy="13" r="3"/>
         </svg>
     </a>
 </div>
@@ -170,15 +167,44 @@
             <circle cx="12" cy="12" r="10"/>
             <rect x="9" y="9" width="6" height="6" rx="1"/>
         </svg>
-<!--        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"-->
-<!--             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"-->
-<!--             class="lucide lucide-circle-pause">-->
-<!--            <circle cx="12" cy="12" r="10"/>-->
-<!--            <line x1="10" x2="10" y1="15" y2="9"/>-->
-<!--            <line x1="14" x2="14" y1="15" y2="9"/>-->
-<!--        </svg>-->
     </a>
     <a id="shareVideoBtn" href="javascript:">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+             class="lucide lucide-share">
+            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+            <polyline points="16 6 12 2 8 6"/>
+            <line x1="12" x2="12" y1="2" y2="15"/>
+        </svg>
+    </a>
+</div>
+
+<div id="photoWrapper">
+</div>
+
+<div id="photoBtnsWrapper">
+    <a id="backPhotoBtn" href="javascript:">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+             class="lucide lucide-chevron-left">
+            <path d="m15 18-6-6 6-6"/>
+        </svg>
+    </a>
+    <a id="sparkPhotoBtn" href="javascript:">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+             class="lucide lucide-wand-sparkles">
+            <path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/>
+            <path d="m14 7 3 3"/>
+            <path d="M5 6v4"/>
+            <path d="M19 14v4"/>
+            <path d="M10 2v2"/>
+            <path d="M7 8H3"/>
+            <path d="M21 16h-4"/>
+            <path d="M11 3H9"/>
+        </svg>
+    </a>
+    <a id="sharePhotoBtn" href="javascript:">
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
              class="lucide lucide-share">
@@ -196,6 +222,7 @@
     var uuid = "<%= uuid %>";
     var artwork = JSON.parse('<%- artwork %>');
 </script>
+<script type="module" src="/assets/libs/imagefilters/imagefilters.js"></script>
 <script type="module" src="/assets/libs/three/ar-image-three.prod.js"></script>
 <script type="module" src="<%= (node_env == "development") ? "/ar" : "/dist" %>/ar.js"></script>
 
