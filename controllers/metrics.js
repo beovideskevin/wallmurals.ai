@@ -41,7 +41,7 @@ const list = async function(req, res, next) {
             let countVisits = await Metric.countDocuments({
                 type: "open",
                 artwork: artwork.id,
-                createdAt: { $gt: startDate, $lte: endDate } 
+                createdAt: { $gte: startDate, $lte: endDate }
             });
             visitsData.push({month: monthsArray[month], count: countVisits});
 
