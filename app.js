@@ -38,7 +38,6 @@ if (process.env.NODE_ENV != 'development') {
     // Initialize store.
     let redisStore = new RedisStore({
         client: redisClient,
-        prefix: "myapp:",
     });
 
     const sess = {
@@ -49,7 +48,7 @@ if (process.env.NODE_ENV != 'development') {
         cookie: {
             secure: true,
             httpOnly: true,
-            maxAge: 1000 * 60 * 60 * 24 // 24 hours
+            maxAge: 1000 * 60 * 60 * 24 * 2 // 48 hours
         }
     };
     app.set('trust proxy', 1); // trust first proxy
