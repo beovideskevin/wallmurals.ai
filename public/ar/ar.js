@@ -595,7 +595,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 screen.orientation.addEventListener("change", function(event) {
     if (window.location.hash != "") {
         // Don't refresh when user is watching and sharing the video
-        refresh = !refresh; // Needs testing, what happens when I rotate the phone two times?
+        refresh = true;
         return;
     }
 
@@ -630,7 +630,8 @@ window.addEventListener("hashchange", function() {
         refresh = false;
 
         // Try to refresh using the cache
-        window.location.reload();
+        // window.location.reload();
+        restart();
     }
 
     if (currentlyPlayingAudio) {
