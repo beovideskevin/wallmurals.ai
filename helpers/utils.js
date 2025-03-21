@@ -181,7 +181,6 @@ const collectFiles = async function(req) {
                     .then(module => {
                         module.run([targetFile.tempFilePath], `${baseDir}/public${target}`);
                     });
-                // @TODO handle errors
             }
         }
 

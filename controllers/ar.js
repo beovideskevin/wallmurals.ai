@@ -16,7 +16,6 @@ const arRoute = async function (req, res, next) {
     }
 
     if (!checkViews(artwork)) {
-        // @TODO send email to admin and user
         console.log("EXCESS VIEWS", req.params.id, artwork);
         res.redirect('/home');
         return;
@@ -45,7 +44,6 @@ const arId = async function (req, res, next) {
             }
 
             if (!checkViews(artwork)) {
-                // @TODO send email to admin and user
                 console.log("EXCESS VIEWS", req.params.id, artwork);
                 res.redirect('/home');
                 return;
@@ -92,7 +90,6 @@ const arLoc = async function (req, res, next) {
         }
         if (isCloseToPlace(lat, lon, artwork.lat, artwork.lon)) {
             if (!checkViews(artwork)) {
-                // @TODO send email to admin and user
                 console.log("EXCESS VIEWS", req.params.lat, req.params.lon, artwork);
                 res.status(404);
                 res.json(null);
