@@ -18,9 +18,10 @@ var source = null;
 var streamArray = []
 var recordedChunks = [];
 var videoBlob = null;
-var videoMimeType = "video/mp4;codecs:h264";
-var videoMimeShare = "video/mp4";
-var videoExt = ".mp4";
+var mediaRecOptions = null;
+// var videoMimeType = "video/webm; codecs=avc1,opus";
+var videoMimeShare = "video/webm";
+var videoExt = ".webm";
 const photoMimeType = "image/jpeg";
 const photoExt = '.jpeg';
 const frameRate = 30; // FPS
@@ -289,14 +290,32 @@ const restart = function() {
  */
 document.addEventListener('DOMContentLoaded', async function() {
     // Change the mime type for iPhone and safari
-    if (!MediaRecorder.isTypeSupported(videoMimeType)) {
-        videoMimeType = "video/webm; codecs=avc1,opus";
-        videoMimeShare = "video/webm";
-        if (!MediaRecorder.isTypeSupported(videoMimeType)) {
-            videoMimeType = "video/webm; codecs=vp9,opus";
-            videoMimeShare = "video/webm";
-            videoExt = ".webm";
-        }
+    // if (!MediaRecorder.isTypeSupported(videoMimeType)) {
+    //     // videoMimeType = "video/webm; codecs=avc1,opus";
+    //     // videoMimeShare = "video/webm";
+    //     // if (!MediaRecorder.isTypeSupported(videoMimeType)) {
+    //     //     videoMimeType = "video/webm; codecs=vp9,opus";
+    //     //     videoMimeShare = "video/webm";
+    //     //     videoExt = ".webm";
+    //
+    //         var videoMimeType = "video/mp4;codecs:h264";
+    //         var videoMimeShare = "video/mp4";
+    //         videoExt = ".mp4";
+    //     // }
+    // }
+
+    // Change the mime type for iPhone and safari
+    if (MediaRecorder.isTypeSupported('video/webm; codecs=vp9')) {
+        mediaRecOptions = {mimeType: 'video/webm; codecs=vp9'};
+    } else  if (MediaRecorder.isTypeSupported('video/webm')) {
+        mediaRecOptions = {mimeType: 'video/webm'};
+    } else if (MediaRecorder.isTypeSupported('video/mp4')) {
+        mediaRecOptions = {mimeType: 'video/mp4', videoBitsPerSecond : 100000};
+        videoMimeShare = "video/mp4";
+        videoExt = ".mp4";
+    } else {
+        console.error("no suitable mimetype found for this device");
+        document.getElementById("recVideoBtn").style.display = "none";
     }
 
 
@@ -396,11 +415,14 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
 
             const combinedStream = new MediaStream(streamArray);
-            mediaRecorder = new MediaRecorder(combinedStream, {
-                // audioBitsPerSecond: 128000,
-                // videoBitsPerSecond: 5000000, // 2500000,
-                mimeType: videoMimeType
-            });
+            mediaRecorder = new MediaRecorder(combinedStream,
+                mediaRecOptions
+                // {
+                    // audioBitsPerSecond: 128000,
+                    // videoBitsPerSecond: 2500000,
+                    // mimeType: videoMimeType
+                // }
+            );
             mediaRecorder.onerror = (event) => {
                 console.log(event);
                 alert("There was an error recording the video :(");
@@ -418,7 +440,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     alert("There was an error recording the video :(");
                     return;
                 }
-                videoBlob = new Blob(recordedChunks, {type: videoMimeType});
+                videoBlob = new Blob(recordedChunks, {type: videoMimeShare}); // videoMimeType
                 const url = URL.createObjectURL(videoBlob);
                 const recVideo = document.createElement("video");
                 recVideo.addEventListener('loadedmetadata', () => {
