@@ -294,13 +294,13 @@ document.addEventListener('DOMContentLoaded', async function() {
     //     videoMimeShare = "video/webm";
     //     videoExt = ".webm";
     //     if (!MediaRecorder.isTypeSupported(videoMimeType)) {
-            videoMimeType = "video/webm; codecs=avc1,opus";
-            videoMimeShare = "video/webm";
-            if (!MediaRecorder.isTypeSupported(videoMimeType)) {
+    //         videoMimeType = "video/webm; codecs=avc1,opus";
+    //         videoMimeShare = "video/webm";
+    //         if (!MediaRecorder.isTypeSupported(videoMimeType)) {
                 videoMimeType = "video/mp4;codecs:h264";
                 videoMimeShare = "video/mp4";
                 videoExt = ".mp4";
-            }
+            // }
     //    }
     // }
 
