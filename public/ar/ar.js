@@ -50,17 +50,17 @@ const sparkFilters= [
     },
     {   // posterize
         filter: () => {
-            let levels = 6;
+            let levels = 4;
             return window.ImageFilters.Posterize(sparkImageData, levels);
         }
     },
-    // {   // oil
-    //     filter: () => {
-    //         let range = 3;
-    //         let levels = 48;
-    //         return window.ImageFilters.Oil(sparkImageData, range, levels);
-    //     }
-    // },
+    {   // oil
+        filter: () => {
+            let range = 3;
+            let levels = 48;
+            return window.ImageFilters.Oil(sparkImageData, range, levels);
+        }
+    },
     {   // emboss
         filter: () => {
             return window.ImageFilters.Emboss(sparkImageData);
