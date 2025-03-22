@@ -50,15 +50,8 @@ const sparkFilters= [
     },
     {   // posterize
         filter: () => {
-            let levels = 4;
+            let levels = 16;
             return window.ImageFilters.Posterize(sparkImageData, levels);
-        }
-    },
-    {   // oil
-        filter: () => {
-            let range = 3;
-            let levels = 48;
-            return window.ImageFilters.Oil(sparkImageData, range, levels);
         }
     },
     {   // emboss
