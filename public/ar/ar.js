@@ -327,7 +327,10 @@ document.addEventListener('DOMContentLoaded', async function() {
                 async function (position) {
                     const latitude = position.coords.latitude;
                     const longitude = position.coords.longitude;
-                    const response = await fetch(`/ar/location/${latitude}/${longitude}/${uuid}`);
+                    const response = await fetch(
+                        `/ar/location/${latitude}/${longitude}/${uuid}`,
+                        {cache: "no-store"}
+                    );
                     if (!response.ok || response.status != 200) {
                         muralsError.style.display = "flex";
                         return;
@@ -699,6 +702,7 @@ function saveMetrics(type) {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             },
+            cache: "no-store"
         });
     }
 }

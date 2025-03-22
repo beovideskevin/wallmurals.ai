@@ -38,7 +38,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', async function() {
             try {
-                const response = await fetch("/metrics");
+                const response = await fetch("/metrics", {cache: "no-store"});
                 if (!response.ok || response.status != 200) {
                     throw new Error(`Response status: ${response.status}`);
                 }
