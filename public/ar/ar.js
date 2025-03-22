@@ -19,7 +19,7 @@ var streamArray = []
 var recordedChunks = [];
 var videoBlob = null;
 var mediaRecOptions = null;
-var videoMimeShare = "video/webm";
+var videoMimeType = "video/webm";
 var videoExt = ".webm";
 const photoMimeType = "image/jpeg";
 const photoExt = '.jpeg';
@@ -128,10 +128,10 @@ const setup = async function() {
         uiLoading: "no",
         uiScanning: "yes",
         uiError: "yes",
-        filterMinCF: 0.0001, //  default: 1   working for me before: 0.0001,
-        filterBeta: 0.001, //   default: 10000  kind of working for me before: 0.001
+        filterMinCF: 0.0001, //  default: 1, working for me before: 0.0001,
+        filterBeta: 0.001, //   default: 10000, kind of working for me before: 0.001
         missTolerance: 0, // default 0, working for me before: 3
-        warmupTolerance: 10, // default 0, working for me before: 3
+        warmupTolerance: 10, // default 0, working for me before: 10
     });
     const { renderer, scene, camera } = mindarThree;
     
@@ -295,7 +295,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         mediaRecOptions = {mimeType: 'video/webm'};
     } else if (MediaRecorder.isTypeSupported('video/mp4')) {
         mediaRecOptions = {mimeType: 'video/mp4', videoBitsPerSecond : 100000};
-        videoMimeShare = "video/mp4";
+        videoMimeType = "video/mp4";
         videoExt = ".mp4";
     } else {
         console.error("no suitable mimetype found for this device");
@@ -418,7 +418,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     alert("There was an error recording the video :(");
                     return;
                 }
-                videoBlob = new Blob(recordedChunks, {type: videoMimeShare}); // videoMimeType
+                videoBlob = new Blob(recordedChunks, {type: videoMimeType}); // videoMimeType
                 const url = URL.createObjectURL(videoBlob);
                 const recVideo = document.createElement("video");
                 recVideo.addEventListener('loadedmetadata', () => {
@@ -499,7 +499,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById("shareVideoBtn").addEventListener('click', function() {
         const filename = artwork.tagline + "-" + hashLocation + videoExt;
         const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
-        const file = new File([videoBlob], sanitized, {type: videoMimeShare});
+        const file = new File([videoBlob], sanitized, {type: videoMimeType});
         const files = [file];
         if (navigator.canShare && navigator.canShare({files})) {
             try {
@@ -507,7 +507,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     files: files,
                     title: artwork.tagline,
                     text: artwork.tagline,
-                    url: artwork.website,
+                    // url: artwork.website,
                 })
                 .catch((error) => {
                     console.log("Error sharing video:", error);
@@ -587,7 +587,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                         files: files,
                         title: artwork.tagline,
                         text: artwork.tagline,
-                        url: "https://wallmurals.ai",
+                        // url: artwork.website,
                     }).catch((error) => {
                         console.error('Error sharing photo:', error);
                     });
