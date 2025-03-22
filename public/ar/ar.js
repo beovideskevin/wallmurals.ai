@@ -19,7 +19,6 @@ var streamArray = []
 var recordedChunks = [];
 var videoBlob = null;
 var mediaRecOptions = null;
-// var videoMimeType = "video/webm; codecs=avc1,opus";
 var videoMimeShare = "video/webm";
 var videoExt = ".webm";
 const photoMimeType = "image/jpeg";
@@ -290,21 +289,6 @@ const restart = function() {
  */
 document.addEventListener('DOMContentLoaded', async function() {
     // Change the mime type for iPhone and safari
-    // if (!MediaRecorder.isTypeSupported(videoMimeType)) {
-    //     // videoMimeType = "video/webm; codecs=avc1,opus";
-    //     // videoMimeShare = "video/webm";
-    //     // if (!MediaRecorder.isTypeSupported(videoMimeType)) {
-    //     //     videoMimeType = "video/webm; codecs=vp9,opus";
-    //     //     videoMimeShare = "video/webm";
-    //     //     videoExt = ".webm";
-    //
-    //         var videoMimeType = "video/mp4;codecs:h264";
-    //         var videoMimeShare = "video/mp4";
-    //         videoExt = ".mp4";
-    //     // }
-    // }
-
-    // Change the mime type for iPhone and safari
     if (MediaRecorder.isTypeSupported('video/webm; codecs=vp9')) {
         mediaRecOptions = {mimeType: 'video/webm; codecs=vp9'};
     } else  if (MediaRecorder.isTypeSupported('video/webm')) {
@@ -317,7 +301,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         console.error("no suitable mimetype found for this device");
         document.getElementById("recVideoBtn").style.display = "none";
     }
-
 
     // Get the show started
     window.location.hash = "";
@@ -417,11 +400,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             const combinedStream = new MediaStream(streamArray);
             mediaRecorder = new MediaRecorder(combinedStream,
                 mediaRecOptions
-                // {
-                    // audioBitsPerSecond: 128000,
-                    // videoBitsPerSecond: 2500000,
-                    // mimeType: videoMimeType
-                // }
             );
             mediaRecorder.onerror = (event) => {
                 console.log(event);
