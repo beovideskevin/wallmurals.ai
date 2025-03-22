@@ -289,7 +289,7 @@ const restart = function() {
  */
 document.addEventListener('DOMContentLoaded', async function() {
     // Change the mime type for iPhone and safari
-    if (!MediaRecorder.isTypeSupported(videoMimeType)) {
+    // if (!MediaRecorder.isTypeSupported(videoMimeType)) {
         videoMimeType = "video/webm; codecs=vp9,opus";
         videoMimeShare = "video/webm";
         videoExt = ".webm";
@@ -302,7 +302,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 videoExt = ".mp4";
             }
         }
-    }
+    // }
 
 
     // Get the show started
