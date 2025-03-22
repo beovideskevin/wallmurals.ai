@@ -130,7 +130,7 @@ const setup = async function() {
         uiError: "yes",
         filterMinCF: 0.0001, //  default: 1, working for me before: 0.0001,
         filterBeta: 0.001, //   default: 10000, kind of working for me before: 0.001
-        missTolerance: 0, // default 0, working for me before: 3
+        missTolerance: 3, // default 0, working for me before: 3
         warmupTolerance: 10, // default 0, working for me before: 10
     });
     const { renderer, scene, camera } = mindarThree;
@@ -507,7 +507,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                     files: files,
                     title: artwork.tagline,
                     text: artwork.tagline,
-                    // url: artwork.website,
                 })
                 .catch((error) => {
                     console.log("Error sharing video:", error);
@@ -587,7 +586,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                         files: files,
                         title: artwork.tagline,
                         text: artwork.tagline,
-                        // url: artwork.website,
                     }).catch((error) => {
                         console.error('Error sharing photo:', error);
                     });
