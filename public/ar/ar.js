@@ -290,10 +290,10 @@ const restart = function() {
 document.addEventListener('DOMContentLoaded', async function() {
     // Change the mime type for iPhone and safari
     // if (!MediaRecorder.isTypeSupported(videoMimeType)) {
-        videoMimeType = "video/webm; codecs=vp9,opus";
-        videoMimeShare = "video/webm";
-        videoExt = ".webm";
-        if (!MediaRecorder.isTypeSupported(videoMimeType)) {
+    //     videoMimeType = "video/webm; codecs=vp9,opus";
+    //     videoMimeShare = "video/webm";
+    //     videoExt = ".webm";
+    //     if (!MediaRecorder.isTypeSupported(videoMimeType)) {
             videoMimeType = "video/webm; codecs=avc1,opus";
             videoMimeShare = "video/webm";
             if (!MediaRecorder.isTypeSupported(videoMimeType)) {
@@ -301,7 +301,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 videoMimeShare = "video/mp4";
                 videoExt = ".mp4";
             }
-        }
+    //    }
     // }
 
 
