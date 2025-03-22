@@ -500,11 +500,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         const filename = artwork.tagline + "-" + hashLocation + videoExt;
         const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
         const file = new File([videoBlob], sanitized, {type: videoMimeType});
-        const files = [file];
-        if (navigator.canShare && navigator.canShare({files})) {
+        if (navigator.canShare && navigator.canShare({files: [file]})) {
             try {
                 navigator.share({
-                    files: files,
+                    files: [file],
                     title: artwork.tagline,
                     text: artwork.tagline,
                 })
@@ -579,11 +578,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             const filename = artwork.tagline + "-" + hashLocation + photoExt;
             const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
             const file = new File([blob], sanitized, {type: photoMimeType});
-            const files = [file];
-            if (navigator.canShare && navigator.canShare({files})) {
+            if (navigator.canShare && navigator.canShare({files: [file]})) {
                 try {
                     navigator.share({
-                        files: files,
+                        files: [file],
                         title: artwork.tagline,
                         text: artwork.tagline,
                     }).catch((error) => {
