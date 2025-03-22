@@ -164,10 +164,6 @@ body {
   color: #fff;
 }
 
-#recVideoBtn {
-  color: #f00 !important;
-}
-
 #muteBtn, #soundBtn {
   display: none;
 }
@@ -177,9 +173,9 @@ body {
 }
 
 @keyframes color-change {
-  0% { color: red; }
-  50% { color: white; }
-  100% { color: red; }
+  0% { color: white; }
+  50% { color: red; }
+  100% { color: white; }
 }
 
 .isRecording {
