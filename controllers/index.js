@@ -1,10 +1,5 @@
 var cloudFlare = require('../helpers/cloudflare');
 var gmail = require('../helpers/gmail');
-var sanitize = require('mongo-sanitize');
-const { v4: uuidv4 } = require('uuid');
-const Artwork = require('../models/artwork');
-const { checkViews, openMetric } = require('../helpers/utils');
-
 
 const index = function (req, res, next) {
     res.render('index', {});

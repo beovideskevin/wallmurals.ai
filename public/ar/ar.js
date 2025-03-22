@@ -316,6 +316,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Get the artwork from the storage if needed
     artwork = artwork || getWithExpiry('artwork');
     if (artwork) {
+        saveMetrics("open");
         setup();
     }
     else {
@@ -327,10 +328,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 async function (position) {
                     const latitude = position.coords.latitude;
                     const longitude = position.coords.longitude;
-                    const response = await fetch(
-                        `/ar/location/${latitude}/${longitude}/${uuid}`,
-                        {cache: "no-store"}
-                    );
+                    const response = await fetch(`/ar/location/${latitude}/${longitude}/${uuid}`);
                     if (!response.ok || response.status != 200) {
                         muralsError.style.display = "flex";
                         return;
@@ -342,6 +340,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     }
                     artwork = content;
                     setWithExpiry('artwork', artwork);
+                    saveMetrics("open");
                     setup();
                 }, 
                 // Error
@@ -701,8 +700,7 @@ function saveMetrics(type) {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-            },
-            cache: "no-store"
+            }
         });
     }
 }

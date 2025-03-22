@@ -1,7 +1,7 @@
 var sanitize = require('mongo-sanitize');
 const {v4: uuidv4} = require('uuid');
 const Artwork = require('../models/artwork');
-const {checkViews, openMetric, isCloseToPlace} = require('../helpers/utils');
+const {checkViews, isCloseToPlace} = require('../helpers/utils');
 
 /* GET the artwork by route */
 const arRoute = async function (req, res, next) {
@@ -20,8 +20,6 @@ const arRoute = async function (req, res, next) {
         res.redirect('/home');
         return;
     }
-
-    openMetric(req, artwork.user, artwork.id, uuid);
 
     // Cache-Control: max-age=3600
     res.render('ar', {
@@ -48,8 +46,6 @@ const arId = async function (req, res, next) {
                 res.redirect('/home');
                 return;
             }
-
-            openMetric(req, artwork.user, artwork.id, uuid);
 
             // Cache-Control: max-age=3600
             res.render('ar', {
@@ -96,7 +92,6 @@ const arLoc = async function (req, res, next) {
                 return;
             }
 
-            openMetric(req, artwork.user, artwork.id, uuid);
             res.status(200);
             res.json(artwork);
             return;

@@ -94,17 +94,6 @@ saveMetric = (values) => {
     });
 }
 
-const openMetric = function(req, user, id, uuid) {
-    const forwardedFor = req.headers['x-forwarded-for'] || req.connection.remoteAddress || "no IP";
-    saveMetric({
-        metricType: "open",
-        data: forwardedFor,
-        uuid: uuid,
-        id: id,
-        user: user
-    });
-}
-
 const isCloseToPlace = function (userLat, userLon, targetLat, targetLon) {
     const MIN_DISTANCE = 200; // min distance in meters
     const METERS_PER_KILOMETER = 1000; // 1000 meter per kilometer
@@ -279,7 +268,6 @@ module.exports = {
     getMonthNameArray,
     checkViews,
     saveMetric,
-    openMetric,
     isCloseToPlace,
     collectFiles
 };
