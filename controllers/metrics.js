@@ -116,19 +116,9 @@ const save = async function(req, res, next) {
         return;
     }
     const user = artwork.user;
-    Metric.find({uuid: uuid}).then(function (metrics) {
-        // If the uuid is fake or bad return 400
-        if (!metrics.length) {
-            console.log("not found metric!");
-            res.status(400);
-            res.json({success: false});
-            return;
-        }
-        // All good, save the metric
-        saveMetric({metricType, user, id, data, uuid});
-        res.status(200);
-        res.json({success: true});
-    });
+    saveMetric({metricType, user, id, data, uuid});
+    res.status(200);
+    res.json({success: true});
 }
 
 module.exports = {
