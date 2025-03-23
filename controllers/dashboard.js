@@ -355,6 +355,12 @@ const downgradeplan = function (req, res, next) {
 
     User.findOne({id: req.session.user, active: true})
         .then(function(user) {
+            if (!user) {
+                console.log("IT FAILED", req.session.user);
+                res.redirect('/dashboard/account/' + encodeURIComponent("The email was not sent. Please try again.") + '/true');
+                return;
+            }
+
             const text = `The user ${user.id} wants to downgrade the plan to FREE. \n
                 Contact details: \n 
                 ${user.name} \n
@@ -396,6 +402,12 @@ const upgradeplan = function(req, res, next) {
 
     User.findOne({id: req.session.user, active: true})
         .then(function(user) {
+            if (!user) {
+                console.log("IT FAILED", req.session.user);
+                res.redirect('/dashboard/account/' + encodeURIComponent("The email was not sent. Please try again.") + '/true');
+                return;
+            }
+
             const text = `The user ${user.id} wants to upgrade the plan to PRO. \n
                 Contact details: \n 
                 ${user.name} \n
@@ -424,7 +436,7 @@ const upgradeplan = function(req, res, next) {
             });
         })
         .catch(function(error) {
-            console.log("IT FAILED ", error);
+            console.log("IT FAILED", error);
             res.redirect('/dashboard/account/' + encodeURIComponent("There was an error while upgrading the plan.") + '/true');
         });
 }
