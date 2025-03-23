@@ -284,7 +284,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Change the mime type for iPhone and safari
 
     mediaRecOptions = {
-        mimeType: "video/mp4;",
+        mimeType: "video/mp4;codecs=avc1,mp4a",
         // videoBitsPerSecond : 100000
     };
 
