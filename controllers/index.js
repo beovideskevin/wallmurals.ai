@@ -2,13 +2,17 @@ var cloudFlare = require('../helpers/cloudflare');
 var gmail = require('../helpers/gmail');
 
 const index = function (req, res, next) {
-    res.render('index', {});
+    res.render('index', {
+        user: req.session.user || false
+    });
     // res.redirect('/home');
     // Or maybe redirect to /AR
 }
 
 const home = function (req, res, next) {
-    res.render('index', {});
+    res.render('index', {
+        user: req.session.user || false
+    });
 }
 
 const contact = async function (req, res, next) {

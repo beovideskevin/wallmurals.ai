@@ -8,8 +8,6 @@ const { collectFiles } = require('../helpers/utils');
 
 /* GET dashboard page. */
 const index = async function(req, res, next) {
-    console.log("DASHBOARD - FULL SESSION: ", req.session);
-
     const error = req.params.error || false;
     const message = req.params.message || "";
 
@@ -29,8 +27,6 @@ const index = async function(req, res, next) {
 
 /* GET edit artwork page */
 const editArtwork = async function(req, res, next) {
-    console.log("DASHBOARD - FULL SESSION: ", req.session);
-
     if (req.session.user) {
         const id = sanitize(req.params.id);
         const artwork = await Artwork.findById(id);
@@ -55,7 +51,6 @@ const editArtwork = async function(req, res, next) {
 
 /* POST new artwork */
 const storeArtwork = async function(req, res, next) {
-    console.log("DASHBOARD - FULL SESSION: ", req.session);
     if (req.session.user) {
         const user = req.session.user;
         const body = req.body;
@@ -125,8 +120,6 @@ const storeArtwork = async function(req, res, next) {
 
 /* POST save artwork */
 const updateArtwork = async function(req, res, next) {
-    console.log("DASHBOARD - FULL SESSION: ", req.session);
-
     if (req.session.user) {
         const body = req.body;
         if (body.id == "")  {
@@ -199,8 +192,6 @@ const updateArtwork = async function(req, res, next) {
 
 /* POST delete artwork. */
 const deleteArtwork = async function(req, res, next) {
-    console.log("DASHBOARD - FULL SESSION: ", req.session);
-
     if (req.session.user) {
         const body = req.body;
         if (body.id === "")  {
@@ -228,8 +219,6 @@ const deleteArtwork = async function(req, res, next) {
 
 /* GET metrics page. */
 const metrics = function(req, res, next) {
-    console.log("METRICS - FULL SESSION: ", req.session);
-    
     if (req.session.user) {
         res.render('metrics', {});
     }
@@ -240,8 +229,6 @@ const metrics = function(req, res, next) {
 
 /* GET account page. */
 const account = async function(req, res, next) {
-    console.log("ACCOUNT - FULL SESSION: ", req.session);
-
     const error = req.params.error || false;
     const message = req.params.message || "";
 
@@ -262,8 +249,6 @@ const account = async function(req, res, next) {
 
 /* POST change the password */
 const changePassword = async function(req, res, next) {
-    console.log("DASHBOARD - FULL SESSION: ", req.session);
-
     if (req.session.user) {
         const body = req.body;
         if (body.formNewPassword == "" || 
@@ -315,8 +300,6 @@ const changePassword = async function(req, res, next) {
 
 /* POST close account */
 const closeAccount = async function(req, res, next) {
-    console.log("DASHBOARD - FULL SESSION: ", req.session);
-
     if (req.session.user) {
         const body = req.body;
         if (body.formPassword == "" || 
