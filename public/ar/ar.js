@@ -309,12 +309,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Get the show started
     window.location.hash = "";
 
-    // Init the recording streams
-    canvas = document.getElementById('record');
-    canvasContext = initCanvasForRender(canvas);
-    const canvasStream = canvas.captureStream(frameRate);
-    streamArray = [...canvasStream.getVideoTracks()];
-
     // Get the artwork from the storage if needed
     artwork = artwork || getWithExpiry('artwork');
     if (artwork) {
@@ -392,7 +386,13 @@ document.addEventListener('DOMContentLoaded', async function() {
         copyRenderedCanvas(canvasContext);
         poster = canvas.toDataURL();
 
-        if (!audioCtx && !mediaRecorder) {
+        // Init the recording streams
+        if (!canvasContext && !audioCtx && !mediaRecorder) {
+            canvas = document.getElementById('record');
+            canvasContext = initCanvasForRender(canvas);
+            const canvasStream = canvas.captureStream(frameRate);
+            streamArray = [...canvasStream.getVideoTracks()];
+
             audioCtx = new AudioContext();
             for (const element of elements) {
                 source = audioCtx.createMediaElementSource(element.audioElement);
