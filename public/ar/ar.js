@@ -285,7 +285,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     mediaRecOptions = {
         mimeType: "video/mp4;",
-        videoBitsPerSecond : 100000
+        // videoBitsPerSecond : 100000
     };
 
     // if (MediaRecorder.isTypeSupported('video/webm; codecs=vp9')) {
