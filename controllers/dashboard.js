@@ -245,7 +245,7 @@ const account = async function(req, res, next) {
 
     const error = req.params.error || false;
     const message = req.params.message || "";
-    let subscription = await Subscription.findOne({user: req.session.user});
+    let subscription = await Subscription.findOne({user: req.session.user, active: true});
     res.render('account', {
         csrf: req.csrfToken(),
         user: req.session.user,
