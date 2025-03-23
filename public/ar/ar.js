@@ -21,8 +21,8 @@ var videoBlob = null;
 var mediaRecOptions = null;
 var videoMimeType = "video/webm";
 var videoExt = ".webm";
-const photoMimeType = "image/jpeg";
-const photoExt = '.jpg';
+const photoMimeType = "image/png";
+const photoExt = '.png';
 const frameRate = 30; // FPS
 const ttl = 30 * 60 * 1000; // 30 min in milliseconds
 const shutter = new Audio('/assets/sounds/shutter.mp3');
@@ -490,7 +490,7 @@ document.addEventListener('DOMContentLoaded', async function() {
      * Shares the video
      */
     document.getElementById("shareVideoBtn").addEventListener('click', function() {
-        const filename = artwork.tagline + "-" + hashLocation + videoExt;
+        const filename = artwork.tagline.replace(/\s/g, "-") + "-" + hashLocation + videoExt;
         const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
         const file = new File([videoBlob], sanitized, {type: videoMimeType});
         if (navigator.canShare && navigator.canShare({files: [file]})) {
@@ -568,7 +568,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById("sharePhotoBtn").addEventListener('click', function() {
         const photoCanvas = document.getElementById("photoCanvas");
         photoCanvas.toBlob((blob) => {
-            const filename = artwork.tagline + "-" + hashLocation + photoExt;
+            const filename = artwork.tagline.replace(/\s/g, "-") + "-" + hashLocation + photoExt;
             const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
             const file = new File([blob], sanitized, {type: photoMimeType});
             if (navigator.canShare && navigator.canShare({files: [file]})) {
