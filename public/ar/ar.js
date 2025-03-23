@@ -298,7 +298,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     } else  if (MediaRecorder.isTypeSupported('video/webm')) {
         mediaRecOptions = {mimeType: 'video/webm'};
     } else if (MediaRecorder.isTypeSupported('video/mp4')) {
-        mediaRecOptions = {mimeType: 'video/mp4', videoBitsPerSecond : 100000};
+        mediaRecOptions = {mimeType: 'video/mp4'}; // , videoBitsPerSecond : 100000};
         videoMimeType = "video/mp4";
         videoExt = ".mp4";
     } else {
