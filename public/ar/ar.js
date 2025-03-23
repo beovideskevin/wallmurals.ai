@@ -380,12 +380,6 @@ document.addEventListener('DOMContentLoaded', async function() {
      * Saves the video and shows video wrapper
      */
     document.getElementById("recVideoBtn").addEventListener('click', function() {
-        hideRecBtn();
-        recordedChunks = [];
-        videoBlob = null;
-        copyRenderedCanvas(canvasContext);
-        poster = canvas.toDataURL();
-
         // Init the recording streams
         if (!canvasContext && !audioCtx && !mediaRecorder) {
             canvas = document.getElementById('record');
@@ -449,6 +443,15 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
 
         if (mediaRecorder) {
+            hideRecBtn();
+            recordedChunks = [];
+            videoBlob = null;
+
+            // make poster image
+            copyRenderedCanvas(canvasContext);
+            poster = canvas.toDataURL();
+
+            // start recording
             mediaRecorder.start();
             recFrameId = setInterval(function() {
                 copyRenderedCanvas(canvasContext);
