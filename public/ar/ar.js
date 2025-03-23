@@ -282,18 +282,24 @@ const restart = function() {
  */
 document.addEventListener('DOMContentLoaded', async function() {
     // Change the mime type for iPhone and safari
-    if (MediaRecorder.isTypeSupported('video/webm; codecs=vp9')) {
-        mediaRecOptions = {mimeType: 'video/webm; codecs=vp9'};
-    } else  if (MediaRecorder.isTypeSupported('video/webm')) {
-        mediaRecOptions = {mimeType: 'video/webm'};
-    } else if (MediaRecorder.isTypeSupported('video/mp4')) {
-        mediaRecOptions = {mimeType: 'video/mp4', videoBitsPerSecond : 100000};
+
+    mediaRecOptions = {
+        mimeType: "video/webm;codecs=h264",
+        videoBitsPerSecond : 100000
+    };
+
+    // if (MediaRecorder.isTypeSupported('video/webm; codecs=vp9')) {
+    //     mediaRecOptions = {mimeType: 'video/webm; codecs=vp9'};
+    // } else  if (MediaRecorder.isTypeSupported('video/webm')) {
+    //     mediaRecOptions = {mimeType: 'video/webm'};
+    // } else if (MediaRecorder.isTypeSupported('video/mp4')) {
+    //     mediaRecOptions = {mimeType: 'video/mp4', videoBitsPerSecond : 100000};
         videoMimeType = "video/mp4";
         videoExt = ".mp4";
-    } else {
-        console.error("no suitable mimetype found for this device");
-        document.getElementById("recVideoBtn").style.display = "none";
-    }
+    // } else {
+    //     console.error("no suitable mimetype found for this device");
+    //     document.getElementById("recVideoBtn").style.display = "none";
+    // }
 
     // Get the show started
     window.location.hash = "";
