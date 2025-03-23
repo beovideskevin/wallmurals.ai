@@ -353,7 +353,7 @@ const downgradeplan = function (req, res, next) {
         return;
     }
 
-    User.findOne({id: req.session.user, active: true})
+    User.findOne({_id: req.session.user, active: true})
         .then(function(user) {
             if (!user) {
                 console.log("IT FAILED", req.session.user);
@@ -400,7 +400,7 @@ const upgradeplan = function(req, res, next) {
         return;
     }
 
-    User.findOne({id: req.session.user, active: true})
+    User.findOne({_id: req.session.user, active: true})
         .then(function(user) {
             if (!user) {
                 console.log("IT FAILED", req.session.user);
