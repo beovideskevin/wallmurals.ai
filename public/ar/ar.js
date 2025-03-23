@@ -668,10 +668,10 @@ function initCanvasForRender(canvas) {
     const renderCanvas = renderer.domElement;
 
     const context = canvas.getContext('2d',
-        // {
-        //     willReadFrequently: true,
-        //     desynchronized: true,
-        // }
+        {
+            willReadFrequently: true,
+            desynchronized: true,
+        }
     );
     canvas.width = renderCanvas.width;
     canvas.height = renderCanvas.height;
