@@ -575,8 +575,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                 try {
                     navigator.share({
                         files: [file],
-                        title: artwork.tagline,
-                        // text: artwork.tagline,
+                        // title: artwork.tagline,
+                        text: artwork.tagline,
                     }).catch((error) => {
                         console.error('Error sharing photo:', error);
                     });
