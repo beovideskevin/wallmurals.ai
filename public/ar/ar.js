@@ -12,6 +12,7 @@ var currentlyPlayingAudio = null;
 var recFrameId = null;
 var mediaRecorder = null;
 var canvas = null;
+var canvasContext = null;
 var poster = null;
 var audioCtx = null;
 var source = null;
@@ -310,6 +311,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // Init the recording streams
     canvas = document.getElementById('record');
+    canvasContext = initCanvasForRender(canvas);
     const canvasStream = canvas.captureStream(frameRate);
     streamArray = [...canvasStream.getVideoTracks()];
 
@@ -387,7 +389,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         hideRecBtn();
         recordedChunks = [];
         videoBlob = null;
-        copyRenderedCanvas(canvas);
+        copyRenderedCanvas(canvasContext);
         poster = canvas.toDataURL();
 
         if (!audioCtx && !mediaRecorder) {
@@ -449,7 +451,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (mediaRecorder) {
             mediaRecorder.start();
             recFrameId = setInterval(function() {
-                copyRenderedCanvas(canvas);
+                copyRenderedCanvas(canvasContext);
             }, 1000 / frameRate);
         }
         else {
@@ -531,7 +533,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Create a canvas and draw the photo
         const photoCanvas = document.createElement('canvas');
         photoCanvas.setAttribute("id", "photoCanvas");
-        copyRenderedCanvas(photoCanvas);
+        let photoContext = initCanvasForRender(photoCanvas);
+        copyRenderedCanvas(photoContext);
 
         // Assign the photo  to an element in the UI
         const photoWrapper = document.getElementById("photoWrapper");
@@ -656,25 +659,36 @@ window.addEventListener("hashchange", function() {
 
 /**
  * Helper for saving frame
- */ 
-function copyRenderedCanvas(canvas) 
+ */
+function initCanvasForRender(canvas) {
+    const {renderer} = mindarThree;
+    const renderCanvas = renderer.domElement;
+
+    const context = canvas.getContext('2d',
+        {
+            willReadFrequently: true,
+            desynchronized: true,
+        }
+    );
+    canvas.width = renderCanvas.width;
+    canvas.height = renderCanvas.height;
+    return context;
+}
+
+function copyRenderedCanvas(context)
 {
     const {video, renderer, scene, camera} = mindarThree;
     const renderCanvas = renderer.domElement;
-
-    const context = canvas.getContext('2d');
-    canvas.width = renderCanvas.width;
-    canvas.height = renderCanvas.height;
 
     const sx = (video.clientWidth - renderCanvas.clientWidth) / 2 * video.videoWidth / video.clientWidth;
     const sy = (video.clientHeight - renderCanvas.clientHeight) / 2 * video.videoHeight / video.clientHeight;
     const sw = video.videoWidth - sx * 2; 
     const sh = video.videoHeight - sy * 2; 
-    context.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+    context.drawImage(video, sx, sy, sw, sh, 0, 0, renderCanvas.width, renderCanvas.height);
     
     renderer.preserveDrawingBuffer = true;
     renderer.render(scene, camera); // empty if not run
-    context.drawImage(renderCanvas, 0, 0, canvas.width, canvas.height);
+    context.drawImage(renderCanvas, 0, 0, renderCanvas.width, renderCanvas.height);
     renderer.preserveDrawingBuffer = false;
 }
 
