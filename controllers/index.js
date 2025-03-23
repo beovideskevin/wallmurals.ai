@@ -53,15 +53,13 @@ const contact = async function (req, res, next) {
             console.log("EMAIL NOT SENT", error);
             res.status(200);
             res.json({success: false});
-            return;
         } 
         else {
             console.log('CONTACT EMAIL SENT: ' + info.response + ' TEXT: ' + text);
+            res.status(200);
+            res.json({success: true});
         }
-    });  
-    
-    res.status(200);
-    res.json({success: true});
+    });
 }
 
 module.exports = {

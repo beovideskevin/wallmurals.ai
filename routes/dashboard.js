@@ -9,11 +9,19 @@ const {
     metrics,
     account,
     changePassword,
-    closeAccount
+    closeAccount,
+    downgradeplan,
+    upgradeplan
 } = require('../controllers/dashboard');
 
 /* GET metrics page. */
 router.get('/metrics', metrics);
+
+/* GET metrics page. */
+router.get('/downgradeplan', downgradeplan);
+
+/* GET metrics page. */
+router.get('/upgradeplan', upgradeplan);
 
 /* GET account page. */
 router.get('/account/:message?/:error?', account);
