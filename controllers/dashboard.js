@@ -64,6 +64,11 @@ const storeArtwork = async function(req, res, next) {
             }
         }
 
+        if (body.location === "") {
+            res.redirect('/dashboard/' + encodeURIComponent("You must enter a location for the mural.") + '/true');
+            return;
+        }
+
         const animation = await collectFiles(req);
 
         if (animation.target === "") {
@@ -143,6 +148,11 @@ const updateArtwork = async function(req, res, next) {
                 res.redirect(`/dashboard/edit/${id}/` + encodeURIComponent("The route must be unique.") + '/true');
                 return;
             }
+        }
+
+        if (body.location === "") {
+            res.redirect('/dashboard/' + encodeURIComponent("You must enter a location for the mural.") + '/true');
+            return;
         }
 
         const animation = await collectFiles(req);

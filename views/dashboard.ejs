@@ -255,7 +255,7 @@
 
                         <div class="mb-2">
                             <label for="formTagline" class="block text-sm/normal font-semibold text-black mb-2">Tagline:</label>
-                            <input type="text" value="" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="tagline" id="formTagline" placeholder="Type the tagline..." required="">
+                            <input type="text" value="" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="tagline" id="formTagline" placeholder="Type the tagline...">
                         </div>
 
                         <div class="mb-2">
@@ -329,8 +329,7 @@
             }
 
             let formLocation = document.getElementById("formLocation");
-            let formTagline = document.getElementById("formTagline");
-            return formLocation.value != "" && formTagline.value != "";
+            return formLocation.value != "";
         }
 
         document.addEventListener('DOMContentLoaded', async function() {

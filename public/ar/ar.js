@@ -490,15 +490,15 @@ document.addEventListener('DOMContentLoaded', async function() {
      * Shares the video
      */
     document.getElementById("shareVideoBtn").addEventListener('click', function() {
-        const filename = artwork.tagline.replace(/\s/g, "-") + "-" + hashLocation + videoExt;
+        const filename = /* artwork.tagline.replace(/\s/g, "-") + "-" + */ hashLocation + videoExt;
         const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
         const file = new File([videoBlob], sanitized, {type: videoMimeType});
         if (navigator.canShare && navigator.canShare({files: [file]})) {
             try {
                 navigator.share({
                     files: [file],
-                    title: artwork.tagline,
-                    text: artwork.tagline,
+                    // title: artwork.tagline,
+                    // text: artwork.tagline,
                 })
                 .catch((error) => {
                     console.log("Error sharing video:", error);
@@ -568,15 +568,15 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById("sharePhotoBtn").addEventListener('click', function() {
         const photoCanvas = document.getElementById("photoCanvas");
         photoCanvas.toBlob((blob) => {
-            const filename = artwork.tagline.replace(/\s/g, "-") + "-" + hashLocation + photoExt;
+            const filename = /* artwork.tagline.replace(/\s/g, "-") + "-" + */ hashLocation + photoExt;
             const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
             const file = new File([blob], sanitized, {type: photoMimeType});
             if (navigator.canShare && navigator.canShare({files: [file]})) {
                 try {
                     navigator.share({
                         files: [file],
-                        title: artwork.tagline,
-                        text: artwork.tagline,
+                        // title: artwork.tagline,
+                        // text: artwork.tagline,
                     }).catch((error) => {
                         console.error('Error sharing photo:', error);
                     });
