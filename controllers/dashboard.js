@@ -384,7 +384,7 @@ const downgradeplan = function (req, res, next) {
         })
         .catch(function(error) {
             console.log("IT FAILED ", error);
-            res.redirect('/dashboard/account/' + encodeURIComponent("There was an error while upgrading the plan.") + '/true');
+            res.redirect('/dashboard/account/' + encodeURIComponent("There was an error while downgrading the plan.") + '/true');
         });
 }
 
