@@ -383,7 +383,7 @@ document.addEventListener('DOMContentLoaded', async function() {
      * Saves the video and shows video wrapper
      */
 
-    const encodeVideoFrame = () => {
+    function encodeVideoFrame () {
         let elapsedTime = document.timeline.currentTime - startTime;
         let frame = new VideoFrame(canvas, {
             timestamp: framesGenerated * 1e6 / frameRate, // Ensure equally-spaced frames every 1/30th of a second
@@ -397,11 +397,9 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         videoEncoder.encode(frame, { keyFrame: needsKeyFrame });
         frame.close();
-    };
+    }
 
-    const endRecording = async () => {
-        recording = false;
-
+    async function endRecording () {
         audioTrack?.stop();
 
         await videoEncoder?.flush();
@@ -410,14 +408,13 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         let buffer = muxer.target.buffer;
         videoBlob = new Blob([buffer]);
-        showRecBtn();
         createAndShowVideo();
 
         videoEncoder = null;
         audioEncoder = null;
         muxer = null;
         startTime = null;
-    };
+    }
 
     document.getElementById("recVideoBtn").addEventListener('click', function() {
         audioCtx = audioCtx || new AudioContext();
@@ -465,7 +462,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 error: e => console.error(e)
             });
             videoEncoder.configure({
-                codec: "avc1.424028", // 'avc1.42001f',
+                codec: "avc1.424028",
                 width: canvas.width,
                 height: canvas.height,
                 bitrate: 1e6
@@ -496,7 +493,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
 
             startTime = document.timeline.currentTime;
-            recording = true;
             lastKeyFrame = -Infinity;
             framesGenerated = 0;
         }
@@ -532,8 +528,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             });
 
             mediaRecorder.addEventListener("stop", function() {
-                recording = false;
-                showRecBtn();
                 if (recordedChunks.length == 0) {
                     console.log("No data was recorded!");
                     alert("There was an error recording the video :(");
@@ -542,10 +536,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                 videoBlob = new Blob(recordedChunks, {type: videoMimeType});
                 createAndShowVideo();
             });
-
-            recording = true;
         }
 
+        recording = true;
         hideRecBtn();
         recordedChunks = [];
         videoBlob = null;
@@ -557,7 +550,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             encodeVideoFrame();
         }
         else {
-            // start recording
             mediaRecorder.start();
         }
 
@@ -575,6 +567,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById("stopRecVideoBtn").addEventListener('click', function() {
         clearInterval(recFrameId);
         recFrameId = null;
+        recording = false;
+        showRecBtn();
         if (videoMimeType === "video/webm") {
             endRecording();
         }
@@ -635,6 +629,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                 console.error('Error navigator.canShare:', error);
                 alert("Your device can not share the video.");
             }
+        }
+        else {
+            alert("Your device can not share the video.");
         }
     });
 
@@ -714,6 +711,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                     console.error('Error navigator.canShare:', error);
                     alert("Your device can not share the photo.");
                 }
+            }
+            else {
+                alert("Your device can not share the photo.");
             }
         })
     });
@@ -823,17 +823,6 @@ function createAndShowVideo()
 {
     const url = URL.createObjectURL(videoBlob);
     recVideo = document.createElement("video");
-
-    // if (canvas.width > canvas.height) {
-    //     recVideo.classList.remove("videoPortrait");
-    //     recVideo.classList.add("videoLandscape");
-    //
-    // }
-    // else {
-    //     recVideo.classList.remove("videoLandscape");
-    //     recVideo.classList.add("videoPortrait");
-    // }
-
     recVideo.addEventListener('loadedmetadata', () => {
         // Set the details of the video
         recVideo.setAttribute('id', 'videoCanvas');
