@@ -2,6 +2,7 @@ import { createChromaMaterial } from '/ar/chroma-video.js';
 import { GLTFLoader } from "/ar/GLTFLoader.js";
 
 // Declarations
+const ttl = 30 * 60 * 1000; // 30 min in milliseconds
 var ready = false;
 var mindarThree = null;
 var elements = [];
@@ -10,6 +11,8 @@ var refresh = false;
 var isMuted = true;
 var currentlyPlayingVideo = null;
 var currentlyPlayingAudio = null;
+// Recording stuff
+const frameRate = 30; // FPS
 var recFrameId = null;
 var mediaRecorder = null;
 var canvas = null;
@@ -22,10 +25,17 @@ var recordedChunks = [];
 var videoBlob = null;
 var recVideo = null;
 var mediaRecOptions = null;
+let recording = false;
+// MP$-Muxer stuff
+let muxer = null;
+let videoEncoder = null;
+let audioEncoder = null;
+let startTime = null;
+let audioTrack = null;
+let lastKeyFrame = null;
+let framesGenerated = 0;
 var videoMimeType = "video/webm";
 const photoMimeType = "image/png";
-const frameRate = 30; // FPS
-const ttl = 30 * 60 * 1000; // 30 min in milliseconds
 const shutter = new Audio('/assets/sounds/shutter.mp3');
 var sparkImageData = null;
 var sparkIndex = 0;
@@ -76,16 +86,6 @@ const sparkFilters= [
         }
     },
 ];
-
-// MP$-Muxer stuff
-let muxer = null;
-let videoEncoder = null;
-let audioEncoder = null;
-let startTime = null;
-let recording = false;
-let audioTrack = null;
-let lastKeyFrame = null;
-let framesGenerated = 0;
 
 /**
  * Loads the video
@@ -418,7 +418,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     document.getElementById("recVideoBtn").addEventListener('click', function() {
         audioCtx = audioCtx || new AudioContext();
-
         if (videoMimeType === "video/webm") {
             if (elements[0].audioElement) {
                 if (audioTrack === null) {
@@ -436,7 +435,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             // Create an MP4 muxer with a video track and maybe an audio track
             muxer = new Mp4Muxer.Muxer({
                 target: new Mp4Muxer.ArrayBufferTarget(),
-
                 video: {
                     codec: 'avc',
                     width: canvas.width,
@@ -448,11 +446,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                     sampleRate: audioSampleRate,
                     numberOfChannels: audioNumberOfChannels
                 } : undefined,
-
                 // Puts metadata to the start of the file. Since we're using ArrayBufferTarget anyway, this makes no difference
                 // to memory footprint.
                 fastStart: 'in-memory',
-
                 // Because we're directly pumping a MediaStreamTrack's data into it, which doesn't start at timestamp = 0
                 firstTimestampBehavior: 'offset'
             });
@@ -497,10 +493,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             framesGenerated = 0;
         }
         else if (!mediaRecorder) {
-            // Init the recording streams
             const canvasStream = canvas.captureStream(frameRate);
             streamArray.push(...canvasStream.getVideoTracks());
-
             for (const element of elements) {
                 source = audioCtx.createMediaElementSource(element.audioElement);
                 source.connect(audioCtx.destination);
@@ -508,7 +502,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                 source.connect(destination);
                 streamArray.push(...destination.stream.getAudioTracks());
             }
-
             const combinedStream = new MediaStream(streamArray);
             mediaRecorder = new MediaRecorder(combinedStream,
                 mediaRecOptions
@@ -546,6 +539,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         // make poster image
         copyRenderedCanvas(canvas);
         poster = canvas.toDataURL();
+
         if (videoMimeType === "video/webm") {
             encodeVideoFrame();
         }
@@ -617,8 +611,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             try {
                 navigator.share({
                     files: [file],
-                    // title: artwork.tagline,
-                    // text: artwork.tagline,
                 })
                 .catch((error) => {
                     console.log("Error sharing video:", error);
@@ -700,8 +692,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                 try {
                     navigator.share({
                         files: [file],
-                        // title: artwork.tagline,
-                        // text: artwork.tagline,
                     }).catch((error) => {
                         console.error('Error sharing photo:', error);
                     });
