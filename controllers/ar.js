@@ -1,7 +1,7 @@
 var sanitize = require('mongo-sanitize');
 const {v4: uuidv4} = require('uuid');
 const Artwork = require('../models/artwork');
-const {checkViews, isCloseToPlace, setHeaders} = require('../helpers/utils');
+const {checkViews, isCloseToPlace} = require('../helpers/utils');
 
 /* GET the artwork by route */
 const arRoute = async function (req, res, next) {
@@ -21,7 +21,6 @@ const arRoute = async function (req, res, next) {
         return;
     }
 
-    setHeaders(res);
     res.render('ar', {
         uuid: uuid,
         artwork: JSON.stringify(artwork)
@@ -47,7 +46,6 @@ const arId = async function (req, res, next) {
                 return;
             }
 
-            setHeaders(res);
             res.render('ar', {
                 uuid: uuid,
                 artwork: JSON.stringify(artwork)
@@ -61,7 +59,6 @@ const arId = async function (req, res, next) {
 
 /* GET the artwork */
 const ar = async function (req, res, next) {
-    setHeaders(res);
     res.render('ar', {
         uuid: uuidv4(),
         artwork: JSON.stringify(null)

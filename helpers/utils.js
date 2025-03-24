@@ -263,10 +263,6 @@ function sanitizeFilename(filename) {
     return furtherSanitized.slice(0, 255);
 }
 
-function setHeaders(res) {
-
-}
-
 module.exports = {
     getSubscriptionLastDate,
     getMonthNameArray,
@@ -274,5 +270,4 @@ module.exports = {
     saveMetric,
     isCloseToPlace,
     collectFiles,
-    setHeaders
 };
