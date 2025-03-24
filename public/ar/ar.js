@@ -21,9 +21,7 @@ var recordedChunks = [];
 var videoBlob = null;
 var mediaRecOptions = null;
 var videoMimeType = "video/webm";
-var videoExt = ".webm";
 const photoMimeType = "image/png";
-const photoExt = '.png';
 const frameRate = 30; // FPS
 const ttl = 30 * 60 * 1000; // 30 min in milliseconds
 const shutter = new Audio('/assets/sounds/shutter.mp3');
@@ -301,7 +299,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     } else if (MediaRecorder.isTypeSupported('video/mp4')) {
         mediaRecOptions = {mimeType: 'video/mp4'}; // , videoBitsPerSecond : 100000};
         videoMimeType = "video/mp4";
-        videoExt = ".mp4";
     } else {
         console.error("no suitable mimetype found for this device");
         document.getElementById("recVideoBtn").style.display = "none";
@@ -384,8 +381,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     const encodeVideoFrame = () => {
         let elapsedTime = document.timeline.currentTime - startTime;
         let frame = new VideoFrame(canvas, {
-            timestamp: framesGenerated * 1e6 / videoFrameRate, // Ensure equally-spaced frames every 1/30th of a second
-            duration: 1e6 / videoFrameRate
+            timestamp: framesGenerated * 1e6 / frameRate, // Ensure equally-spaced frames every 1/30th of a second
+            duration: 1e6 / frameRate
         });
         framesGenerated++;
 
@@ -446,17 +443,18 @@ document.addEventListener('DOMContentLoaded', async function() {
             canvas = document.getElementById('record');
             canvasContext = initCanvasForRender(canvas);
             audioCtx = new AudioContext();
-            for (const element of elements) {
-                source = audioCtx.createMediaElementSource(element.audioElement);
-                source.connect(audioCtx.destination);
-                const destination = audioCtx.createMediaStreamDestination();
-                source.connect(destination);
-                streamArray.push(...destination.stream.getAudioTracks());
-            }
 
             if (videoMimeType !== "video/webm") {
                 const canvasStream = canvas.captureStream(frameRate);
                 streamArray.push(...canvasStream.getVideoTracks());
+
+                for (const element of elements) {
+                    source = audioCtx.createMediaElementSource(element.audioElement);
+                    source.connect(audioCtx.destination);
+                    const destination = audioCtx.createMediaStreamDestination();
+                    source.connect(destination);
+                    streamArray.push(...destination.stream.getAudioTracks());
+                }
 
                 const combinedStream = new MediaStream(streamArray);
                 mediaRecorder = new MediaRecorder(combinedStream,
@@ -508,7 +506,14 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
 
         if (videoMimeType === "video/webm") {
-            audioTrack = new MediaStream(streamArray);
+            if (elements[0].audioElement && audioTrack === null) {
+                source = audioCtx.createMediaElementSource(elements[0].audioElement);
+                source.connect(audioCtx.destination);
+                const destination = audioCtx.createMediaStreamDestination();
+                source.connect(destination);
+                audioTrack = destination.stream.getAudioTracks()[0];
+            }
+
             let audioSampleRate = audioTrack?.getSettings().sampleRate;
             let audioNumberOfChannels = audioTrack?.getSettings().channelCount;
 
@@ -520,7 +525,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     codec: 'avc',
                     width: canvas.width,
                     height: canvas.height,
-                    frameRate: videoFrameRate
+                    frameRate: frameRate
                 },
                 audio: audioTrack ? {
                     codec: 'aac',
@@ -648,89 +653,8 @@ document.addEventListener('DOMContentLoaded', async function() {
      * Shares the video
      */
     document.getElementById("shareVideoBtn").addEventListener('click', async function() {
-        // If the video is a webm we need to convert it to mp4
-        // if (videoMimeType === "video/webm") {
-        //     muxer = new Mp4Muxer.Muxer({
-        //         target: new Mp4Muxer.ArrayBufferTarget(),
-        //
-        //         video: {
-        //             // If you change this, make sure to change the VideoEncoder codec as well
-        //             codec: "avc",
-        //             width: canvas.width,
-        //             height: canvas.height,
-        //         },
-        //
-        //         // mp4-muxer docs claim you should always use this with ArrayBufferTarget
-        //         fastStart: "in-memory",
-        //     });
-        //
-        //     videoEncoder = new VideoEncoder({
-        //         output: (chunk, meta) => muxer.addVideoChunk(chunk, meta),
-        //         error: (e) => console.log(e),
-        //     });
-        //
-        //     // This codec should work in most browsers
-        //     // See https://dmnsgn.github.io/media-codecs for list of codecs and see if your browser supports
-        //     videoEncoder.configure({
-        //         codec: "avc1.424028", // "avc1.42001f",
-        //         width: canvas.width,
-        //         height: canvas.height,
-        //         bitrate: 1e6,
-        //         // bitrate: 500_000,
-        //         bitrateMode: "constant",
-        //     });
-        //
-        //
-        //     const recVideo = document.getElementById("videoCanvas");
-        //     recVideo.pause();
-        //     recVideo.currentTime = 0;
-        //     console.log(recVideo.duration*frameRate);
-        //     for (let frameNumber = 0; frameNumber < recVideo.duration*frameRate; frameNumber++) {
-        //
-        //         let frame = new VideoFrame(canvas, {
-        //             timestamp: (frameNumber * 1e6) / frameRate,
-        //         });
-        //
-        //         // draw frame
-        //         canvasContext.drawImage(recVideo, 0, 0, canvas.width, canvas.height);
-        //         recVideo.currentTime += (1 / frameRate);
-        //         console.log(frameNumber);
-        //     }
-
-            //
-            //
-            // const encodedData = await blobToUint8Array(videoBlob);
-            // muxer.addVideoChunkRaw(
-            //     encodedData,
-            //     'key',
-            //     0,
-            //     recVideo.duration * 1000000,
-            // );
-
-            // blobToUint8Array(videoBlob);
-            // for (let frameNumber = 0; frameNumber < whgatever; frameNumber++) {
-            //     let frame = new VideoFrame(canvas, {
-            //         // Equally spaces frames out depending on frames per second
-            //         timestamp: (frameNumber * 1e6) / frameRate,
-            //     });
-            //
-            //     // The encode() method of the VideoEncoder interface asynchronously encodes a VideoFrame
-            //     videoEncoder.encode(frame);
-            //
-            //     // The close() method of the VideoFrame interface clears all states and releases the reference to the media resource.
-            //     frame.close();
-            // }
-
-            // Forces all pending encodes to complete
-            // await videoEncoder.flush();
-            // muxer.finalize();
-            //
-            // let buffer = muxer.target.buffer;
-            // videoBlob = new Blob([buffer]);
-        // }
-
         // Now we can share the video
-        const filename = /* artwork.tagline.replace(/\s/g, "-") + "-" + */ hashLocation + videoExt;
+        const filename = /* artwork.tagline.replace(/\s/g, "-") + "-" + */ hashLocation + ".mp4";
         const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
         const file = new File([videoBlob], sanitized, {type: videoMimeType});
         if (navigator.canShare && navigator.canShare({files: [file]})) {
@@ -809,7 +733,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById("sharePhotoBtn").addEventListener('click', function() {
         const photoCanvas = document.getElementById("photoCanvas");
         photoCanvas.toBlob((blob) => {
-            const filename = /* artwork.tagline.replace(/\s/g, "-") + "-" + */ hashLocation + photoExt;
+            const filename = /* artwork.tagline.replace(/\s/g, "-") + "-" + */ hashLocation + ".png";
             const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
             const file = new File([blob], sanitized, {type: photoMimeType});
             if (navigator.canShare && navigator.canShare({files: [file]})) {
