@@ -110,7 +110,7 @@ app.use(
         ["/metrics", /\/metrics\.*/i, "/contact", /\/contact\.*/i], // any URLs we want to exclude, either as strings or regexp
     )
 );
-if (process.env.NODE_ENV != 'development!') {
+if (process.env.NODE_ENV != 'development') {
     app.use(minifyHTML({
         override: true,
         exception_url: false,

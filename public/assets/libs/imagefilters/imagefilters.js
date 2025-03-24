@@ -1,4 +1,4 @@
-window.ImageFilters = {};
+var ImageFilters = {};
 ImageFilters.utils = {
     initSampleCanvas: function () {
         var _canvas = document.createElement('canvas'),

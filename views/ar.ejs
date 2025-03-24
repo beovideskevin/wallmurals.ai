@@ -222,7 +222,8 @@
     var uuid = "<%= uuid %>";
     var artwork = JSON.parse('<%- artwork %>');
 </script>
-<!--<script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.min.js"></script>-->
+
+<script src="/assets/libs/mp4-muxer/mp4-muxer.min.js"></script>
 <script src="/assets/libs/imagefilters/imagefilters.min.js"></script>
 <script src="/assets/libs/three/ar-image-three.prod.js"></script>
 <script type="module" src="<%= (node_env == "development") ? "/ar" : "/dist" %>/ar.js"></script>

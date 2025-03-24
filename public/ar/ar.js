@@ -20,6 +20,8 @@ var streamArray = []
 var recordedChunks = [];
 var videoBlob = null;
 var mediaRecOptions = null;
+var muxer = null;
+var videoEncoder = null;
 var videoMimeType = "video/webm";
 var videoExt = ".webm";
 const photoMimeType = "image/png";
@@ -51,7 +53,7 @@ const sparkFilters= [
     },
     {   // posterize
         filter: () => {
-            let levels = 16;
+            let levels = 32;
             return window.ImageFilters.Posterize(sparkImageData, levels);
         }
     },
@@ -381,69 +383,71 @@ document.addEventListener('DOMContentLoaded', async function() {
      */
     document.getElementById("recVideoBtn").addEventListener('click', function() {
         // Init the recording streams
-        if (!canvasContext && !audioCtx && !mediaRecorder) {
+        if (!canvasContext) {
             canvas = document.getElementById('record');
             canvasContext = initCanvasForRender(canvas);
-            const canvasStream = canvas.captureStream(frameRate);
-            streamArray = [...canvasStream.getVideoTracks()];
 
-            audioCtx = new AudioContext();
-            for (const element of elements) {
-                source = audioCtx.createMediaElementSource(element.audioElement);
-                source.connect(audioCtx.destination);
-                const destination = audioCtx.createMediaStreamDestination();
-                source.connect(destination);
-                streamArray.push(...destination.stream.getAudioTracks());
-            }
-
-            const combinedStream = new MediaStream(streamArray);
-            mediaRecorder = new MediaRecorder(combinedStream,
-                mediaRecOptions
-            );
-            mediaRecorder.onerror = (event) => {
-                console.log(event);
-                alert("There was an error recording the video :(");
-                showRecBtn();
-            };
-            mediaRecorder.addEventListener("dataavailable", function(event) {
-                if (event.data.size > 0) {
-                    recordedChunks.push(event.data);
-                }
-            });
-            mediaRecorder.addEventListener("stop", function() {
-                showRecBtn();
-                if (recordedChunks.length == 0) {
-                    console.log("No data was recorded!");
-                    alert("There was an error recording the video :(");
-                    return;
-                }
-                videoBlob = new Blob(recordedChunks, {type: videoMimeType}); // videoMimeType
-                const url = URL.createObjectURL(videoBlob);
-                const recVideo = document.createElement("video");
-                recVideo.addEventListener('loadedmetadata', () => {
-                    // Set the details of the video
-                    recVideo.setAttribute('id', 'videoCanvas');
-                    recVideo.setAttribute('loop', 'true');
-                    recVideo.setAttribute('playsinline', 'true');
-                    recVideo.setAttribute('poster', poster);
-
-                    // Assign the video to an element in the UI
-                    const videoWrapper = document.getElementById("videoWrapper");
-                    videoWrapper.appendChild(recVideo);
-                    showVideo();
-
-                    // Set the hashtag of the page
-                    hashLocation = Date.now();
-                    window.location.hash = hashLocation;
-                });
-                recVideo.src = url;
-                recVideo.preload = "metadata";
-                saveMetrics("recvideo");
-            });
+            // const canvasStream = canvas.captureStream(frameRate);
+            // streamArray = [...canvasStream.getVideoTracks()];
+            //
+            // audioCtx = new AudioContext();
+            // for (const element of elements) {
+            //     source = audioCtx.createMediaElementSource(element.audioElement);
+            //     source.connect(audioCtx.destination);
+            //     const destination = audioCtx.createMediaStreamDestination();
+            //     source.connect(destination);
+            //     streamArray.push(...destination.stream.getAudioTracks());
+            // }
+            //
+            // const combinedStream = new MediaStream(streamArray);
+            // mediaRecorder = new MediaRecorder(combinedStream,
+            //     mediaRecOptions
+            // );
+            // mediaRecorder.onerror = (event) => {
+            //     console.log(event);
+            //     alert("There was an error recording the video :(");
+            //     showRecBtn();
+            // };
+            // mediaRecorder.addEventListener("dataavailable", function(event) {
+            //     if (event.data.size > 0) {
+            //         recordedChunks.push(event.data);
+            //     }
+            // });
+            // mediaRecorder.addEventListener("stop", function() {
+            //     showRecBtn();
+            //     if (recordedChunks.length == 0) {
+            //         console.log("No data was recorded!");
+            //         alert("There was an error recording the video :(");
+            //         return;
+            //     }
+            //     videoBlob = new Blob(recordedChunks, {type: videoMimeType}); // videoMimeType
+            //     const url = URL.createObjectURL(videoBlob);
+            //     const recVideo = document.createElement("video");
+            //     recVideo.addEventListener('loadedmetadata', () => {
+            //         // Set the details of the video
+            //         recVideo.setAttribute('id', 'videoCanvas');
+            //         recVideo.setAttribute('loop', 'true');
+            //         recVideo.setAttribute('playsinline', 'true');
+            //         recVideo.setAttribute('poster', poster);
+            //
+            //         // Assign the video to an element in the UI
+            //         const videoWrapper = document.getElementById("videoWrapper");
+            //         videoWrapper.appendChild(recVideo);
+            //         showVideo();
+            //
+            //         // Set the hashtag of the page
+            //         hashLocation = Date.now();
+            //         window.location.hash = hashLocation;
+            //     });
+            //     recVideo.src = url;
+            //     recVideo.preload = "metadata";
+            //     saveMetrics("recvideo");
+            // });
         }
 
-        if (mediaRecorder) {
+        if (canvasContext) {
             hideRecBtn();
+            let frameNumber = 0;
             recordedChunks = [];
             videoBlob = null;
 
@@ -452,9 +456,51 @@ document.addEventListener('DOMContentLoaded', async function() {
             poster = canvas.toDataURL();
 
             // start recording
-            mediaRecorder.start();
+            // mediaRecorder.start();
+
+            muxer = new Mp4Muxer.Muxer({
+                target: new Mp4Muxer.ArrayBufferTarget(),
+
+                video: {
+                    // If you change this, make sure to change the VideoEncoder codec as well
+                    codec: "avc",
+                    width: canvas.width,
+                    height: canvas.height,
+                },
+
+                // mp4-muxer docs claim you should always use this with ArrayBufferTarget
+                fastStart: "in-memory",
+            });
+
+            videoEncoder = new VideoEncoder({
+                output: (chunk, meta) => muxer.addVideoChunk(chunk, meta),
+                error: (e) => console.error(e),
+            });
+
+            // This codec should work in most browsers
+            // See https://dmnsgn.github.io/media-codecs for list of codecs and see if your browser supports
+            videoEncoder.configure({
+                codec: "avc1.424028", // "avc1.42001f",
+                width: canvas.width,
+                height: canvas.height,
+                bitrate: 1e6,
+                // bitrate: 500_000,
+                bitrateMode: "constant",
+            });
+
             recFrameId = setInterval(function() {
                 copyRenderedCanvas(canvasContext);
+                let frame = new VideoFrame(canvas, {
+                    // Equally spaces frames out depending on frames per second
+                    timestamp: (frameNumber * 1e6) / frameRate,
+                });
+                frameNumber++;
+
+                // The encode() method of the VideoEncoder interface asynchronously encodes a VideoFrame
+                videoEncoder.encode(frame);
+
+                // The close() method of the VideoFrame interface clears all states and releases the reference to the media resource.
+                frame.close();
             }, 1000 / frameRate);
         }
         else {
@@ -465,13 +511,43 @@ document.addEventListener('DOMContentLoaded', async function() {
     /**
      * Stops video recording
      */
-    document.getElementById("stopRecVideoBtn").addEventListener('click', function() {
+    document.getElementById("stopRecVideoBtn").addEventListener('click', async function() {
         clearInterval(recFrameId);
         recFrameId = null;
-        mediaRecorder.stop();
+        // mediaRecorder.stop();
         if (currentlyPlayingAudio) {
             currentlyPlayingAudio.pause();
         }
+
+        // Forces all pending encodes to complete
+        await videoEncoder.flush();
+        muxer.finalize();
+
+        let buffer = muxer.target.buffer;
+        videoBlob = new Blob([buffer]);
+        const url = URL.createObjectURL(videoBlob);
+        const recVideo = document.createElement("video");
+        recVideo.addEventListener('loadedmetadata', () => {
+            // Set the details of the video
+            recVideo.setAttribute('id', 'videoCanvas');
+            recVideo.setAttribute('loop', 'true');
+            recVideo.setAttribute('playsinline', 'true');
+            recVideo.setAttribute('poster', poster);
+
+            // Assign the video to an element in the UI
+            const videoWrapper = document.getElementById("videoWrapper");
+            videoWrapper.appendChild(recVideo);
+            showRecBtn();
+            showVideo();
+
+            // Set the hashtag of the page
+            hashLocation = Date.now();
+            window.location.hash = hashLocation;
+
+            saveMetrics("recvideo");
+        });
+        recVideo.src = url;
+        recVideo.preload = "metadata";
     });
 
     /**
@@ -670,11 +746,10 @@ function initCanvasForRender(canvas) {
     const context = canvas.getContext('2d',
         {
             willReadFrequently: true,
-            desynchronized: true,
         }
     );
-    canvas.width = renderCanvas.width;
-    canvas.height = renderCanvas.height;
+    canvas.width = renderCanvas.width % 2 === 0 ? renderCanvas.width : renderCanvas.width - 1;
+    canvas.height = renderCanvas.height % 2 === 0 ? renderCanvas.height : renderCanvas.height - 1;
     return context;
 }
 

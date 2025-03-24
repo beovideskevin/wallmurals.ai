@@ -8,8 +8,6 @@
     "build": "gulp"
   },
   "dependencies": {
-    "@ffmpeg/ffmpeg": "^0.12.15",
-    "@ffmpeg/util": "^0.12.2",
     "aws-sdk": "^2.1692.0",
     "bcrypt": "^5.1.1",
     "colors": "^1.4.0",
