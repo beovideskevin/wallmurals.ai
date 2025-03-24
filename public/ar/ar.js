@@ -285,16 +285,6 @@ const restart = function() {
  */
 document.addEventListener('DOMContentLoaded', async function() {
     // Change the mime type for iPhone and safari
-
-    // mediaRecOptions = {
-    //     mimeType: 'video/mp4; codecs=h264',
-        // videoBitsPerSecond : 100000
-    // };
-
-    // 'video/webm; codecs=h264', este no funciona
-    // 'video/mp4; codecs="avc1.424028, mp4a.40.2"', este casi funciona
-
-
     if (MediaRecorder.isTypeSupported('video/webm; codecs=vp9')) {
         mediaRecOptions = {mimeType: 'video/webm; codecs=vp9'};
     } else  if (MediaRecorder.isTypeSupported('video/webm')) {
@@ -386,168 +376,92 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (!canvasContext) {
             canvas = document.getElementById('record');
             canvasContext = initCanvasForRender(canvas);
+            const canvasStream = canvas.captureStream(frameRate);
+            streamArray = [...canvasStream.getVideoTracks()];
 
-            // const canvasStream = canvas.captureStream(frameRate);
-            // streamArray = [...canvasStream.getVideoTracks()];
-            //
-            // audioCtx = new AudioContext();
-            // for (const element of elements) {
-            //     source = audioCtx.createMediaElementSource(element.audioElement);
-            //     source.connect(audioCtx.destination);
-            //     const destination = audioCtx.createMediaStreamDestination();
-            //     source.connect(destination);
-            //     streamArray.push(...destination.stream.getAudioTracks());
-            // }
-            //
-            // const combinedStream = new MediaStream(streamArray);
-            // mediaRecorder = new MediaRecorder(combinedStream,
-            //     mediaRecOptions
-            // );
-            // mediaRecorder.onerror = (event) => {
-            //     console.log(event);
-            //     alert("There was an error recording the video :(");
-            //     showRecBtn();
-            // };
-            // mediaRecorder.addEventListener("dataavailable", function(event) {
-            //     if (event.data.size > 0) {
-            //         recordedChunks.push(event.data);
-            //     }
-            // });
-            // mediaRecorder.addEventListener("stop", function() {
-            //     showRecBtn();
-            //     if (recordedChunks.length == 0) {
-            //         console.log("No data was recorded!");
-            //         alert("There was an error recording the video :(");
-            //         return;
-            //     }
-            //     videoBlob = new Blob(recordedChunks, {type: videoMimeType}); // videoMimeType
-            //     const url = URL.createObjectURL(videoBlob);
-            //     const recVideo = document.createElement("video");
-            //     recVideo.addEventListener('loadedmetadata', () => {
-            //         // Set the details of the video
-            //         recVideo.setAttribute('id', 'videoCanvas');
-            //         recVideo.setAttribute('loop', 'true');
-            //         recVideo.setAttribute('playsinline', 'true');
-            //         recVideo.setAttribute('poster', poster);
-            //
-            //         // Assign the video to an element in the UI
-            //         const videoWrapper = document.getElementById("videoWrapper");
-            //         videoWrapper.appendChild(recVideo);
-            //         showVideo();
-            //
-            //         // Set the hashtag of the page
-            //         hashLocation = Date.now();
-            //         window.location.hash = hashLocation;
-            //     });
-            //     recVideo.src = url;
-            //     recVideo.preload = "metadata";
-            //     saveMetrics("recvideo");
-            // });
-        }
+            audioCtx = new AudioContext();
+            for (const element of elements) {
+                source = audioCtx.createMediaElementSource(element.audioElement);
+                source.connect(audioCtx.destination);
+                const destination = audioCtx.createMediaStreamDestination();
+                source.connect(destination);
+                streamArray.push(...destination.stream.getAudioTracks());
+            }
 
-        if (canvasContext) {
-            hideRecBtn();
-            let frameNumber = 0;
-            recordedChunks = [];
-            videoBlob = null;
-
-            // make poster image
-            copyRenderedCanvas(canvasContext);
-            poster = canvas.toDataURL();
-
-            // start recording
-            // mediaRecorder.start();
-
-            muxer = new Mp4Muxer.Muxer({
-                target: new Mp4Muxer.ArrayBufferTarget(),
-
-                video: {
-                    // If you change this, make sure to change the VideoEncoder codec as well
-                    codec: "avc",
-                    width: canvas.width,
-                    height: canvas.height,
-                },
-
-                // mp4-muxer docs claim you should always use this with ArrayBufferTarget
-                fastStart: "in-memory",
+            const combinedStream = new MediaStream(streamArray);
+            mediaRecorder = new MediaRecorder(combinedStream,
+                mediaRecOptions
+            );
+            mediaRecorder.onerror = (event) => {
+                console.log(event);
+                alert("There was an error recording the video :(");
+                showRecBtn();
+            };
+            mediaRecorder.addEventListener("dataavailable", function(event) {
+                if (event.data.size > 0) {
+                    recordedChunks.push(event.data);
+                }
             });
-alert(muxer);
-            videoEncoder = new VideoEncoder({
-                output: (chunk, meta) => muxer.addVideoChunk(chunk, meta),
-                error: (e) => alert(e),
-            });
-            alert(videoEncoder);
-            // This codec should work in most browsers
-            // See https://dmnsgn.github.io/media-codecs for list of codecs and see if your browser supports
-            videoEncoder.configure({
-                codec: "avc1.424028", // "avc1.42001f",
-                width: canvas.width,
-                height: canvas.height,
-                bitrate: 1e6,
-                // bitrate: 500_000,
-                bitrateMode: "constant",
-            });
+            mediaRecorder.addEventListener("stop", function() {
+                showRecBtn();
+                if (recordedChunks.length == 0) {
+                    console.log("No data was recorded!");
+                    alert("There was an error recording the video :(");
+                    return;
+                }
+                videoBlob = new Blob(recordedChunks, {type: videoMimeType}); // videoMimeType
+                const url = URL.createObjectURL(videoBlob);
+                const recVideo = document.createElement("video");
+                recVideo.addEventListener('loadedmetadata', () => {
+                    // Set the details of the video
+                    recVideo.setAttribute('id', 'videoCanvas');
+                    recVideo.setAttribute('loop', 'true');
+                    recVideo.setAttribute('playsinline', 'true');
+                    recVideo.setAttribute('poster', poster);
 
-            recFrameId = setInterval(function() {
-                copyRenderedCanvas(canvasContext);
-                let frame = new VideoFrame(canvas, {
-                    // Equally spaces frames out depending on frames per second
-                    timestamp: (frameNumber * 1e6) / frameRate,
+                    // Assign the video to an element in the UI
+                    const videoWrapper = document.getElementById("videoWrapper");
+                    videoWrapper.appendChild(recVideo);
+                    showVideo();
+
+                    // Set the hashtag of the page
+                    hashLocation = Date.now();
+                    window.location.hash = hashLocation;
+
+                    // Save the metrics
+                    saveMetrics("recvideo");
                 });
-                frameNumber++;
-
-                // The encode() method of the VideoEncoder interface asynchronously encodes a VideoFrame
-                videoEncoder.encode(frame);
-
-                // The close() method of the VideoFrame interface clears all states and releases the reference to the media resource.
-                frame.close();
-            }, 1000 / frameRate);
+                recVideo.src = url;
+                recVideo.preload = "metadata";
+            });
         }
-        else {
-            alert("There was an error recording the video :(");
-        }
+
+        hideRecBtn();
+        recordedChunks = [];
+        videoBlob = null;
+
+        // make poster image
+        copyRenderedCanvas(canvasContext);
+        poster = canvas.toDataURL();
+
+        // start recording
+        mediaRecorder.start();
+
+        recFrameId = setInterval(function() {
+            copyRenderedCanvas(canvasContext);
+        }, 1000 / frameRate);
     });
 
     /**
      * Stops video recording
      */
-    document.getElementById("stopRecVideoBtn").addEventListener('click', async function() {
+    document.getElementById("stopRecVideoBtn").addEventListener('click', function() {
         clearInterval(recFrameId);
         recFrameId = null;
-        // mediaRecorder.stop();
+        mediaRecorder.stop();
         if (currentlyPlayingAudio) {
             currentlyPlayingAudio.pause();
         }
-
-        // Forces all pending encodes to complete
-        await videoEncoder.flush();
-        muxer.finalize();
-
-        let buffer = muxer.target.buffer;
-        videoBlob = new Blob([buffer]);
-        const url = URL.createObjectURL(videoBlob);
-        const recVideo = document.createElement("video");
-        recVideo.addEventListener('loadedmetadata', () => {
-            // Set the details of the video
-            recVideo.setAttribute('id', 'videoCanvas');
-            recVideo.setAttribute('loop', 'true');
-            recVideo.setAttribute('playsinline', 'true');
-            recVideo.setAttribute('poster', poster);
-
-            // Assign the video to an element in the UI
-            const videoWrapper = document.getElementById("videoWrapper");
-            videoWrapper.appendChild(recVideo);
-            showRecBtn();
-            showVideo();
-
-            // Set the hashtag of the page
-            hashLocation = Date.now();
-            window.location.hash = hashLocation;
-
-            saveMetrics("recvideo");
-        });
-        recVideo.src = url;
-        recVideo.preload = "metadata";
     });
 
     /**
@@ -564,7 +478,6 @@ alert(muxer);
         hidePlayBtn();
         const recVideo = document.getElementById("videoCanvas");
         recVideo.muted = false;
-        recVideo.currentTime = 0;
         recVideo.play();
     });
 
@@ -575,12 +488,95 @@ alert(muxer);
         showPlayBtn();
         const recVideo = document.getElementById("videoCanvas");
         recVideo.pause();
+        recVideo.currentTime = 0;
     });
 
     /**
      * Shares the video
      */
-    document.getElementById("shareVideoBtn").addEventListener('click', function() {
+    document.getElementById("shareVideoBtn").addEventListener('click', async function() {
+        // If the video is a webm we need to convert it to mp4
+        // if (videoMimeType === "video/webm") {
+        //     muxer = new Mp4Muxer.Muxer({
+        //         target: new Mp4Muxer.ArrayBufferTarget(),
+        //
+        //         video: {
+        //             // If you change this, make sure to change the VideoEncoder codec as well
+        //             codec: "avc",
+        //             width: canvas.width,
+        //             height: canvas.height,
+        //         },
+        //
+        //         // mp4-muxer docs claim you should always use this with ArrayBufferTarget
+        //         fastStart: "in-memory",
+        //     });
+        //
+        //     videoEncoder = new VideoEncoder({
+        //         output: (chunk, meta) => muxer.addVideoChunk(chunk, meta),
+        //         error: (e) => console.log(e),
+        //     });
+        //
+        //     // This codec should work in most browsers
+        //     // See https://dmnsgn.github.io/media-codecs for list of codecs and see if your browser supports
+        //     videoEncoder.configure({
+        //         codec: "avc1.424028", // "avc1.42001f",
+        //         width: canvas.width,
+        //         height: canvas.height,
+        //         bitrate: 1e6,
+        //         // bitrate: 500_000,
+        //         bitrateMode: "constant",
+        //     });
+        //
+        //
+        //     const recVideo = document.getElementById("videoCanvas");
+        //     recVideo.pause();
+        //     recVideo.currentTime = 0;
+        //     console.log(recVideo.duration*frameRate);
+        //     for (let frameNumber = 0; frameNumber < recVideo.duration*frameRate; frameNumber++) {
+        //
+        //         let frame = new VideoFrame(canvas, {
+        //             timestamp: (frameNumber * 1e6) / frameRate,
+        //         });
+        //
+        //         // draw frame
+        //         canvasContext.drawImage(recVideo, 0, 0, canvas.width, canvas.height);
+        //         recVideo.currentTime += (1 / frameRate);
+        //         console.log(frameNumber);
+        //     }
+
+            //
+            //
+            // const encodedData = await blobToUint8Array(videoBlob);
+            // muxer.addVideoChunkRaw(
+            //     encodedData,
+            //     'key',
+            //     0,
+            //     recVideo.duration * 1000000,
+            // );
+
+            // blobToUint8Array(videoBlob);
+            // for (let frameNumber = 0; frameNumber < whgatever; frameNumber++) {
+            //     let frame = new VideoFrame(canvas, {
+            //         // Equally spaces frames out depending on frames per second
+            //         timestamp: (frameNumber * 1e6) / frameRate,
+            //     });
+            //
+            //     // The encode() method of the VideoEncoder interface asynchronously encodes a VideoFrame
+            //     videoEncoder.encode(frame);
+            //
+            //     // The close() method of the VideoFrame interface clears all states and releases the reference to the media resource.
+            //     frame.close();
+            // }
+
+            // Forces all pending encodes to complete
+            // await videoEncoder.flush();
+            // muxer.finalize();
+            //
+            // let buffer = muxer.target.buffer;
+            // videoBlob = new Blob([buffer]);
+        // }
+
+        // Now we can share the video
         const filename = /* artwork.tagline.replace(/\s/g, "-") + "-" + */ hashLocation + videoExt;
         const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
         const file = new File([videoBlob], sanitized, {type: videoMimeType});
