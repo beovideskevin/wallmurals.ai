@@ -471,12 +471,12 @@ document.addEventListener('DOMContentLoaded', async function() {
                 // mp4-muxer docs claim you should always use this with ArrayBufferTarget
                 fastStart: "in-memory",
             });
-
+alert(muxer);
             videoEncoder = new VideoEncoder({
                 output: (chunk, meta) => muxer.addVideoChunk(chunk, meta),
                 error: (e) => console.error(e),
             });
-
+            alert(videoEncoder);
             // This codec should work in most browsers
             // See https://dmnsgn.github.io/media-codecs for list of codecs and see if your browser supports
             videoEncoder.configure({
