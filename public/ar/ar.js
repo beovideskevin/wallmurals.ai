@@ -546,7 +546,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 error: e => console.error(e)
             });
             videoEncoder.configure({
-                codec: "avc1.424028", // 'avc1.42001f',
+                codec: "avc1.42001f", // "avc1.424028", // 'avc1.42001f',
                 width: canvas.width,
                 height: canvas.height,
                 bitrate: 1e6
