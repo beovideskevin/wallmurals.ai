@@ -474,7 +474,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 alert(muxer);
             videoEncoder = new VideoEncoder({
                 output: (chunk, meta) => muxer.addVideoChunk(chunk, meta),
-                error: (e) => console.error(e),
+                error: (e) => alert(e),
             });
             alert(videoEncoder);
             // This codec should work in most browsers
