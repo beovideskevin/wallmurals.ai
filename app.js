@@ -122,11 +122,11 @@ app.use(express.static('public'));
 // auth middleware
 app.use(
     (req, res, next) => {
-        if (req.route.path.startsWith('/dashboard') && !req.session.user) {
+        if (req.path.startsWith('/dashboard') && !req.session.user) {
             // If the user is not logged in and tries to access the dashboard, redirect to login
             return res.redirect('/users/login');
         }
-        else if (req.route.path.startsWith('/user/login') && req.session.user) {
+        else if (req.path.startsWith('/user/login') && req.session.user) {
             // If the user is already logged in and tries to access the login page, redirect to dashboard
             return res.redirect('/dashboard');
         }
