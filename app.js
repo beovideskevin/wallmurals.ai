@@ -68,6 +68,7 @@ else {
     }));
 }
 
+// General SEO stuff for the website
 app.locals.node_env = process.env.NODE_ENV;
 app.locals.site = "Wall Murals AI";
 app.locals.title = "Wall Murals AI - Artificial Intelligence and Augmented Reality Murals ";
