@@ -23,6 +23,26 @@ connectDB();
 
 const app = express();
 
+// General SEO stuff for the website
+app.locals.node_env = process.env.NODE_ENV;
+app.locals.site = "Wall Murals AI";
+app.locals.title = "Wall Murals AI - Artificial Intelligence and Augmented Reality Murals ";
+app.locals.keywords = "Wall Murals, Custom Murals, Commercial and Residential, Artificial Intelligence, Augmented Reality, Augmented Reality Mural";
+app.locals.description = "Wall Murals AI is a Company Specialized in Artificial Intelligence and Augmented Reality Murals: Commercial, Residential, Branding, Offices, Schools, Kids Rooms, and more.";
+app.locals.author = "Wall Murals AI";
+
+// AR settings
+app.locals.filterMinCF = process.env.filterMinCF || 0.0001;
+app.locals.filterBeta = process.env.filterBeta || 0.001;
+app.locals.missTolerance = process.env.missTolerance || 3;
+app.locals.warmupTolerance = process.env.warmupTolerance || 10;
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+
+// middleware
+app.use(logger('dev'));
 if (process.env.NODE_ENV != 'development') {
     // Initialize client.
     let redisClient = createClient({
@@ -67,27 +87,6 @@ else {
         }
     }));
 }
-
-// General SEO stuff for the website
-app.locals.node_env = process.env.NODE_ENV;
-app.locals.site = "Wall Murals AI";
-app.locals.title = "Wall Murals AI - Artificial Intelligence and Augmented Reality Murals ";
-app.locals.keywords = "Wall Murals, Custom Murals, Commercial and Residential, Artificial Intelligence, Augmented Reality, Augmented Reality Mural";
-app.locals.description = "Wall Murals AI is a Company Specialized in Artificial Intelligence and Augmented Reality Murals: Commercial, Residential, Branding, Offices, Schools, Kids Rooms, and more.";
-app.locals.author = "Wall Murals AI";
-
-// AR settings
-app.locals.filterMinCF = process.env.filterMinCF || 0.0001;
-app.locals.filterBeta = process.env.filterBeta || 0.001;
-app.locals.missTolerance = process.env.missTolerance || 3;
-app.locals.warmupTolerance = process.env.warmupTolerance || 10;
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-
-// more middleware
-app.use(logger('dev'));
 app.use(fileUpload({
     useTempFiles: true,
     tempFileDir: __dirname + '/tmp/'
@@ -120,6 +119,23 @@ if (process.env.NODE_ENV != 'development') {
 }
 app.use(express.static('public'));
 
+// auth middleware
+app.use(
+    (req, res, next) => {
+        if (req.route.path.startsWith('/dashboard') && !req.session.user) {
+            // If the user is not logged in and tries to access the dashboard, redirect to login
+            return res.redirect('/users/login');
+        }
+        else if (req.route.path.startsWith('/user/login') && req.session.user) {
+            // If the user is already logged in and tries to access the login page, redirect to dashboard
+            return res.redirect('/dashboard');
+        }
+        res.locals.user = req.session.user || false;
+        res.locals.csrfToken = req.csrfToken();
+        next();
+    }
+);
+
 // routes
 app.use('/ar', arRouter);
 app.use('/metrics', metricsRouter);
@@ -143,11 +159,7 @@ app.use(function (err, req, res, next) {
         res.status(err.status || 500);
         res.render('error');
     } else {
-        if (req.session.user) {
-            res.redirect('/dashboard');
-        } else {
-            res.redirect('/');
-        }
+        res.redirect(req.session.user ? '/dashboard' : '/');
     }
 });
 

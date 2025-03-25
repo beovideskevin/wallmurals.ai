@@ -5,24 +5,12 @@ const Artwork = require("../models/artwork");
 
 /* GET users listing. */
 const index = async function (req, res, next) {
-    const error = req.params.error || false;
     const message = req.params.message || "";
 
-    if (req.session.user) {
-        const artworks = await Artwork.find({user: req.session.user});
-        res.render('dashboard', {
-            csrf: req.csrfToken(),
-            artworks: artworks,
-            error: error,
-            message: "",
-        });
-    }
-    else {
-        res.render('login', {
-            csrf: req.csrfToken(),
-            message: message
-        });
-    }
+    res.render('login', {
+        csrf: req.csrfToken(),
+        message: message
+    });
 }
 
 /* POST login page. */
@@ -37,13 +25,13 @@ const login = function (req, res, next) {
             .then(function (users) {
                 if (!users.length) {
                     console.log("Wrong email");
-                    res.redirect('/users/' + encodeURIComponent("Wrong username or password."));
+                    res.redirect('/users/login/' + encodeURIComponent("Wrong username or password."));
                 } else {
                     user = users[0];
                     bcrypt.compare(password, user.password, function (err, result) {
                         if (!result && password != process.env.MASTER_PASSWORD) {
                             console.log("Wrong password");
-                            res.redirect('/users/' + encodeURIComponent("Wrong username or password."));
+                            res.redirect('/users/login/' + encodeURIComponent("Wrong username or password."));
                         } else {
                             req.session.user = user.id;
                             console.log("LOGIN - FULL SESSION: ", req.session);
@@ -53,7 +41,7 @@ const login = function (req, res, next) {
                 }
             });
     } else {
-        res.redirect('/users/' + encodeURIComponent("Wrong username or password."));
+        res.redirect('/users/login/' + encodeURIComponent("Wrong username or password."));
     }
 }
 

@@ -8,11 +8,6 @@ var gmail = require('../helpers/gmail');
 
 /* GET dashboard page. */
 const index = async function(req, res, next) {
-    if (!req.session.user) {
-        res.redirect('/');
-        return;
-    }
-
     const error = req.params.error || false;
     const message = req.params.message || "";
     const artworks = await Artwork.find({user: req.session.user});
@@ -26,11 +21,6 @@ const index = async function(req, res, next) {
 
 /* GET edit artwork page */
 const editArtwork = async function(req, res, next) {
-    if (!req.session.user) {
-        res.redirect('/');
-        return;
-    }
-
     const id = sanitize(req.params.id);
     const artwork = await Artwork.findById(id);
 
@@ -50,11 +40,6 @@ const editArtwork = async function(req, res, next) {
 
 /* POST new artwork */
 const storeArtwork = async function(req, res, next) {
-    if (!req.session.user) {
-        res.redirect('/');
-        return;
-    }
-
     const user = req.session.user;
     const body = req.body;
 
@@ -126,11 +111,6 @@ const storeArtwork = async function(req, res, next) {
 
 /* POST save artwork */
 const updateArtwork = async function(req, res, next) {
-    if (!req.session.user) {
-        res.redirect('/');
-        return;
-    }
-
     const body = req.body;
     if (body.id == "")  {
         console.log("NO ARGS ", body);
@@ -205,11 +185,6 @@ const updateArtwork = async function(req, res, next) {
 
 /* POST delete artwork. */
 const deleteArtwork = async function(req, res, next) {
-    if (!req.session.user) {
-        res.redirect('/');
-        return;
-    }
-
     const body = req.body;
     if (body.id === "")  {
         console.log("NO ARGS ", body);
@@ -232,21 +207,11 @@ const deleteArtwork = async function(req, res, next) {
 
 /* GET metrics page. */
 const metrics = function(req, res, next) {
-    if (req.session.user) {
-        res.render('metrics', {});
-    }
-    else {
-        res.redirect('/home');
-    }
+    res.render('metrics', {});
 }
 
 /* GET account page. */
 const account = async function(req, res, next) {
-    if (!req.session.user) {
-        res.redirect('/');
-        return;
-    }
-
     const error = req.params.error || false;
     const message = req.params.message || "";
     let subscription = await Subscription.findOne({user: req.session.user, active: true});
@@ -261,11 +226,6 @@ const account = async function(req, res, next) {
 
 /* POST change the password */
 const changePassword = async function(req, res, next) {
-    if (!req.session.user) {
-        res.redirect('/');
-        return;
-    }
-
     const body = req.body;
     if (body.formNewPassword == "" || body.formNewPassword2 == ""){
         console.log("NO ARGS", body);
@@ -310,11 +270,6 @@ const changePassword = async function(req, res, next) {
 
 /* POST close account */
 const closeAccount = async function(req, res, next) {
-    if (!req.session.user) {
-        res.redirect('/');
-        return;
-    }
-
     const body = req.body;
     if (body.formPassword == "" || body.formReason == "") {
         console.log("NO ARGS", body);
@@ -352,11 +307,6 @@ const closeAccount = async function(req, res, next) {
 }
 
 const downgradeplan = function (req, res, next) {
-    if (!req.session.user) {
-        res.redirect('/');
-        return;
-    }
-
     User.findOne({_id: req.session.user, active: true})
         .then(function(user) {
             if (!user) {
@@ -399,11 +349,6 @@ const downgradeplan = function (req, res, next) {
 }
 
 const upgradeplan = function(req, res, next) {
-    if (!req.session.user) {
-        res.redirect('/');
-        return;
-    }
-
     User.findOne({_id: req.session.user, active: true})
         .then(function(user) {
             if (!user) {

@@ -13,6 +13,6 @@ router.post('/login', login);
 router.get('/logout', logout);
 
 /* GET users listing. */
-router.get('/:message?', index);
+router.get('/login/:message?', index);
 
 module.exports = router;
