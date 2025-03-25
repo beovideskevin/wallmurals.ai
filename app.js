@@ -77,10 +77,10 @@ app.locals.description = "Wall Murals AI is a Company Specialized in Artificial 
 app.locals.author = "Wall Murals AI";
 
 // AR settings
-app.locals.filterMinCF = process.env.filterMinCF;
-app.locals.filterBeta = process.env.filterBeta;
-app.locals.missTolerance = process.env.missTolerance;
-app.locals.warmupTolerance = process.env.warmupTolerance;
+app.locals.filterMinCF = process.env.filterMinCF || 0.0001;
+app.locals.filterBeta = process.env.filterBeta || 0.001;
+app.locals.missTolerance = process.env.missTolerance || 3;
+app.locals.warmupTolerance = process.env.warmupTolerance || 10;
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
