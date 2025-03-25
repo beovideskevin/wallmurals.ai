@@ -75,6 +75,12 @@ app.locals.keywords = "Wall Murals, Custom Murals, Commercial and Residential, A
 app.locals.description = "Wall Murals AI is a Company Specialized in Artificial Intelligence and Augmented Reality Murals: Commercial, Residential, Branding, Offices, Schools, Kids Rooms, and more.";
 app.locals.author = "Wall Murals AI";
 
+// AR settings
+app.locals.filterMinCF = process.env.filterMinCF;
+app.locals.filterBeta = process.env.filterBeta;
+app.locals.missTolerance = process.env.missTolerance;
+app.locals.warmupTolerance = process.env.warmupTolerance;
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');

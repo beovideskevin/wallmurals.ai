@@ -416,7 +416,7 @@ var QRCode;
 
 			// Paint the logo in the canvas
 			let img = await this.loadLogo();
-			let size = 80;
+			let size = 120;
 			_oContext.drawImage(img, (_htOption.width-size)/2, (_htOption.height-size)/2, size, size);
 			
 			this._bIsPainted = true;
