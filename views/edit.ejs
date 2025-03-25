@@ -78,6 +78,16 @@
                         </div>
 
                         <div class="mb-2">
+                            <label for="formScale" class="block text-sm/normal font-semibold text-black mb-2">Scale:</label>
+                            <input type="text" value="<%= artwork.animations[0].scale %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="scale" id="formScale" placeholder="For models, type the scale as x,y,z...">
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="formPosition" class="block text-sm/normal font-semibold text-black mb-2">Position:</label>
+                            <input type="text" value="<%= artwork.animations[0].position %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="position" id="formPosition" placeholder="For models, type the position as x,y,z...">
+                        </div>
+
+                        <div class="mb-2">
                             <label for="formRoute" class="block text-sm/normal font-semibold text-black mb-2">Quick link:</label>
                             <input type="text" value="<%= artwork.route %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="route" id="formRoute" placeholder="Type the direct route...">
                         </div>

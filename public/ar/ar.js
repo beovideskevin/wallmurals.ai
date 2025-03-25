@@ -161,7 +161,11 @@ const setup = async function() {
         if (artwork.animations[i].video) {
             loadVideo(artwork.animations[i].video, artwork.animations[i].poster).then(function(videoElement) {
                 let texture = new window.MINDAR.IMAGE.THREE.VideoTexture(videoElement);
-                let geometry = new window.MINDAR.IMAGE.THREE.PlaneGeometry(1, artwork.animations[i].height / artwork.animations[i].width);
+                let scale = 1;
+                if (artwork.animations[i].scale) {
+                    scale = artwork.animations[i].scale;
+                }
+                let geometry = new window.MINDAR.IMAGE.THREE.PlaneGeometry(scale, scale * (artwork.animations[i].height / artwork.animations[i].width));
                 let material = artwork.animations[i].chroma == null || artwork.animations[i].chroma == 'null'
                     ? new window.MINDAR.IMAGE.THREE.MeshBasicMaterial({ map: texture })
                     : createChromaMaterial(texture, artwork.animations[i].chroma);
@@ -204,8 +208,20 @@ const setup = async function() {
         // If the artwork is a model
         if (artwork.animations[i].model) {
             loadGLTF(artwork.animations[i].model).then(function(modelElement) {
-                modelElement.scene.scale.set(0.1, 0.1, 0.1);
-                modelElement.scene.position.set(0, -0.4, 0);
+                if (artwork.animations[i].scale) {
+                    const [x,y,z] = artwork.animations[i].scale.split(",");
+                    modelElement.scene.scale.set(x, y, z);
+                }
+                else {
+                    modelElement.scene.scale.set(0.1, 0.1, 0.1);
+                }
+                if (artwork.animations[i].position) {
+                    const [x,y,z] = artwork.animations[i].scale.split(",");
+                    modelElement.scene.position.set(x, y, z);
+                }
+                else {
+                    modelElement.scene.position.set(0, -0.4, 0);
+                }
                 anchor.group.add(modelElement.scene);
                 let mixerElement = new window.MINDAR.IMAGE.THREE.AnimationMixer(modelElement.scene);
                 mixerElement.clipAction(modelElement.animations[0]).play();

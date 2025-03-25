@@ -38,6 +38,14 @@ const artworkSchema = mongoose.Schema(
             audio: {
                 type: String,
                 required: false,
+            },
+            scale: {
+                type: String,
+                required: false,
+            },
+            position: {
+                type: String,
+                required: false,
             }
         }],
         location: {

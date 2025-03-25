@@ -91,6 +91,8 @@
                         let width = [];
                         let height = [];
                         let chroma = [];
+                        let scale = [];
+                        let position = [];
 
                         artwork.animations.forEach(function (animation) { 
                             if (animation.video) {
@@ -114,6 +116,12 @@
                             if (animation.chroma) {
                                 chroma.push(animation.chroma);
                             }
+                            if (animation.scale) {
+                                scale.push(animation.scale);
+                            }
+                            if (animation.position) {
+                                position.push(animation.position);
+                            }
                         }); 
                     %>
 
@@ -132,6 +140,10 @@
                     <div class="mb-2"><h3>Width:</h3><%- width.join("<br>") %></div>
 
                     <div class="mb-2"><h3>Height:</h3><%- height.join("<br>") %></div>
+
+                    <div class="mb-2"><h3>Scale:</h3><%- scale.join("<br>") %></div>
+
+                    <div class="mb-2"><h3>Position:</h3><%- position.join("<br>") %></div>
 
                     <div class="mb-2 overflow-hidden"><h3>Latitude:</h3> <%= artwork.lat %></div>
 
@@ -231,6 +243,16 @@
                         <div class="mb-2">
                             <label for="formHeight" class="block text-sm/normal font-semibold text-black mb-2">Height:</label>
                             <input type="text" value="" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="height" id="formHeight" placeholder="Type the height...">
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="formScale" class="block text-sm/normal font-semibold text-black mb-2">Scale:</label>
+                            <input type="text" value="" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="scale" id="formScale" placeholder="For models, type the scale as x,y,z...">
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="formPosition" class="block text-sm/normal font-semibold text-black mb-2">Position:</label>
+                            <input type="text" value="" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="position" id="formPosition" placeholder="For models, type the position as x,y,z...">
                         </div>
 
                         <div class="mb-2">

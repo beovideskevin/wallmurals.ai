@@ -96,6 +96,8 @@ const storeArtwork = async function(req, res, next) {
             width: body.width,
             height: body.height,
             chroma: body.chroma,
+            scale: body.scale,
+            position: body.position,
             model: animation.model !== "" ? animation.model : "",
             audio: animation.audio !== "" ? animation.audio : ""
         }],
@@ -178,6 +180,8 @@ const updateArtwork = async function(req, res, next) {
         width: body.width,
         height: body.height,
         chroma: body.chroma,
+        scale: body.scale,
+        position: body.position,
         model: animation.model !== "" ? animation.model : artwork.animations[0].model,
         audio: animation.audio !== "" ? animation.audio : artwork.animations[0].audio
     }];
