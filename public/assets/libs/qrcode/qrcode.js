@@ -415,19 +415,26 @@ var QRCode;
 			}
 
 			// Paint the logo in the canvas
-			let img = await this.loadLogo();
-			let size = 120;
-			_oContext.drawImage(img, (_htOption.width-size)/2, (_htOption.height-size)/2, size, size);
+			if (_htOption.logo) {
+				let img = await this.loadLogo(_htOption.logo);
+				_oContext.drawImage(
+					img,
+					(_htOption.width-_htOption.logoSize)/2,
+					(_htOption.height-_htOption.logoSize)/2,
+					_htOption.logoSize,
+					_htOption.logoSize
+				);
+			}
 			
 			this._bIsPainted = true;
 		};
 
-		Drawing.prototype.loadLogo = function() {
+		Drawing.prototype.loadLogo = function(logo) {
 			return new Promise((resolve, reject) => {
 				let img = new Image();
 				img.onload = () => resolve(img);
 				img.onerror = reject;
-				img.src = '/assets/images/default_sm.png';
+				img.src = logo;
 			})
 		}
 			
@@ -553,7 +560,9 @@ var QRCode;
 			typeNumber : 4,
 			colorDark : "#000000",
 			colorLight : "#ffffff",
-			correctLevel : QRErrorCorrectLevel.H
+			correctLevel : QRErrorCorrectLevel.H,
+			logo: '/assets/images/default_sm.png',
+			logoSize: 120
 		};
 		
 		if (typeof vOption === 'string') {
