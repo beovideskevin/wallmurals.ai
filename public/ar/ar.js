@@ -746,10 +746,12 @@ screen.orientation.addEventListener("change", function(event) {
  */
 window.addEventListener('pageshow', function(event) {
     if (event.persisted) {
+        if (window.location.hash != "") {
+            window.location.href = window.location.href.split('#')[0]
+        }
         window.location.reload();
     }
 });
-
 
 /**
  * If you go back on the history we need to hide the photo wrapper and the buttons and show the AR system
