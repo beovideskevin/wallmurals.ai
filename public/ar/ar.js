@@ -802,12 +802,12 @@ window.addEventListener("hashchange", function() {
 function InitRefreshRecCanvas() {
     canvas = document.createElement("canvas");
     if (window.innerWidth > window.innerHeight) {
-        canvas.width = 1080;
-        canvas.height = 720;
+        canvas.width = 854 ;
+        canvas.height = 480 ;
     }
     else {
-        canvas.width = 720;
-        canvas.height = 1080;
+        canvas.width = 480 ;
+        canvas.height = 854 ;
     }
     canvasContext = canvas.getContext('2d', { desynchronized: true })
 
@@ -835,13 +835,13 @@ function copyRenderedCanvas(ctx)
 
 function resizeAndCopyCopy(copyCanvas)
 {
-    let actualHeight = copyCanvas.height * 720 / copyCanvas.width;
-    let actualWidth = 720;
+    let actualHeight = copyCanvas.height * 480 / copyCanvas.width;
+    let actualWidth = 480;
     let xOffset = 0;
-    let yOffset = (1080 - actualHeight) / 2;
+    let yOffset = (copyCanvas.height - actualHeight) / 2;
     if (copyCanvas.width > copyCanvas.height) {
-        actualWidth = copyCanvas.width * 720 / copyCanvas.height;
-        actualHeight = 720;
+        actualWidth = copyCanvas.width * 480 / copyCanvas.height;
+        actualHeight = 480;
         xOffset = (copyCanvas.width - actualWidth) / 2;
         yOffset = 0;
     }
