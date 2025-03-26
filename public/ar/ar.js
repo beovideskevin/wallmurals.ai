@@ -745,6 +745,9 @@ if (window.DeviceOrientationEvent) {
         document.getElementById("degree").innerHTML = "alpha: " + rotateDegrees.toFixed(2) + " gamma: " + leftToRight.toFixed(2) + " beta: " + frontToBack.toFixed(2);
     }, false);
 }
+else {
+    document.getElementById("degree").innerHTML = "NOOO";
+}
 
 /**
  * Add event so the AR is restarted when the phone changes orientation
