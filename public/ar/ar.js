@@ -754,8 +754,7 @@ function getPermissionsAndSetEvent()
                 if (response === "granted") {
                     alert("entro mas adentro");
                     window.addEventListener( "devicemotion", (e) => {
-                        rotateDegrees = previousDegrees - e.alpha;
-                        previousDegrees = e.alpha;
+
                     })
                 }
             })
@@ -763,19 +762,14 @@ function getPermissionsAndSetEvent()
                 console.log(error);
             });
     }
-
-    // if (window.DeviceOrientationEvent) {
-    //     alert("entro");
-    //     window.addEventListener('deviceorientation', function (event) {
-    //         if (ready) {
-    //             rotateDegrees = event.alpha; // alpha: rotation around z-axis
-    //             // leftToRight = event.gamma; // gamma: left to right
-    //             // frontToBack = event.beta; // beta: front back motion
-    //
-    //         }
-    //         document.getElementById("degree").innerHTML = "alpha: " + rotateDegrees.toFixed(2) + " gamma: " + leftToRight.toFixed(2) + " beta: " + frontToBack.toFixed(2);
-    //     }, false);
-    // }
+    else if (window.DeviceOrientationEvent) {
+        window.addEventListener('deviceorientation', function (e) {
+            if (ready) {
+                rotateDegrees = previousDegrees - e.alpha;
+                previousDegrees = e.alpha;
+            }
+        }, false);
+    }
 }
 
 /**
