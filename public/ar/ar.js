@@ -445,18 +445,18 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById("recVideoBtn").addEventListener('click', function() {
         audioCtx = audioCtx || new AudioContext();
         // if (videoMimeType === "video/webm") {
-        //     if (elements[0].audioElement) {
-        //         if (audioTrack === null) {
-        //             source = audioCtx.createMediaElementSource(elements[0].audioElement);
-        //             source.connect(audioCtx.destination);
-        //         }
-        //         destination = audioCtx.createMediaStreamDestination();
-        //         source.connect(destination);
-        //         audioTrack = destination.stream.getAudioTracks()[0];
-        //     }
-        //
-        //     let audioSampleRate = audioTrack?.getSettings().sampleRate;
-        //     let audioNumberOfChannels = audioTrack?.getSettings().channelCount;
+            if (elements[0].audioElement) {
+                if (audioTrack === null) {
+                    source = audioCtx.createMediaElementSource(elements[0].audioElement);
+                    source.connect(audioCtx.destination);
+                }
+                destination = audioCtx.createMediaStreamDestination();
+                source.connect(destination);
+                audioTrack = destination.stream.getAudioTracks()[0];
+            }
+
+            let audioSampleRate = audioTrack?.getSettings().sampleRate;
+            let audioNumberOfChannels = audioTrack?.getSettings().channelCount;
 
             // Create an MP4 muxer with a video track and maybe an audio track
             muxer = new Mp4Muxer.Muxer({
@@ -490,29 +490,29 @@ document.addEventListener('DOMContentLoaded', async function() {
                 bitrate: 1e6
             });
 
-            // if (audioTrack) {
-            //     audioEncoder = new AudioEncoder({
-            //         output: (chunk, meta) => muxer.addAudioChunk(chunk, meta),
-            //         error: e => console.error(e)
-            //     });
-            //     audioEncoder.configure({
-            //         codec: 'mp4a.40.2',
-            //         numberOfChannels: audioNumberOfChannels,
-            //         sampleRate: audioSampleRate,
-            //         bitrate: 128000
-            //     });
-            //
-            //     // Create a MediaStreamTrackProcessor to get AudioData chunks from the audio track
-            //     let trackProcessor = new MediaStreamTrackProcessor({ track: audioTrack });
-            //     let consumer = new WritableStream({
-            //         write(audioData) {
-            //             if (!recording) return;
-            //             audioEncoder.encode(audioData);
-            //             audioData.close();
-            //         }
-            //     });
-            //     trackProcessor.readable.pipeTo(consumer);
-            // }
+            if (audioTrack) {
+                audioEncoder = new AudioEncoder({
+                    output: (chunk, meta) => muxer.addAudioChunk(chunk, meta),
+                    error: e => console.error(e)
+                });
+                audioEncoder.configure({
+                    codec: 'mp4a.40.2',
+                    numberOfChannels: audioNumberOfChannels,
+                    sampleRate: audioSampleRate,
+                    bitrate: 128000
+                });
+
+                // Create a MediaStreamTrackProcessor to get AudioData chunks from the audio track
+                let trackProcessor = new MediaStreamTrackProcessor({ track: audioTrack });
+                let consumer = new WritableStream({
+                    write(audioData) {
+                        if (!recording) return;
+                        audioEncoder.encode(audioData);
+                        audioData.close();
+                    }
+                });
+                trackProcessor.readable.pipeTo(consumer);
+            }
 
             startTime = document.timeline.currentTime;
             lastKeyFrame = -Infinity;
