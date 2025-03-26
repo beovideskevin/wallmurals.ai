@@ -2,6 +2,9 @@ var express = require('express');
 var router = express.Router();
 const {arLoc, arRoute, arId, ar, createAr, editAr, deleteAr} = require('../controllers/ar.js')
 
+/* GET AR by route. */
+router.get('/aframe/:route', arRoute);
+
 /* GET AR by id. */
 router.get('/id/:id', arId);
 

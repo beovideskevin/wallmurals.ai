@@ -47,7 +47,7 @@ const login = function (req, res, next) {
 /* GET logout page. */
 const logout = function (req, res, next) {
     req.session.destroy();
-    res.redirect('/home');
+    res.redirect('/');
 }
 
 module.exports = {

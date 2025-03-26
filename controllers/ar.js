@@ -3,6 +3,29 @@ const {v4: uuidv4} = require('uuid');
 const Artwork = require('../models/artwork');
 const {checkViews, isCloseToPlace} = require('../helpers/utils');
 
+const aFrame = async function (req, res, next) {
+    const route = sanitize(req.params.route);
+    const uuid = uuidv4();
+
+    const artwork = await Artwork.findOne({route: route});
+    if (!artwork) {
+        console.log("ROUTE NOT FOUND", req.params.route);
+        res.redirect('/ar');
+        return;
+    }
+
+    if (!checkViews(artwork)) {
+        console.log("EXCESS VIEWS", req.params.id, artwork);
+        res.redirect('/');
+        return;
+    }
+
+    res.render('aframe', {
+        uuid: uuid,
+        artwork: JSON.stringify(artwork)
+    });
+}
+
 /* GET the artwork by route */
 const arRoute = async function (req, res, next) {
     const route = sanitize(req.params.route);
@@ -17,7 +40,7 @@ const arRoute = async function (req, res, next) {
 
     if (!checkViews(artwork)) {
         console.log("EXCESS VIEWS", req.params.id, artwork);
-        res.redirect('/home');
+        res.redirect('/');
         return;
     }
 
@@ -42,7 +65,7 @@ const arId = async function (req, res, next) {
 
             if (!checkViews(artwork)) {
                 console.log("EXCESS VIEWS", req.params.id, artwork);
-                res.redirect('/home');
+                res.redirect('/');
                 return;
             }
 
@@ -53,12 +76,12 @@ const arId = async function (req, res, next) {
         })
         .catch(function(error) {
             console.log("ERROR: " + error);
-            res.redirect('/home');
+            res.redirect('/');
         });
 }
 
 /* GET the artwork */
-const ar = async function (req, res, next) {
+const ar = function (req, res, next) {
     res.render('ar', {
         uuid: uuidv4(),
         artwork: JSON.stringify(null)
@@ -104,4 +127,5 @@ module.exports = {
     arRoute,
     arId,
     ar,
+    aFrame,
 };
