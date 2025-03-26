@@ -671,8 +671,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Create a canvas and draw the photo
         const photoCanvas = document.createElement('canvas');
         photoCanvas.setAttribute("id", "photoCanvas");
-        photoCanvas.width = window.innerWidth;
-        photoCanvas.height = window.innerHeight;
         copyRenderedCanvas(photoCanvas, photoCanvas.getContext('2d'));
 
         // Assign the photo  to an element in the UI
@@ -807,6 +805,9 @@ function copyRenderedCanvas(c, ctx)
 {
     const {video, renderer, scene, camera} = mindarThree;
     const renderCanvas = renderer.domElement;
+
+    c.width = renderCanvas.width;
+    c.height = renderCanvas.height;
 
     const sx = (video.clientWidth - renderCanvas.clientWidth) / 2 * video.videoWidth / video.clientWidth;
     const sy = (video.clientHeight - renderCanvas.clientHeight) / 2 * video.videoHeight / video.clientHeight;
