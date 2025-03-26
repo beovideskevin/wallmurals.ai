@@ -137,6 +137,8 @@ const setup = async function() {
         warmupTolerance: artwork.animations[0].video ? vWarmupTolerance : warmupTolerance,
     };
 
+    console.log(defaults);
+
     // Set up the AR system
     mindarThree = new window.MINDAR.IMAGE.MindARThree(defaults);
     const { renderer, scene, camera } = mindarThree;
