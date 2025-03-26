@@ -176,6 +176,12 @@ const setup = async function() {
                     ? new window.MINDAR.IMAGE.THREE.MeshBasicMaterial({ map: texture })
                     : createChromaMaterial(texture, artwork.animations[i].chroma);
                 let plane = new window.MINDAR.IMAGE.THREE.Mesh(geometry, material);
+                if (artwork.animations[i].position) {
+                    const [x,y,z] = artwork.animations[i].position.split(",");
+                    plane.rotation.x = x;
+                    plane.position.y = y;
+                    plane.position.z = z;
+                }
                 anchor.group.add(plane);
                 elements[i].videoElement = videoElement;
                 elements[i].videoElement.muted = true;
