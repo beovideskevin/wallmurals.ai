@@ -741,8 +741,8 @@ if (window.DeviceOrientationEvent) {
             leftToRight = event.gamma; // gamma: left to right
             frontToBack = event.beta; // beta: front back motion
 
-            document.getElementById("degree").innerHTML = "alpha: " + rotateDegrees.toFixed(2) + " gamma: " + leftToRight.toFixed(2) + " beta: " + frontToBack.toFixed(2);
         }
+        document.getElementById("degree").innerHTML = "alpha: " + rotateDegrees.toFixed(2) + " gamma: " + leftToRight.toFixed(2) + " beta: " + frontToBack.toFixed(2);
     }, false);
 }
 
