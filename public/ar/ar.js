@@ -436,7 +436,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         muxer.finalize();
 
         let buffer = muxer.target.buffer;
-        videoBlob = new Blob([buffer], {type: videoMimeType});
+        videoBlob = new Blob([buffer], {type: "video/mp4" /*videoMimeType*/});
         createAndShowVideo();
 
         videoEncoder = null;
@@ -506,7 +506,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     codec: 'mp4a.40.2',
                     numberOfChannels: audioNumberOfChannels,
                     sampleRate: audioSampleRate,
-                    bitrate: 96000 // 128000
+                    bitrate: 128000  // 128000
                 });
 
                 // Create a MediaStreamTrackProcessor to get AudioData chunks from the audio track
@@ -641,7 +641,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Now we can share the video
         const filename = /* artwork.tagline.replace(/\s/g, "-") + "-" + */ hashLocation + ".mp4";
         const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
-        const file = new File([videoBlob], sanitized, {type: videoMimeType});
+        const file = new File([videoBlob], sanitized, {type: "video/mp4" /*videoMimeType*/});
         if (navigator.canShare && navigator.canShare({files: [file]})) {
             try {
                 navigator.share({
