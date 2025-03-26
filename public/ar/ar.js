@@ -329,8 +329,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         document.getElementById("recVideoBtn").style.display = "none";
     }
 
-    InitRefreshRecCanvas();
-
     // Get the show started
     window.location.hash = "";
 
@@ -441,6 +439,10 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     document.getElementById("recVideoBtn").addEventListener('click', function() {
+        InitRefreshRecCanvas();
+        recordedChunks = [];
+        videoBlob = null;
+
         audioCtx = audioCtx || new AudioContext();
         if (videoMimeType === "video/webm") {
             if (elements[0].audioElement) {
@@ -557,8 +559,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         recording = true;
         hideRecBtn();
-        recordedChunks = [];
-        videoBlob = null;
 
         // make poster image
         copyRenderedCanvas(copyContext);
