@@ -735,8 +735,11 @@ document.addEventListener('DOMContentLoaded', async function() {
  * Handle the orientation of the device, in order to rotate the model
  */
 if (window.DeviceOrientationEvent) {
+    alert("entro");
     window.addEventListener('deviceorientation', function (event) {
+        alert("dentro");
         if (ready) {
+            alert("mas dentro");
             rotateDegrees = event.alpha; // alpha: rotation around z-axis
             leftToRight = event.gamma; // gamma: left to right
             frontToBack = event.beta; // beta: front back motion
@@ -746,6 +749,7 @@ if (window.DeviceOrientationEvent) {
     }, false);
 }
 else {
+    alert("no entro");
     document.getElementById("degree").innerHTML = "NOOO";
 }
 
