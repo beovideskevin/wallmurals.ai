@@ -15,7 +15,7 @@ var currentlyPlayingAudio = null;
 const frameRate = 30; // FPS
 const bitRate = 1e6;
 const vWidth = 480;
-const vHeight = 640;
+const vHeight = 854;
 var recFrameId = null;
 var mediaRecorder = null;
 var canvas = null;
@@ -506,7 +506,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     codec: 'mp4a.40.2',
                     numberOfChannels: audioNumberOfChannels,
                     sampleRate: audioSampleRate,
-                    bitrate: 128000  // 128000
+                    bitrate: 96000  // 128000
                 });
 
                 // Create a MediaStreamTrackProcessor to get AudioData chunks from the audio track
