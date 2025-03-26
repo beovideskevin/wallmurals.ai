@@ -11,9 +11,8 @@ var refresh = false;
 var isMuted = true;
 var currentlyPlayingVideo = null;
 var currentlyPlayingAudio = null;
-var rotateDegrees = 0;
-var leftToRight = 0;
-var frontToBack = 0;
+var previousDegrees = null;
+var rotateDegrees = null; // the delta between positions
 // Recording stuff
 const frameRate = 30; // FPS
 var recFrameId = null;
@@ -180,6 +179,9 @@ const setup = async function() {
 
                 // Set the events
                 anchor.onTargetFound = () => {
+                    if (rotateDegrees === null) {
+                        getPermissionsAndSetEvent();
+                    }
                     if (window.location.hash != "") {
                         return;
                     }
@@ -234,6 +236,9 @@ const setup = async function() {
 
                 // Set the events
                 anchor.onTargetFound = () => {
+                    if (rotateDegrees === null) {
+                        getPermissionsAndSetEvent();
+                    }
                     if (window.location.hash != "") {
                         return;
                     }
@@ -265,7 +270,9 @@ const setup = async function() {
         for (const element of elements) {
             if (element.mixerElement) {
                 element.mixerElement.update(delta);
-                element.modelElement.scene.rotation.set(0, leftToRight, 0);
+                if (rotateDegrees !== null) {
+                    element.modelElement.scene.rotation.set(0, element.modelElement.scene.rotation.y + rotateDegrees, 0);
+                }
             }
         }
         renderer.render(scene, camera);
@@ -734,27 +741,45 @@ document.addEventListener('DOMContentLoaded', async function() {
 /**
  * Handle the orientation of the device, in order to rotate the model
  */
-if (window.DeviceOrientationEvent) {
-    alert("entro");
-    window.addEventListener('deviceorientation', function (event) {
-        if (ready) {
-            rotateDegrees = event.alpha; // alpha: rotation around z-axis
-            leftToRight = event.gamma; // gamma: left to right
-            frontToBack = event.beta; // beta: front back motion
+function getPermissionsAndSetEvent()
+{
+    if ( typeof( DeviceMotionEvent ) !== "undefined" && typeof( DeviceMotionEvent.requestPermission ) === "function" ) {
+        // (optional) Do something before API request prompt.
+        DeviceMotionEvent.requestPermission()
+            .then(function (response) {
+                alert("entro");
+                // (optional) Do something after API prompt dismissed.
+                if (response === "granted") {
+                    alert("entro mas adentro");
+                    window.addEventListener( "devicemotion", (e) => {
+                        rotateDegrees = previousDegrees - e.alpha;
+                        previousDegrees = e.alpha;
+                    })
+                }
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+    }
 
-        }
-        document.getElementById("degree").innerHTML = "alpha: " + rotateDegrees.toFixed(2) + " gamma: " + leftToRight.toFixed(2) + " beta: " + frontToBack.toFixed(2);
-    }, false);
-}
-else {
-    alert("no entro");
-    document.getElementById("degree").innerHTML = "NOOO";
+    // if (window.DeviceOrientationEvent) {
+    //     alert("entro");
+    //     window.addEventListener('deviceorientation', function (event) {
+    //         if (ready) {
+    //             rotateDegrees = event.alpha; // alpha: rotation around z-axis
+    //             // leftToRight = event.gamma; // gamma: left to right
+    //             // frontToBack = event.beta; // beta: front back motion
+    //
+    //         }
+    //         document.getElementById("degree").innerHTML = "alpha: " + rotateDegrees.toFixed(2) + " gamma: " + leftToRight.toFixed(2) + " beta: " + frontToBack.toFixed(2);
+    //     }, false);
+    // }
 }
 
 /**
  * Add event so the AR is restarted when the phone changes orientation
  */
-screen.orientation.addEventListener("change", function(event) {
+screen.orientation.addEventListener("change", function() {
     if (window.location.hash != "" || recording || !ready) {
         // Don't refresh when user is watching and sharing the video
         refresh = true;
