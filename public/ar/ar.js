@@ -265,7 +265,7 @@ const setup = async function() {
         for (const element of elements) {
             if (element.mixerElement) {
                 element.mixerElement.update(delta);
-                element.modelElement.scene.rotation.set(0, element.modelElement.scene.rotation.y + leftToRight, 0);
+                element.modelElement.scene.rotation.set(0, leftToRight, 0);
             }
         }
         renderer.render(scene, camera);
@@ -736,9 +736,13 @@ document.addEventListener('DOMContentLoaded', async function() {
  */
 if (window.DeviceOrientationEvent) {
     window.addEventListener('deviceorientation', function (event) {
-        rotateDegrees = event.alpha; // alpha: rotation around z-axis
-        leftToRight = event.gamma; // gamma: left to right
-        frontToBack = event.beta; // beta: front back motion
+        if (ready) {
+            rotateDegrees = event.alpha; // alpha: rotation around z-axis
+            leftToRight = event.gamma; // gamma: left to right
+            frontToBack = event.beta; // beta: front back motion
+
+            document.getElementById("degree").innerHTML = "alpha: " + rotateDegrees.toFixed(2) + " gamma: " + leftToRight.toFixed(2) + " beta: " + frontToBack.toFixed(2);
+        }
     }, false);
 }
 
@@ -902,7 +906,7 @@ function showSplash()
 
 function hideSplash() 
 {
-    document.getElementById("splash").style.display = "none";
+    // document.getElementById("splash").style.display = "none";
 }
 
 function showSoundBtn() {
