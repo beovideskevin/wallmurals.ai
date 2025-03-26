@@ -11,8 +11,6 @@ var refresh = false;
 var isMuted = true;
 var currentlyPlayingVideo = null;
 var currentlyPlayingAudio = null;
-var previousDegrees = null;
-var rotateDegrees = null; // the delta between positions
 // Recording stuff
 const frameRate = 30; // FPS
 var recFrameId = null;
@@ -127,18 +125,20 @@ const loadGLTF = function(path) {
 const setup = async function() {
     showSplash();
 
-    // Set up the AR system
-    mindarThree = new window.MINDAR.IMAGE.MindARThree({
+    const defaults = {
         container: document.body,
         imageTargetSrc: artwork.target,
         uiLoading: "no",
         uiScanning: "yes",
         uiError: "yes",
-        filterMinCF: filterMinCF,
-        filterBeta: filterBeta,
-        missTolerance: missTolerance,
-        warmupTolerance: warmupTolerance,
-    });
+        filterMinCF: artwork.animations[0].video ? vFilterMinCF : filterMinCF,
+        filterBeta: artwork.animations[0].video ? vFilterBeta : filterBeta,
+        missTolerance: artwork.animations[0].video ? vMissTolerance : missTolerance,
+        warmupTolerance: artwork.animations[0].video ? vWarmupTolerance : warmupTolerance,
+    };
+
+    // Set up the AR system
+    mindarThree = new window.MINDAR.IMAGE.MindARThree(defaults);
     const { renderer, scene, camera } = mindarThree;
     
     const light = new window.MINDAR.IMAGE.THREE.HemisphereLight( 0xffffff, 0xbbbbff, 1 );
@@ -179,9 +179,6 @@ const setup = async function() {
 
                 // Set the events
                 anchor.onTargetFound = () => {
-                    if (rotateDegrees === null) {
-                        getPermissionsAndSetEvent();
-                    }
                     if (window.location.hash != "") {
                         return;
                     }
@@ -236,9 +233,6 @@ const setup = async function() {
 
                 // Set the events
                 anchor.onTargetFound = () => {
-                    if (rotateDegrees === null) {
-                        getPermissionsAndSetEvent();
-                    }
                     if (window.location.hash != "") {
                         return;
                     }
@@ -270,9 +264,6 @@ const setup = async function() {
         for (const element of elements) {
             if (element.mixerElement) {
                 element.mixerElement.update(delta);
-                if (rotateDegrees !== null) {
-                    element.modelElement.scene.rotation.set(0, element.modelElement.scene.rotation.y + rotateDegrees, 0);
-                }
             }
         }
         renderer.render(scene, camera);
@@ -737,38 +728,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         })
     });
 });
-
-/**
- * Handle the orientation of the device, in order to rotate the model
- */
-function getPermissionsAndSetEvent()
-{
-    alert("ok");
-    if ( typeof( DeviceMotionEvent ) !== "undefined" && typeof( DeviceMotionEvent.requestPermission ) === "function" ) {
-        alert("ok2");
-        // (optional) Do something before API request prompt.
-        DeviceMotionEvent.requestPermission()
-            .then(function (response) {
-                alert("entro");
-                // (optional) Do something after API prompt dismissed.
-                if (response === "granted") {
-                    alert("entro mas adentro");
-                    window.addEventListener( "devicemotion", (e) => {
-
-                    })
-                }
-            })
-            .catch( console.error )
-    }
-    else if (window.DeviceOrientationEvent) {
-        window.addEventListener('deviceorientation', function (e) {
-            if (ready) {
-                rotateDegrees = previousDegrees - e.alpha;
-                previousDegrees = e.alpha;
-            }
-        }, false);
-    }
-}
 
 /**
  * Add event so the AR is restarted when the phone changes orientation

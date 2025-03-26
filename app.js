@@ -25,21 +25,23 @@ const app = express();
 
 // General SEO stuff for the website
 app.locals.node_env = process.env.NODE_ENV;
-app.locals.site = "Wall Murals AI";
-app.locals.title = "Wall Murals AI - Artificial Intelligence and Augmented Reality Murals ";
-app.locals.keywords = "Wall Murals, Custom Murals, Commercial and Residential, Artificial Intelligence, Augmented Reality, Augmented Reality Mural";
-app.locals.description = "Wall Murals AI is a Company Specialized in Artificial Intelligence and Augmented Reality Murals: Commercial, Residential, Branding, Offices, Schools, Kids Rooms, and more.";
-app.locals.author = "Wall Murals AI";
+app.locals.site = process.env.SITE;
+app.locals.title = process.env.TITLE;
+app.locals.keywords = process.env.KEYWORDS;
+app.locals.description = process.env.DESCRIPTION;
+app.locals.author = process.env.AUTHOR;
 
 // AR settings
-app.locals.filterMinCF = process.env.filterMinCF || 0.0001;
-app.locals.filterBeta = process.env.filterBeta || 0.001;
-app.locals.missTolerance = process.env.missTolerance || 3;
-app.locals.warmupTolerance = process.env.warmupTolerance || 10;
+app.locals.filterMinCF = process.env.filterMinCF || 1;
+app.locals.filterBeta = process.env.filterBeta || 10000;
+app.locals.missTolerance = process.env.missTolerance || 0;
+app.locals.warmupTolerance = process.env.warmupTolerance || 0;
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+// AR video settings
+app.locals.vFilterMinCF = process.env.vFilterMinCF || 0.0001;
+app.locals.vFilterBeta = process.env.vFilterBeta || 0.001;
+app.locals.vMissTolerance = process.env.vMissTolerance || 3;
+app.locals.vWarmupTolerance = process.env.vWarmupTolerance || 10;
 
 // middleware
 app.use(logger('dev'));
@@ -135,6 +137,10 @@ app.use(
         next();
     }
 );
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 
 // routes
 app.use('/ar', arRouter);
