@@ -12,7 +12,8 @@ var isMuted = true;
 var currentlyPlayingVideo = null;
 var currentlyPlayingAudio = null;
 // Recording stuff
-const frameRate = 23; // FPS
+const frameRate = 24; // FPS
+const bitRate = 100000; // bit rate 1e6
 var recFrameId = null;
 var mediaRecorder = null;
 var canvas = null;
@@ -412,8 +413,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     function encodeVideoFrame () {
         let elapsedTime = document.timeline.currentTime - startTime;
         let frame = new VideoFrame(canvas, {
-            timestamp: framesGenerated * 1e6 / frameRate, // Ensure equally-spaced frames every 1/30th of a second
-            duration: 1e6 / frameRate
+            timestamp: framesGenerated * bitRate / frameRate, // Ensure equally-spaced frames every 1/30th of a second
+            duration: bitRate / frameRate
         });
         framesGenerated++;
 
@@ -491,7 +492,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 codec: "avc1.42001f", // "avc1.424028",
                 width: canvas.width,
                 height: canvas.height,
-                bitrate: 1e6
+                bitrate: bitRate
             });
 
             if (audioTrack) {
@@ -503,7 +504,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     codec: 'mp4a.40.2',
                     numberOfChannels: audioNumberOfChannels,
                     sampleRate: audioSampleRate,
-                    bitrate: 128000
+                    bitrate: 64000 // 128000
                 });
 
                 // Create a MediaStreamTrackProcessor to get AudioData chunks from the audio track
