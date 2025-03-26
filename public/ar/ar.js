@@ -219,7 +219,7 @@ const setup = async function() {
                     modelElement.scene.scale.set(0.1, 0.1, 0.1);
                 }
                 if (artwork.animations[i].position) {
-                    const [x,y,z] = artwork.animations[i].scale.split(",");
+                    const [x,y,z] = artwork.animations[i].position.split(",");
                     modelElement.scene.position.set(x, y, z);
                 }
                 else {
