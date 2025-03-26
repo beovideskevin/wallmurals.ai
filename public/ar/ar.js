@@ -743,6 +743,7 @@ document.addEventListener('DOMContentLoaded', async function() {
  */
 function getPermissionsAndSetEvent()
 {
+    alert("ok");
     if ( typeof( DeviceMotionEvent ) !== "undefined" && typeof( DeviceMotionEvent.requestPermission ) === "function" ) {
         // (optional) Do something before API request prompt.
         DeviceMotionEvent.requestPermission()
