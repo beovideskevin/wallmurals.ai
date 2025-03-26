@@ -737,9 +737,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 if (window.DeviceOrientationEvent) {
     alert("entro");
     window.addEventListener('deviceorientation', function (event) {
-        alert("dentro");
         if (ready) {
-            alert("mas dentro");
             rotateDegrees = event.alpha; // alpha: rotation around z-axis
             leftToRight = event.gamma; // gamma: left to right
             frontToBack = event.beta; // beta: front back motion
