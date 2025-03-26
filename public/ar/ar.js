@@ -12,7 +12,7 @@ var isMuted = true;
 var currentlyPlayingVideo = null;
 var currentlyPlayingAudio = null;
 // Recording stuff
-const frameRate = 23; // 30; // FPS
+const frameRate = 24; // 30; // FPS
 var recFrameId = null;
 var mediaRecorder = null;
 var canvas = null;
@@ -755,8 +755,6 @@ screen.orientation.addEventListener("change", function() {
     }
 
     restart();
-
-    InitRefreshRecCanvas();
 });
 
 /**
@@ -802,12 +800,12 @@ window.addEventListener("hashchange", function() {
 function InitRefreshRecCanvas() {
     canvas = document.createElement("canvas");
     if (window.innerWidth > window.innerHeight) {
-        canvas.width = 1080;
+        canvas.width = 1280;
         canvas.height = 720;
     }
     else {
         canvas.width = 720;
-        canvas.height = 1080;
+        canvas.height = 1280;
     }
     canvasContext = canvas.getContext('2d', { desynchronized: true })
 
