@@ -338,7 +338,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         canvas.height = 1920;
     }
     canvasContext = canvas.getContext('2d', {
-        willReadFrequently: true,
         desynchronized: true
     });
 
@@ -592,7 +591,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             copyRenderedCanvas(copyContext);
             resizeAndCopyCopy(copyCanvas);
             if (videoMimeType === "video/webm") {
-                encodeVideoFrame();
+                // encodeVideoFrame();
             }
         }, 1000 / frameRate);
     });
