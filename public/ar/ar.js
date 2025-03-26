@@ -426,6 +426,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         await audioEncoder?.flush();
         muxer.finalize();
 
+        alert(framesGenerated);
+
         let buffer = muxer.target.buffer;
         videoBlob = new Blob([buffer]);
         createAndShowVideo();
@@ -438,7 +440,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     document.getElementById("recVideoBtn").addEventListener('click', function() {
         audioCtx = audioCtx || new AudioContext();
-        if (videoMimeType === "video/webm") {
+        // if (videoMimeType === "video/webm") {
             if (elements[0].audioElement) {
                 if (audioTrack === null) {
                     source = audioCtx.createMediaElementSource(elements[0].audioElement);
@@ -511,45 +513,45 @@ document.addEventListener('DOMContentLoaded', async function() {
             startTime = document.timeline.currentTime;
             lastKeyFrame = -Infinity;
             framesGenerated = 0;
-        }
-        else if (!mediaRecorder) {
-            const canvasStream = canvas.captureStream(frameRate);
-            streamArray.push(...canvasStream.getVideoTracks());
-            for (const element of elements) {
-                source = audioCtx.createMediaElementSource(element.audioElement);
-                source.connect(audioCtx.destination);
-                destination = audioCtx.createMediaStreamDestination();
-                source.connect(destination);
-                streamArray.push(...destination.stream.getAudioTracks());
-            }
-            const combinedStream = new MediaStream(streamArray);
-            mediaRecorder = new MediaRecorder(combinedStream,
-                mediaRecOptions
-            );
-
-            mediaRecorder.onerror = (event) => {
-                recording = false;
-                showRecBtn();
-                console.log(event);
-                alert("There was an error recording the video :(");
-            };
-
-            mediaRecorder.addEventListener("dataavailable", function(event) {
-                if (event.data.size > 0) {
-                    recordedChunks.push(event.data);
-                }
-            });
-
-            mediaRecorder.addEventListener("stop", function() {
-                if (recordedChunks.length == 0) {
-                    console.log("No data was recorded!");
-                    alert("There was an error recording the video :(");
-                    return;
-                }
-                videoBlob = new Blob(recordedChunks, {type: videoMimeType});
-                createAndShowVideo();
-            });
-        }
+        // }
+        // else if (!mediaRecorder) {
+        //     const canvasStream = canvas.captureStream(frameRate);
+        //     streamArray.push(...canvasStream.getVideoTracks());
+        //     for (const element of elements) {
+        //         source = audioCtx.createMediaElementSource(element.audioElement);
+        //         source.connect(audioCtx.destination);
+        //         destination = audioCtx.createMediaStreamDestination();
+        //         source.connect(destination);
+        //         streamArray.push(...destination.stream.getAudioTracks());
+        //     }
+        //     const combinedStream = new MediaStream(streamArray);
+        //     mediaRecorder = new MediaRecorder(combinedStream,
+        //         mediaRecOptions
+        //     );
+        //
+        //     mediaRecorder.onerror = (event) => {
+        //         recording = false;
+        //         showRecBtn();
+        //         console.log(event);
+        //         alert("There was an error recording the video :(");
+        //     };
+        //
+        //     mediaRecorder.addEventListener("dataavailable", function(event) {
+        //         if (event.data.size > 0) {
+        //             recordedChunks.push(event.data);
+        //         }
+        //     });
+        //
+        //     mediaRecorder.addEventListener("stop", function() {
+        //         if (recordedChunks.length == 0) {
+        //             console.log("No data was recorded!");
+        //             alert("There was an error recording the video :(");
+        //             return;
+        //         }
+        //         videoBlob = new Blob(recordedChunks, {type: videoMimeType});
+        //         createAndShowVideo();
+        //     });
+        // }
 
         recording = true;
         hideRecBtn();
