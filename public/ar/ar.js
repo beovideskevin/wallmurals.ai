@@ -13,7 +13,7 @@ var currentlyPlayingVideo = null;
 var currentlyPlayingAudio = null;
 // Recording stuff
 const frameRate = 24; // FPS
-const bitRate = 100000; // bit rate 1e6
+const bitRate = 1e6;
 var recFrameId = null;
 var mediaRecorder = null;
 var canvas = null;
@@ -504,7 +504,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     codec: 'mp4a.40.2',
                     numberOfChannels: audioNumberOfChannels,
                     sampleRate: audioSampleRate,
-                    bitrate: 64000 // 128000
+                    bitrate: 96000 // 128000
                 });
 
                 // Create a MediaStreamTrackProcessor to get AudioData chunks from the audio track
@@ -839,11 +839,11 @@ function resizeAndCopyCopy(copyCanvas)
     let actualHeight = copyCanvas.height * 480 / copyCanvas.width;
     let actualWidth = 480;
     let xOffset = 0;
-    let yOffset = (copyCanvas.height - actualHeight) / 2;
+    let yOffset = (854 - actualHeight) / 2;
     if (copyCanvas.width > copyCanvas.height) {
         actualWidth = copyCanvas.width * 480 / copyCanvas.height;
         actualHeight = 480;
-        xOffset = (copyCanvas.width - actualWidth) / 2;
+        xOffset = (854 - actualWidth) / 2;
         yOffset = 0;
     }
 
