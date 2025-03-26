@@ -14,6 +14,8 @@ var currentlyPlayingAudio = null;
 // Recording stuff
 const frameRate = 30; // FPS
 const bitRate = 1e6;
+const vWidth = 480;
+const vHeight = 640;
 var recFrameId = null;
 var mediaRecorder = null;
 var canvas = null;
@@ -803,12 +805,12 @@ window.addEventListener("hashchange", function() {
 function InitRefreshRecCanvas() {
     canvas = document.createElement("canvas");
     if (window.innerWidth > window.innerHeight) {
-        canvas.width = 854 ;
-        canvas.height = 480 ;
+        canvas.width = vWidth ;
+        canvas.height = vHeight ;
     }
     else {
-        canvas.width = 480 ;
-        canvas.height = 854 ;
+        canvas.width = vWidth ;
+        canvas.height = vHeight ;
     }
     canvasContext = canvas.getContext('2d', { desynchronized: true })
 
@@ -836,14 +838,14 @@ function copyRenderedCanvas(ctx)
 
 function resizeAndCopyCopy(copyCanvas)
 {
-    let actualHeight = copyCanvas.height * 480 / copyCanvas.width;
-    let actualWidth = 480;
+    let actualHeight = copyCanvas.height * vWidth / copyCanvas.width;
+    let actualWidth = vWidth;
     let xOffset = 0;
-    let yOffset = (854 - actualHeight) / 2;
+    let yOffset = (vHeight - actualHeight) / 2;
     if (copyCanvas.width > copyCanvas.height) {
-        actualWidth = copyCanvas.width * 480 / copyCanvas.height;
-        actualHeight = 480;
-        xOffset = (854 - actualWidth) / 2;
+        actualWidth = copyCanvas.width * vWidth / copyCanvas.height;
+        actualHeight = vWidth;
+        xOffset = (vHeight - actualWidth) / 2;
         yOffset = 0;
     }
 
