@@ -758,9 +758,7 @@ function getPermissionsAndSetEvent()
                     })
                 }
             })
-            .catch(function(error) {
-                console.log(error);
-            });
+            .catch( console.error )
     }
     else if (window.DeviceOrientationEvent) {
         window.addEventListener('deviceorientation', function (e) {
