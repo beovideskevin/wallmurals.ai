@@ -12,7 +12,6 @@ const index = async function(req, res, next) {
     const message = req.params.message || "";
     const artworks = await Artwork.find({user: req.session.user});
     res.render('dashboard', {
-        csrf: req.csrfToken(),
         artworks: artworks,
         error: error,
         message: message,
@@ -32,7 +31,6 @@ const editArtwork = async function(req, res, next) {
 
     const message = sanitize(req.params.message) || "";
     res.render('edit', {
-        csrf: req.csrfToken(),
         message: message,
         artwork: artwork,
     });
@@ -216,7 +214,6 @@ const account = async function(req, res, next) {
     const message = req.params.message || "";
     let subscription = await Subscription.findOne({user: req.session.user, active: true});
     res.render('account', {
-        csrf: req.csrfToken(),
         user: req.session.user,
         plan: subscription || null,
         error: error,

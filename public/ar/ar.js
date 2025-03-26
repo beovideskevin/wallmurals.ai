@@ -11,6 +11,7 @@ var refresh = false;
 var isMuted = true;
 var currentlyPlayingVideo = null;
 var currentlyPlayingAudio = null;
+var alpha = 0;
 // Recording stuff
 const frameRate = 30; // FPS
 var recFrameId = null;
@@ -147,6 +148,7 @@ const setup = async function() {
         const anchor = mindarThree.addAnchor(i);
         elements[i] = {
             videoElement: null,
+            modelElement: null,
             mixerElement: null,
             audioElement: null
         };
@@ -226,6 +228,7 @@ const setup = async function() {
                 let mixerElement = new window.MINDAR.IMAGE.THREE.AnimationMixer(modelElement.scene);
                 mixerElement.clipAction(modelElement.animations[0]).play();
                 elements[i].mixerElement = mixerElement;
+                elements[i].modelElement = modelElement;
 
                 // Set the events
                 anchor.onTargetFound = () => {
@@ -260,6 +263,7 @@ const setup = async function() {
         for (const element of elements) {
             if (element.mixerElement) {
                 element.mixerElement.update(delta);
+                element.modelElement.scene.rotation.set(0, element.modelElement.scene.rotation.y + alpha, 0);
             }
         }
         renderer.render(scene, camera);
@@ -724,6 +728,15 @@ document.addEventListener('DOMContentLoaded', async function() {
         })
     });
 });
+
+/**
+ * Handle the orientation of the device, in order to rotate the model
+ */
+if (window.DeviceOrientationEvent) {
+    window.addEventListener('deviceorientation', function (event) {
+        alpha = event.alpha;
+    }, false);
+}
 
 /**
  * Add event so the AR is restarted when the phone changes orientation

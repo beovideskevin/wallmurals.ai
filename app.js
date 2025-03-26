@@ -131,7 +131,7 @@ app.use(
             return res.redirect('/dashboard');
         }
         res.locals.user = req.session.user || false;
-        res.locals.csrfToken = req.csrfToken();
+        res.locals.csrf = req.csrfToken();
         next();
     }
 );
