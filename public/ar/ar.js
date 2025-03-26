@@ -470,7 +470,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 } : undefined,
                 // Puts metadata to the start of the file. Since we're using ArrayBufferTarget anyway, this makes no difference
                 // to memory footprint.
-                fastStart: false, // 'in-memory',
+                fastStart: 'in-memory',
                 // Because we're directly pumping a MediaStreamTrack's data into it, which doesn't start at timestamp = 0
                 firstTimestampBehavior: 'offset'
             });
@@ -822,7 +822,10 @@ function copyRenderedCanvas(copyCanvas)
     offscreenContext.drawImage(renderCanvas, 0, 0, renderCanvas.width, renderCanvas.height);
     renderer.preserveDrawingBuffer = false;
 
-    const context = copyCanvas.getContext('2d');
+    const context = copyCanvas.getContext('2d',{
+        willReadFrequently: true,
+        desynchronized: true
+    });
     // landscape
     let actualHeight = 16 * renderCanvas.width / 9;
     let actualWidth = renderCanvas.width;
