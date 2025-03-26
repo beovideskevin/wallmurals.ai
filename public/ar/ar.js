@@ -11,7 +11,9 @@ var refresh = false;
 var isMuted = true;
 var currentlyPlayingVideo = null;
 var currentlyPlayingAudio = null;
-var alpha = 0;
+var rotateDegrees = 0;
+var leftToRight = 0;
+var frontToBack = 0;
 // Recording stuff
 const frameRate = 30; // FPS
 var recFrameId = null;
@@ -263,7 +265,7 @@ const setup = async function() {
         for (const element of elements) {
             if (element.mixerElement) {
                 element.mixerElement.update(delta);
-                element.modelElement.scene.rotation.set(0, element.modelElement.scene.rotation.y + alpha, 0);
+                element.modelElement.scene.rotation.set(0, element.modelElement.scene.rotation.y + leftToRight, 0);
             }
         }
         renderer.render(scene, camera);
@@ -734,7 +736,9 @@ document.addEventListener('DOMContentLoaded', async function() {
  */
 if (window.DeviceOrientationEvent) {
     window.addEventListener('deviceorientation', function (event) {
-        alpha = event.alpha;
+        rotateDegrees = event.alpha; // alpha: rotation around z-axis
+        leftToRight = event.gamma; // gamma: left to right
+        frontToBack = event.beta; // beta: front back motion
     }, false);
 }
 
