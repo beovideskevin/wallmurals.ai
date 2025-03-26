@@ -327,7 +327,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         document.getElementById("recVideoBtn").style.display = "none";
     }
 
-    canvas = document.createElement('canvas');
+    canvas = document.getElementById('record');
     if (window.innerWidth > window.innerHeight) {
         // Optimal size for instagram, it could deform the image a little bit
         canvas.width = 1920;
@@ -572,7 +572,13 @@ document.addEventListener('DOMContentLoaded', async function() {
         videoBlob = null;
 
         // make poster image
-        copyRenderedCanvas(canvas, canvasContext);
+        const {renderer} = mindarThree;
+        let rWidth = renderer.domElement.width;
+        let rHeight = renderer.domElement.height;
+        const copyCanvas = new OffscreenCanvas(rWidth,rHeight);
+        const copyContext = copyCanvas.getContext('2d');
+        copyRenderedCanvas(copyContext);
+        resizeAndCopyCopy(copyCanvas);
         poster = canvas.toDataURL();
 
         if (videoMimeType === "video/webm") {
@@ -583,7 +589,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
 
         recFrameId = setInterval(function() {
-            copyRenderedCanvas(canvas, canvasContext);
+            copyRenderedCanvas(copyContext);
+            resizeAndCopyCopy(copyCanvas);
             if (videoMimeType === "video/webm") {
                 encodeVideoFrame();
             }
@@ -671,7 +678,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Create a canvas and draw the photo
         const photoCanvas = document.createElement('canvas');
         photoCanvas.setAttribute("id", "photoCanvas");
-        copyRenderedCanvas(photoCanvas, photoCanvas.getContext('2d'));
+        const {renderer} = mindarThree;
+        photoCanvas.width = renderer.domElement.width;
+        photoCanvas.height = renderer.domElement.height;
+        copyRenderedCanvas(photoCanvas.getContext('2d'));
 
         // Assign the photo  to an element in the UI
         const photoWrapper = document.getElementById("photoWrapper");
@@ -801,13 +811,10 @@ window.addEventListener("hashchange", function() {
 /**
  * Helpers for recording video
  */
-function copyRenderedCanvas(c, ctx)
+function copyRenderedCanvas(ctx)
 {
     const {video, renderer, scene, camera} = mindarThree;
     const renderCanvas = renderer.domElement;
-
-    c.width = renderCanvas.width;
-    c.height = renderCanvas.height;
 
     const sx = (video.clientWidth - renderCanvas.clientWidth) / 2 * video.videoWidth / video.clientWidth;
     const sy = (video.clientHeight - renderCanvas.clientHeight) / 2 * video.videoHeight / video.clientHeight;
@@ -819,24 +826,22 @@ function copyRenderedCanvas(c, ctx)
     renderer.render(scene, camera); // empty if not run
     ctx.drawImage(renderCanvas, 0, 0, renderCanvas.width, renderCanvas.height);
     renderer.preserveDrawingBuffer = false;
+}
 
-    // const context = copyCanvas.getContext('2d',{
-    //     willReadFrequently: true,
-    //     desynchronized: true
-    // });
-    // // landscape
-    // let actualHeight = 16 * renderCanvas.width / 9;
-    // let actualWidth = renderCanvas.width;
-    // let xOffset = 0;
-    // let yOffset = (renderCanvas.height - actualHeight) / 2;
-    // // portrait
-    // if (renderCanvas.width > renderCanvas.height) {
-    //     actualWidth = 16 * renderCanvas.height / 9;
-    //     actualHeight = renderCanvas.height;
-    //     xOffset = (renderCanvas.width - actualWidth) / 2;
-    //     yOffset = 0;
-    // }
-    // context.drawImage(offscreen, xOffset, yOffset, actualWidth, actualHeight, 0, 0, copyCanvas.width, copyCanvas.height);
+function resizeAndCopyCopy(copyCanvas)
+{
+    let actualHeight = 16 * copyCanvas.width / 9;
+    let actualWidth = copyCanvas.width;
+    let xOffset = 0;
+    let yOffset = (copyCanvas.height - actualHeight) / 2;
+    // portrait
+    if (copyCanvas.width > copyCanvas.height) {
+        actualWidth = 16 * copyCanvas.height / 9;
+        actualHeight = copyCanvas.height;
+        xOffset = (copyCanvas.width - actualWidth) / 2;
+        yOffset = 0;
+    }
+    canvasContext.drawImage(copyCanvas, xOffset, yOffset, actualWidth, actualHeight, 0, 0, copyCanvas.width, copyCanvas.height);
 }
 
 function createAndShowVideo()
