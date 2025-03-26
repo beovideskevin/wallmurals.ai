@@ -12,7 +12,7 @@ var isMuted = true;
 var currentlyPlayingVideo = null;
 var currentlyPlayingAudio = null;
 // Recording stuff
-const frameRate = 24; // FPS
+const frameRate = 30; // FPS
 const bitRate = 1e6;
 var recFrameId = null;
 var mediaRecorder = null;
