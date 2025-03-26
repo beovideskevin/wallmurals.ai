@@ -484,7 +484,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 error: e => console.error(e)
             });
             videoEncoder.configure({
-                codec: "avc1.424028",
+                codec: "avc1.42001f", // "avc1.424028",
                 width: canvas.width,
                 height: canvas.height,
                 bitrate: 1e6
@@ -805,12 +805,12 @@ window.addEventListener("hashchange", function() {
 function resizeCanvas() {
     if (window.innerWidth > window.innerHeight) {
         // Optimal size for instagram, it could deform the image a little bit
-        canvas.width = 1920;
-        canvas.height = 1080;
+        canvas.width = 1080; // 1920;
+        canvas.height = 720; // 1080;
     }
     else {
-        canvas.width = 1080;
-        canvas.height = 1920;
+        canvas.width = 720; // 1080;
+        canvas.height = 1080; // 1920;
     }
 }
 
@@ -833,18 +833,18 @@ function copyRenderedCanvas(ctx)
 
 function resizeAndCopyCopy(copyCanvas)
 {
-    let actualHeight = 16 * copyCanvas.width / 9;
-    let actualWidth = copyCanvas.width;
+    let actualHeight = copyCanvas.height * 720 / copyCanvas.width;
+    let actualWidth = 720;
     let xOffset = 0;
-    let yOffset = (copyCanvas.height - actualHeight) / 2;
+    let yOffset = (1080 - actualHeight) / 2;
     // portrait
     if (copyCanvas.width > copyCanvas.height) {
-        actualWidth = 16 * copyCanvas.height / 9;
-        actualHeight = copyCanvas.height;
+        actualWidth = copyCanvas.width * 720 / copyCanvas.height;
+        actualHeight = 720;
         xOffset = (copyCanvas.width - actualWidth) / 2;
         yOffset = 0;
     }
-    canvasContext.drawImage(copyCanvas, xOffset, yOffset, actualWidth, actualHeight, 0, 0, copyCanvas.width, copyCanvas.height);
+    canvasContext.drawImage(copyCanvas, 0, 0, copyCanvas.width, copyCanvas.height, xOffset, yOffset, actualWidth, actualHeight);
 }
 
 function createAndShowVideo()
