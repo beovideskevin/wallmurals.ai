@@ -426,8 +426,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         await audioEncoder?.flush();
         muxer.finalize();
 
-        alert(framesGenerated);
-
         let buffer = muxer.target.buffer;
         videoBlob = new Blob([buffer]);
         createAndShowVideo();
@@ -796,13 +794,16 @@ window.addEventListener("hashchange", function() {
  * Helpers for recording video
  */
 function InitRefreshRecCanvas() {
+    canvas = document.createElement("canvas");
     if (window.innerWidth > window.innerHeight) {
-        canvas = new OffscreenCanvas(1080, 720);
+        canvas.width = 1080;
+        canvas.width = 720;
     }
     else {
-        canvas = new OffscreenCanvas(720, 1080);
+        canvas.width = 720;
+        canvas.width = 1080;
     }
-    canvasContext = canvas.getContext('2d')
+    canvasContext = canvas.getContext('2d', { desynchronized: true })
 
     const {renderer} = mindarThree;
     copyCanvas = new OffscreenCanvas(renderer.domElement.width, renderer.domElement.height);
