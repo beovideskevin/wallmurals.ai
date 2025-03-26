@@ -224,16 +224,16 @@
     var artwork = JSON.parse('<%- artwork %>');
 
     // AR system settings
-    var filterMinCF = <%= filterMinCF %>, //  default: 1,
-        filterBeta = <%= filterBeta %>, //   default: 10000,
-        missTolerance = <%= missTolerance %>, // default 0,
-        warmupTolerance = <%= warmupTolerance %>; // default 0,
+    var filterMinCF = <%= filterMinCF %>,
+        filterBeta = <%= filterBeta %>,
+        missTolerance = <%= missTolerance %>,
+        warmupTolerance = <%= warmupTolerance %>;
 
     // Video settings
-    var vFilterMinCF = <%= vFilterMinCF %>, // working for me before: 0.0001,
-        vFilterBeta = <%= vFilterBeta %>, // kind of working for me before: 0.001
-        vMissTolerance = <%= vMissTolerance %>, // working for me before: 3
-        vWarmupTolerance = <%= vWarmupTolerance %>; // working for me before: 10
+    var vFilterMinCF = <%= vFilterMinCF %>,
+        vFilterBeta = <%= vFilterBeta %>,
+        vMissTolerance = <%= vMissTolerance %>,
+        vWarmupTolerance = <%= vWarmupTolerance %>;
 </script>
 
 <script src="/assets/libs/mp4-muxer/mp4-muxer.min.js"></script>

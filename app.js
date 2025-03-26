@@ -32,16 +32,16 @@ app.locals.description = process.env.DESCRIPTION;
 app.locals.author = process.env.AUTHOR;
 
 // AR settings
-app.locals.filterMinCF = process.env.filterMinCF || 1;
-app.locals.filterBeta = process.env.filterBeta || 10000;
-app.locals.missTolerance = process.env.missTolerance || 0;
-app.locals.warmupTolerance = process.env.warmupTolerance || 0;
+app.locals.filterMinCF = process.env.filterMinCF || 0.001; // default: 0.001
+app.locals.filterBeta = process.env.filterBeta || 10000; // default: 1000
+app.locals.missTolerance = process.env.missTolerance || 5; // default 5
+app.locals.warmupTolerance = process.env.warmupTolerance || 5; // default 5
 
 // AR video settings
-app.locals.vFilterMinCF = process.env.vFilterMinCF || 0.0001;
-app.locals.vFilterBeta = process.env.vFilterBeta || 0.001;
-app.locals.vMissTolerance = process.env.vMissTolerance || 3;
-app.locals.vWarmupTolerance = process.env.vWarmupTolerance || 10;
+app.locals.vFilterMinCF = process.env.vFilterMinCF || 0.0001; // working for me before: 0.0001,
+app.locals.vFilterBeta = process.env.vFilterBeta || 0.001; // kind of working for me before: 0.001
+app.locals.vMissTolerance = process.env.vMissTolerance || 3; // working for me before: 3
+app.locals.vWarmupTolerance = process.env.vWarmupTolerance || 10; // working for me before: 10
 
 // middleware
 app.use(logger('dev'));
