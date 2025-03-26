@@ -17,6 +17,8 @@ var recFrameId = null;
 var mediaRecorder = null;
 var canvas = null;
 var canvasContext = null;
+var copyCanvas = null;
+var copyContext = null;
 var poster = null;
 var audioCtx = null;
 var source = null;
@@ -320,18 +322,14 @@ document.addEventListener('DOMContentLoaded', async function() {
     } else  if (MediaRecorder.isTypeSupported('video/webm')) {
         mediaRecOptions = {mimeType: 'video/webm'};
     } else if (MediaRecorder.isTypeSupported('video/mp4')) {
-        mediaRecOptions = {mimeType: 'video/mp4'}; // , videoBitsPerSecond : 100000};
+        mediaRecOptions = {mimeType: 'video/mp4'};
         videoMimeType = "video/mp4";
     } else {
         console.error("no suitable mimetype found for this device");
         document.getElementById("recVideoBtn").style.display = "none";
     }
 
-    canvas = document.getElementById('record');
-    resizeCanvas()
-    canvasContext = canvas.getContext('2d', {
-        desynchronized: true
-    });
+    InitRefreshRecCanvas();
 
     // Get the show started
     window.location.hash = "";
@@ -444,7 +442,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     document.getElementById("recVideoBtn").addEventListener('click', function() {
         audioCtx = audioCtx || new AudioContext();
-        // if (videoMimeType === "video/webm") {
+        if (videoMimeType === "video/webm") {
             if (elements[0].audioElement) {
                 if (audioTrack === null) {
                     source = audioCtx.createMediaElementSource(elements[0].audioElement);
@@ -517,45 +515,45 @@ document.addEventListener('DOMContentLoaded', async function() {
             startTime = document.timeline.currentTime;
             lastKeyFrame = -Infinity;
             framesGenerated = 0;
-        // }
-        // else if (!mediaRecorder) {
-        //     const canvasStream = canvas.captureStream(frameRate);
-        //     streamArray.push(...canvasStream.getVideoTracks());
-        //     for (const element of elements) {
-        //         source = audioCtx.createMediaElementSource(element.audioElement);
-        //         source.connect(audioCtx.destination);
-        //         destination = audioCtx.createMediaStreamDestination();
-        //         source.connect(destination);
-        //         streamArray.push(...destination.stream.getAudioTracks());
-        //     }
-        //     const combinedStream = new MediaStream(streamArray);
-        //     mediaRecorder = new MediaRecorder(combinedStream,
-        //         mediaRecOptions
-        //     );
-        //
-        //     mediaRecorder.onerror = (event) => {
-        //         recording = false;
-        //         showRecBtn();
-        //         console.log(event);
-        //         alert("There was an error recording the video :(");
-        //     };
-        //
-        //     mediaRecorder.addEventListener("dataavailable", function(event) {
-        //         if (event.data.size > 0) {
-        //             recordedChunks.push(event.data);
-        //         }
-        //     });
-        //
-        //     mediaRecorder.addEventListener("stop", function() {
-        //         if (recordedChunks.length == 0) {
-        //             console.log("No data was recorded!");
-        //             alert("There was an error recording the video :(");
-        //             return;
-        //         }
-        //         videoBlob = new Blob(recordedChunks, {type: videoMimeType});
-        //         createAndShowVideo();
-        //     });
-        // }
+        }
+        else if (!mediaRecorder) {
+            const canvasStream = canvas.captureStream(frameRate);
+            streamArray.push(...canvasStream.getVideoTracks());
+            for (const element of elements) {
+                source = audioCtx.createMediaElementSource(element.audioElement);
+                source.connect(audioCtx.destination);
+                destination = audioCtx.createMediaStreamDestination();
+                source.connect(destination);
+                streamArray.push(...destination.stream.getAudioTracks());
+            }
+            const combinedStream = new MediaStream(streamArray);
+            mediaRecorder = new MediaRecorder(combinedStream,
+                mediaRecOptions
+            );
+
+            mediaRecorder.onerror = (event) => {
+                recording = false;
+                showRecBtn();
+                console.log(event);
+                alert("There was an error recording the video :(");
+            };
+
+            mediaRecorder.addEventListener("dataavailable", function(event) {
+                if (event.data.size > 0) {
+                    recordedChunks.push(event.data);
+                }
+            });
+
+            mediaRecorder.addEventListener("stop", function() {
+                if (recordedChunks.length == 0) {
+                    console.log("No data was recorded!");
+                    alert("There was an error recording the video :(");
+                    return;
+                }
+                videoBlob = new Blob(recordedChunks, {type: videoMimeType});
+                createAndShowVideo();
+            });
+        }
 
         recording = true;
         hideRecBtn();
@@ -563,11 +561,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         videoBlob = null;
 
         // make poster image
-        const {renderer} = mindarThree;
-        let rWidth = renderer.domElement.width;
-        let rHeight = renderer.domElement.height;
-        const copyCanvas = new OffscreenCanvas(rWidth,rHeight);
-        const copyContext = copyCanvas.getContext('2d');
         copyRenderedCanvas(copyContext);
         resizeAndCopyCopy(copyCanvas);
         poster = canvas.toDataURL();
@@ -757,9 +750,9 @@ screen.orientation.addEventListener("change", function() {
         return;
     }
 
-    resizeCanvas();
-
     restart();
+
+    InitRefreshRecCanvas();
 });
 
 /**
@@ -802,16 +795,18 @@ window.addEventListener("hashchange", function() {
 /**
  * Helpers for recording video
  */
-function resizeCanvas() {
+function InitRefreshRecCanvas() {
     if (window.innerWidth > window.innerHeight) {
-        // Optimal size for instagram, it could deform the image a little bit
-        canvas.width = 1080; // 1920;
-        canvas.height = 720; // 1080;
+        canvas = new OffscreenCanvas(1080, 720);
     }
     else {
-        canvas.width = 720; // 1080;
-        canvas.height = 1080; // 1920;
+        canvas = new OffscreenCanvas(720, 1080);
     }
+    canvasContext = canvas.getContext('2d')
+
+    const {renderer} = mindarThree;
+    copyCanvas = new OffscreenCanvas(renderer.domElement.width, renderer.domElement.height);
+    copyContext = copyCanvas.getContext('2d');
 }
 
 function copyRenderedCanvas(ctx)
@@ -837,7 +832,6 @@ function resizeAndCopyCopy(copyCanvas)
     let actualWidth = 720;
     let xOffset = 0;
     let yOffset = (1080 - actualHeight) / 2;
-    // portrait
     if (copyCanvas.width > copyCanvas.height) {
         actualWidth = copyCanvas.width * 720 / copyCanvas.height;
         actualHeight = 720;
