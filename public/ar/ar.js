@@ -936,7 +936,7 @@ function showSplash()
 
 function hideSplash() 
 {
-    // document.getElementById("splash").style.display = "none";
+    document.getElementById("splash").style.display = "none";
 }
 
 function showSoundBtn() {
