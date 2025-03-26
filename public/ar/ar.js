@@ -16,6 +16,7 @@ const frameRate = 30; // FPS
 var recFrameId = null;
 var mediaRecorder = null;
 var canvas = null;
+var canvasContext = null;
 var poster = null;
 var audioCtx = null;
 var source = null;
@@ -327,7 +328,19 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     canvas = document.createElement('canvas');
-    resizeCanvas();
+    if (window.innerWidth > window.innerHeight) {
+        // Optimal size for instagram, it could deform the image a little bit
+        canvas.width = 1920;
+        canvas.height = 1080;
+    }
+    else {
+        canvas.width = 1080;
+        canvas.height = 1920;
+    }
+    canvasContext = canvas.getContext('2d', {
+        willReadFrequently: true,
+        desynchronized: true
+    });
 
     // Get the show started
     window.location.hash = "";
@@ -559,7 +572,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         videoBlob = null;
 
         // make poster image
-        copyRenderedCanvas(canvas);
+        copyRenderedCanvas(canvas, canvasContext);
         poster = canvas.toDataURL();
 
         if (videoMimeType === "video/webm") {
@@ -570,7 +583,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
 
         recFrameId = setInterval(function() {
-            copyRenderedCanvas(canvas);
+            copyRenderedCanvas(canvas, canvasContext);
             if (videoMimeType === "video/webm") {
                 encodeVideoFrame();
             }
@@ -660,12 +673,16 @@ document.addEventListener('DOMContentLoaded', async function() {
         photoCanvas.setAttribute("id", "photoCanvas");
         photoCanvas.width = window.innerWidth;
         photoCanvas.height = window.innerHeight;
-        copyRenderedCanvas(photoCanvas);
+        copyRenderedCanvas(photoCanvas, photoCanvas.getContext('2d'));
 
         // Assign the photo  to an element in the UI
         const photoWrapper = document.getElementById("photoWrapper");
         photoWrapper.appendChild(photoCanvas);
         showPhoto();
+
+        if (currentlyPlayingAudio) {
+            currentlyPlayingAudio.pause();
+        }
 
         // Make copy for spark filters
         const sparkPhoto = document.createElement('canvas');
@@ -786,59 +803,39 @@ window.addEventListener("hashchange", function() {
 /**
  * Helpers for recording video
  */
-function resizeCanvas() {
-    if (window.innerWidth > window.innerHeight) {
-        // Optimal size for instagram, it could deform the image a little bit
-        canvas.width = 1920;
-        canvas.height = 1080;
-    }
-    else {
-        canvas.width = 1080;
-        canvas.height = 1920;
-    }
-}
-
-function copyRenderedCanvas(copyCanvas)
+function copyRenderedCanvas(c, ctx)
 {
     const {video, renderer, scene, camera} = mindarThree;
     const renderCanvas = renderer.domElement;
-
-    const offscreen = document.createElement('canvas');
-    offscreen.width = renderCanvas.width;
-    offscreen.height = renderCanvas.height;
-    const offscreenContext = offscreen.getContext('2d', {
-        willReadFrequently: true,
-        desynchronized: true
-    });
 
     const sx = (video.clientWidth - renderCanvas.clientWidth) / 2 * video.videoWidth / video.clientWidth;
     const sy = (video.clientHeight - renderCanvas.clientHeight) / 2 * video.videoHeight / video.clientHeight;
     const sw = video.videoWidth - sx * 2; 
     const sh = video.videoHeight - sy * 2;
-    offscreenContext.drawImage(video, sx, sy, sw, sh, 0, 0, renderCanvas.width, renderCanvas.height);
+    ctx.drawImage(video, sx, sy, sw, sh, 0, 0, renderCanvas.width, renderCanvas.height);
     
     renderer.preserveDrawingBuffer = true;
     renderer.render(scene, camera); // empty if not run
-    offscreenContext.drawImage(renderCanvas, 0, 0, renderCanvas.width, renderCanvas.height);
+    ctx.drawImage(renderCanvas, 0, 0, renderCanvas.width, renderCanvas.height);
     renderer.preserveDrawingBuffer = false;
 
-    const context = copyCanvas.getContext('2d',{
-        willReadFrequently: true,
-        desynchronized: true
-    });
-    // landscape
-    let actualHeight = 16 * renderCanvas.width / 9;
-    let actualWidth = renderCanvas.width;
-    let xOffset = 0;
-    let yOffset = (renderCanvas.height - actualHeight) / 2;
-    // portrait
-    if (renderCanvas.width > renderCanvas.height) {
-        actualWidth = 16 * renderCanvas.height / 9;
-        actualHeight = renderCanvas.height;
-        xOffset = (renderCanvas.width - actualWidth) / 2;
-        yOffset = 0;
-    }
-    context.drawImage(offscreen, xOffset, yOffset, actualWidth, actualHeight, 0, 0, copyCanvas.width, copyCanvas.height);
+    // const context = copyCanvas.getContext('2d',{
+    //     willReadFrequently: true,
+    //     desynchronized: true
+    // });
+    // // landscape
+    // let actualHeight = 16 * renderCanvas.width / 9;
+    // let actualWidth = renderCanvas.width;
+    // let xOffset = 0;
+    // let yOffset = (renderCanvas.height - actualHeight) / 2;
+    // // portrait
+    // if (renderCanvas.width > renderCanvas.height) {
+    //     actualWidth = 16 * renderCanvas.height / 9;
+    //     actualHeight = renderCanvas.height;
+    //     xOffset = (renderCanvas.width - actualWidth) / 2;
+    //     yOffset = 0;
+    // }
+    // context.drawImage(offscreen, xOffset, yOffset, actualWidth, actualHeight, 0, 0, copyCanvas.width, copyCanvas.height);
 }
 
 function createAndShowVideo()
