@@ -522,12 +522,14 @@ document.addEventListener('DOMContentLoaded', async function() {
             lastKeyFrame = -Infinity;
             framesGenerated = 0;
         }
-        else if (!mediaRecorder) {
+        else  {
             const canvasStream = canvas.captureStream(frameRate);
-            streamArray.push(...canvasStream.getVideoTracks());
+            streamArray = [...canvasStream.getVideoTracks()];
             for (const element of elements) {
-                source = audioCtx.createMediaElementSource(element.audioElement);
-                source.connect(audioCtx.destination);
+                if (source == null) {
+                    source = audioCtx.createMediaElementSource(element.audioElement);
+                    source.connect(audioCtx.destination);
+                }
                 destination = audioCtx.createMediaStreamDestination();
                 source.connect(destination);
                 streamArray.push(...destination.stream.getAudioTracks());
