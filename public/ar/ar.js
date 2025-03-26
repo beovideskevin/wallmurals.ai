@@ -801,8 +801,13 @@ function copyRenderedCanvas(copyCanvas)
     const {video, renderer, scene, camera} = mindarThree;
     const renderCanvas = renderer.domElement;
 
-    const offscreen = new OffscreenCanvas(renderCanvas.width, renderCanvas.height);
-    const offscreenContext = offscreen.getContext('2d');
+    const offscreen = document.createElement('canvas');
+    offscreen.width = renderCanvas.width;
+    offscreen.height = renderCanvas.height;
+    const offscreenContext = offscreen.getContext('2d', {
+        willReadFrequently: true,
+        desynchronized: true
+    });
 
     const sx = (video.clientWidth - renderCanvas.clientWidth) / 2 * video.videoWidth / video.clientWidth;
     const sy = (video.clientHeight - renderCanvas.clientHeight) / 2 * video.videoHeight / video.clientHeight;
