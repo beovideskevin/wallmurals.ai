@@ -797,11 +797,11 @@ function InitRefreshRecCanvas() {
     canvas = document.createElement("canvas");
     if (window.innerWidth > window.innerHeight) {
         canvas.width = 1080;
-        canvas.width = 720;
+        canvas.height = 720;
     }
     else {
         canvas.width = 720;
-        canvas.width = 1080;
+        canvas.height = 1080;
     }
     canvasContext = canvas.getContext('2d', { desynchronized: true })
 
@@ -839,6 +839,7 @@ function resizeAndCopyCopy(copyCanvas)
         xOffset = (copyCanvas.width - actualWidth) / 2;
         yOffset = 0;
     }
+
     canvasContext.drawImage(copyCanvas, 0, 0, copyCanvas.width, copyCanvas.height, xOffset, yOffset, actualWidth, actualHeight);
 }
 
