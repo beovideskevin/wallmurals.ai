@@ -568,7 +568,6 @@ document.addEventListener('DOMContentLoaded', async function() {
      * Downloads the video (for android users only)
      */
     document.getElementById("downloadVideoBtn").addEventListener('click', function() {
-        convertStreams(videoBlob);
         const url = URL.createObjectURL(videoBlob);
         const a = document.createElement('a');
         a.href = url;
