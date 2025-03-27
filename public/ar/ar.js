@@ -329,8 +329,8 @@ const restart = function() {
 document.addEventListener('DOMContentLoaded', async function() {
     if (MediaRecorder.isTypeSupported('video/webm')) {
         showDownloadBtn();
-        // mediaRecOptions = {mimeType: 'video/webm; codecs=vp8, opus'};
-        // videoMimeType = "video/webm";
+        mediaRecOptions = {mimeType: 'video/mp4; codecs:h264, mp4a.40.2'};
+        videoMimeType = "video/mp4";
     }
     else if (MediaRecorder.isTypeSupported('video/mp4')) {
         // Nothing to do here
@@ -575,7 +575,7 @@ document.addEventListener('DOMContentLoaded', async function() {
      */
     document.getElementById("photoBtn").addEventListener('click', function() {
         // Only allow photos when the target is found
-        if (!onTarget) {
+        if (!onTarget && !isRecording) {
             return;
         }
 
