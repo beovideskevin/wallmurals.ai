@@ -328,7 +328,7 @@ const restart = function() {
 document.addEventListener('DOMContentLoaded', async function() {
     if (MediaRecorder.isTypeSupported('video/webm')) {
         showDownloadBtn();
-        mediaRecOptions = {mimeType: 'video/webm;'};
+        mediaRecOptions = {mimeType: 'video/webm; codecs=vp8, vorbis'};
         videoMimeType = "video/webm";
     }
     else if (MediaRecorder.isTypeSupported('video/mp4')) {
