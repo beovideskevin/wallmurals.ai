@@ -327,6 +327,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     // } else
     if (MediaRecorder.isTypeSupported('video/webm')) {
         mediaRecOptions = {mimeType: 'video/webm;codecs=vp8,opus'};
+        videoMimeType = "video/mp4";
     } else if (MediaRecorder.isTypeSupported('video/mp4')) {
         mediaRecOptions = {mimeType: 'video/mp4; codecs=avc1.42001f, mp4a.40.2'};
         videoMimeType = "video/mp4";
