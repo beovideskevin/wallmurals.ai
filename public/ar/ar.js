@@ -17,9 +17,9 @@ const frameRate = 30; // FPS
 const vSmallSide = 720; // 480;
 const vLongSide = 1280; // 854;
 // List of codecs tested on Android
-// video/mp4; -- >
-// video/mp4; codecs=avc1.42001f, mp4a.40.2 --> it records ok in both, but in android you can only share like a second
-// video/mp4;codecs="avc1,opus"
+// video/mp4; --> it records ok in both, but in android you can only share like a second
+// video/mp4; codecs=avc1.42001f, mp4a.40.2 --> same
+// video/mp4;codecs="avc1,opus" --> same
 // video/mp4;codecs=avc1,mp4a.40.2
 // video/mp4; codecs="avc1.42E01E, mp4a.40.2"
 // video/mp4; codecs="avc1.424028, mp4a.40.2"
@@ -345,7 +345,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         // mediaRecOptions = {mimeType: 'video/webm; codecs=pcm'};
         // videoMimeType = "video/webm";
         // videoExt = ".webm"
-        mediaRecOptions = {mimeType: 'video/mp4;codecs="avc1,opus"'};
+        mediaRecOptions = {mimeType: 'video/mp4;codecs=avc1,mp4a.40.2'};
     }
     else if (MediaRecorder.isTypeSupported('video/mp4')) {
         // Nothing to do here
