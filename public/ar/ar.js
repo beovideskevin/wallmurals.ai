@@ -682,7 +682,7 @@ window.addEventListener("hashchange", function() {
         restart();
     }
 
-    if (currentlyPlayingAudio) {
+    if (currentlyPlayingAudio && !isMuted) {
         currentlyPlayingAudio.play();
     }
 
