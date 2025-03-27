@@ -414,7 +414,7 @@ document.addEventListener('DOMContentLoaded', async function() {
      */
     document.getElementById("recVideoBtn").addEventListener('click', function() {
         // Only allow recording when the target is found
-        if (!onTarget) {
+        if (!onTarget || isRecording) {
             return;
         }
 
