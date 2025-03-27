@@ -9,13 +9,16 @@ var mindarThree = null;
 var elements = [];
 var hashLocation = "";
 var refresh = false;
-var isMuted = true;
 var currentlyPlayingVideo = null;
 var currentlyPlayingAudio = null;
+var isMuted = true;
 // Recording stuff
 const frameRate = 30; // FPS
 const vWidth = 480;
 const vHeight = 854;
+const mediaRecOptions = {mimeType: 'video/mp4; codecs=avc1.42001f, mp4a.40.2'};
+const videoMimeType = "video/mp4";
+var isRecording = false;
 var recFrameId = null;
 var mediaRecorder = null;
 var canvas = null;
@@ -30,9 +33,7 @@ var streamArray = []
 var recordedChunks = [];
 var videoBlob = null;
 var recVideo = null;
-var mediaRecOptions = null;
-let recording = false;
-var videoMimeType = "video/webm";
+// Photo stuff
 const photoMimeType = "image/png";
 const shutter = new Audio('/assets/sounds/shutter.mp3');
 var sparkImageData = null;
@@ -321,16 +322,14 @@ const restart = function() {
  * This is where everything starts
  */
 document.addEventListener('DOMContentLoaded', async function() {
-    // Change the mime type for iPhone and safari
-    // if (MediaRecorder.isTypeSupported('video/webm; codecs=vp9')) {
-    //     mediaRecOptions = {mimeType: 'video/webm; codecs=vp9'};
-    // } else
     if (MediaRecorder.isTypeSupported('video/webm')) {
-        mediaRecOptions = {mimeType: 'video/webm;codecs=vp8,opus'};
-    } else if (MediaRecorder.isTypeSupported('video/mp4')) {
-        mediaRecOptions = {mimeType: 'video/mp4; codecs=avc1.42001f, mp4a.40.2'};
-        videoMimeType = "video/mp4";
-    } else {
+        document.getElementById("shareVideoBtn").style.display = "none";
+        document.getElementById("downloadVideoBtn").style.display = "block";
+    }
+    else if (MediaRecorder.isTypeSupported('video/mp4')) {
+        // Nothing to do here
+    }
+    else {
         console.error("no suitable mimetype found for this device");
         document.getElementById("recVideoBtn").style.display = "none";
     }
@@ -436,7 +435,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         );
 
         mediaRecorder.onerror = (event) => {
-            recording = false;
+            isRecording = false;
             showRecBtn();
             console.log(event);
             alert("There was an error recording the video :(");
@@ -473,7 +472,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         poster = canvas.toDataURL();
 
         // start recording
-        recording = true;
+        isRecording = true;
         hideRecBtn();
         mediaRecorder.start();
         recFrameId = setInterval(function() {
@@ -488,7 +487,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById("stopRecVideoBtn").addEventListener('click', function() {
         clearInterval(recFrameId);
         recFrameId = null;
-        recording = false;
+        isRecording = false;
         showRecBtn();
         mediaRecorder.stop();
         if (currentlyPlayingAudio) {
@@ -522,19 +521,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
 
     /**
-     * Shares the video
+     * Shares the video (for iphone users only)
      */
     document.getElementById("shareVideoBtn").addEventListener('click', async function() {
-        const url = URL.createObjectURL(videoBlob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'download.webm';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        return;
-
         // Now we can share the video
         const filename = artwork.tagline.replace(/\s/g, "-") + "-" + hashLocation + ".mp4";
         const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
@@ -557,6 +546,22 @@ document.addEventListener('DOMContentLoaded', async function() {
         else {
             alert("Your device can not share the video.");
         }
+    });
+
+    /**
+     * Downloads the video (for android users only)
+     */
+    document.getElementById("downloadVideoBtn").addEventListener('click', function() {
+        const url = URL.createObjectURL(videoBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        const filename = artwork.tagline.replace(/\s/g, "-") + "-" + hashLocation + ".mp4";
+        const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
+        a.download = sanitized;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
     });
 
     /**
@@ -655,7 +660,7 @@ document.addEventListener('DOMContentLoaded', async function() {
  * Add event so the AR is restarted when the phone changes orientation
  */
 screen.orientation.addEventListener("change", function() {
-    if (window.location.hash != "" || recording || !ready) {
+    if (window.location.hash != "" || isRecording || !ready) {
         // Don't refresh when user is watching and sharing the video
         refresh = true;
         return;
