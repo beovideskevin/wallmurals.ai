@@ -323,8 +323,7 @@ const restart = function() {
  */
 document.addEventListener('DOMContentLoaded', async function() {
     if (MediaRecorder.isTypeSupported('video/webm')) {
-        document.getElementById("shareVideoBtn").style.display = "none";
-        document.getElementById("downloadVideoBtn").style.display = "block";
+        showDownloadBtn();
     }
     else if (MediaRecorder.isTypeSupported('video/mp4')) {
         // Nothing to do here
@@ -835,6 +834,12 @@ function hideMuteBtn()
 {
     document.getElementById("muteBtn").style.display = "none";
     document.getElementById("soundBtn").style.display = "block";
+}
+
+function showDownloadBtn()
+{
+    document.getElementById("shareVideoBtn").style.display = "none";
+    document.getElementById("downloadVideoBtn").style.display = "block";
 }
 
 function showPhoto()
