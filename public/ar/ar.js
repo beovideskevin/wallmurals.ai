@@ -327,7 +327,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     // } else
     if (MediaRecorder.isTypeSupported('video/webm')) {
         mediaRecOptions = {mimeType: 'video/webm;codecs=vp8,opus'};
-        videoMimeType = "video/mp4";
     } else if (MediaRecorder.isTypeSupported('video/mp4')) {
         mediaRecOptions = {mimeType: 'video/mp4; codecs=avc1.42001f, mp4a.40.2'};
         videoMimeType = "video/mp4";
@@ -526,6 +525,16 @@ document.addEventListener('DOMContentLoaded', async function() {
      * Shares the video
      */
     document.getElementById("shareVideoBtn").addEventListener('click', async function() {
+        const url = URL.createObjectURL(videoBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'download.webm';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        return;
+
         // Now we can share the video
         const filename = artwork.tagline.replace(/\s/g, "-") + "-" + hashLocation + ".mp4";
         const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
