@@ -14,8 +14,8 @@ var currentlyPlayingAudio = null;
 var isMuted = true;
 // Recording stuff
 const frameRate = 30; // FPS
-const vWidth = 720; // 480;
-const vHeight = 1280; // 854;
+const vSmallSide = 720; // 480;
+const vLongSide = 1280; // 854;
 // List of codecs tested
 // video/mp4; codecs=avc1.42001f, mp4a.40.2  --> it records ok in both,
 //                                               but in android you can only share like a second
@@ -23,6 +23,7 @@ const vHeight = 1280; // 854;
 // video/webm; codecs=vp8, opus --> it records ok in android, you can not share it
 var mediaRecOptions = {mimeType: 'video/mp4; codecs=avc1.42001f, mp4a.40.2'};
 var videoMimeType = "video/mp4";
+var videoExt = ".mp4";
 var isRecording = false;
 var recFrameId = null;
 var mediaRecorder = null;
@@ -38,6 +39,7 @@ var streamArray = []
 var recordedChunks = [];
 var videoBlob = null;
 var recVideo = null;
+var worker = null;
 // Photo stuff
 const photoMimeType = "image/png";
 const shutter = new Audio('/assets/sounds/shutter.mp3');
@@ -312,6 +314,12 @@ const stop = async function () {
         return;
     }
     showSplash();
+    if (currentlyPlayingVideo) {
+        currentlyPlayingVideo.pause();
+    }
+    if (currentlyPlayingAudio) {
+        currentlyPlayingAudio.pause();
+    }
     await mindarThree.stop();
 }
 
@@ -329,7 +337,10 @@ const restart = function() {
 document.addEventListener('DOMContentLoaded', async function() {
     if (MediaRecorder.isTypeSupported('video/webm')) {
         showDownloadBtn();
-        mediaRecOptions = {mimeType: 'video/webm;codecs=h264'};
+        // mediaRecOptions = {mimeType: 'video/webm; codecs=pcm'};
+        // videoMimeType = "video/webm";
+        // videoExt = ".webm"
+        mediaRecOptions = {mimeType: 'video/mp4;'};
     }
     else if (MediaRecorder.isTypeSupported('video/mp4')) {
         // Nothing to do here
@@ -435,8 +446,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             streamArray.push(...destination.stream.getAudioTracks());
         }
         const combinedStream = new MediaStream(streamArray);
-        mediaRecorder = new MediaRecorder(
-            combinedStream,
+        mediaRecorder = new MediaRecorder(combinedStream,
             mediaRecOptions
         );
 
@@ -474,7 +484,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         // make poster image
         copyRenderedCanvas(copyContext);
-        resizeAndCopyCopy(copyCanvas);
+        resizeAndCopyCopy();
         poster = canvas.toDataURL();
 
         // start recording
@@ -483,7 +493,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         mediaRecorder.start();
         recFrameId = setInterval(function() {
             copyRenderedCanvas(copyContext);
-            resizeAndCopyCopy(copyCanvas);
+            resizeAndCopyCopy();
         }, 1000 / frameRate);
     });
 
@@ -531,7 +541,7 @@ document.addEventListener('DOMContentLoaded', async function() {
      */
     document.getElementById("shareVideoBtn").addEventListener('click', async function() {
         // Now we can share the video
-        const filename = artwork.tagline.replace(/\s/g, "-") + "-" + hashLocation + ".mp4";
+        const filename = artwork.tagline.replace(/\s/g, "-") + "-" + hashLocation + videoExt;
         const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
         const file = new File([videoBlob], sanitized, {type: videoMimeType});
         if (navigator.canShare && navigator.canShare({files: [file]})) {
@@ -558,10 +568,11 @@ document.addEventListener('DOMContentLoaded', async function() {
      * Downloads the video (for android users only)
      */
     document.getElementById("downloadVideoBtn").addEventListener('click', function() {
+        convertStreams(videoBlob);
         const url = URL.createObjectURL(videoBlob);
         const a = document.createElement('a');
         a.href = url;
-        const filename = artwork.tagline.replace(/\s/g, "-") + "-" + hashLocation + ".mp4";
+        const filename = artwork.tagline.replace(/\s/g, "-") + "-" + hashLocation + videoExt;
         const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
         a.download = sanitized;
         document.body.appendChild(a);
@@ -718,12 +729,12 @@ window.addEventListener("hashchange", function() {
 function InitRefreshRecCanvas() {
     canvas = document.createElement("canvas");
     if (window.innerWidth > window.innerHeight) {
-        canvas.width = vWidth ;
-        canvas.height = vHeight ;
+        canvas.width = vLongSide;
+        canvas.height = vSmallSide;
     }
     else {
-        canvas.width = vWidth ;
-        canvas.height = vHeight ;
+        canvas.width = vSmallSide;
+        canvas.height = vLongSide;
     }
     canvasContext = canvas.getContext('2d', { desynchronized: true })
 
@@ -749,16 +760,17 @@ function copyRenderedCanvas(ctx)
     renderer.preserveDrawingBuffer = false;
 }
 
-function resizeAndCopyCopy(copyCanvas)
+function resizeAndCopyCopy()
 {
-    let actualHeight = copyCanvas.height * vWidth / copyCanvas.width;
-    let actualWidth = vWidth;
+    let actualHeight = copyCanvas.height * canvas.width / copyCanvas.width;
+    let actualWidth = canvas.width;
     let xOffset = 0;
-    let yOffset = (vHeight - actualHeight) / 2;
+    let yOffset = (canvas.height - actualHeight) / 2;
+
     if (copyCanvas.width > copyCanvas.height) {
-        actualWidth = copyCanvas.width * vWidth / copyCanvas.height;
-        actualHeight = vWidth;
-        xOffset = (vHeight - actualWidth) / 2;
+        actualWidth = copyCanvas.width * canvas.height / copyCanvas.height;
+        actualHeight = canvas.height;
+        xOffset = (canvas.width - actualWidth) / 2;
         yOffset = 0;
     }
 
