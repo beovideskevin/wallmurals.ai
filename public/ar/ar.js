@@ -16,11 +16,16 @@ var isMuted = true;
 const frameRate = 30; // FPS
 const vSmallSide = 720; // 480;
 const vLongSide = 1280; // 854;
-// List of codecs tested
-// video/mp4; codecs=avc1.42001f, mp4a.40.2  --> it records ok in both,
-//                                               but in android you can only share like a second
+// List of codecs tested on Android
+// video/mp4; -- >
+// video/mp4; codecs=avc1.42001f, mp4a.40.2 --> it records ok in both, but in android you can only share like a second
+// video/mp4;codecs="avc1,opus"
+// video/mp4;codecs=avc1,mp4a.40.2
+// video/mp4; codecs="avc1.42E01E, mp4a.40.2"
+// video/mp4; codecs="avc1.424028, mp4a.40.2"
 // video/webm; --> it records ok on android, but it can't play it back
 // video/webm; codecs=vp8, opus --> it records ok in android, you can not share it
+// video/webm; codecs=pcm
 var mediaRecOptions = {mimeType: 'video/mp4; codecs=avc1.42001f, mp4a.40.2'};
 var videoMimeType = "video/mp4";
 var videoExt = ".mp4";
