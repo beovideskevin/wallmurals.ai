@@ -329,7 +329,7 @@ const restart = function() {
 document.addEventListener('DOMContentLoaded', async function() {
     if (MediaRecorder.isTypeSupported('video/webm')) {
         showDownloadBtn();
-        mediaRecOptions = {mimeType: 'video/mp4; codecs="av01.0.00.02.02.00.00"'};
+        mediaRecOptions = {mimeType: 'video/mp4; codecs=avc1'};
         videoMimeType = "video/mp4";
     }
     else if (MediaRecorder.isTypeSupported('video/mp4')) {
