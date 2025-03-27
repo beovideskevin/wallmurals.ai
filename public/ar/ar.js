@@ -329,8 +329,7 @@ const restart = function() {
 document.addEventListener('DOMContentLoaded', async function() {
     if (MediaRecorder.isTypeSupported('video/webm')) {
         showDownloadBtn();
-        mediaRecOptions = {mimeType: 'codecs=vp8, opus'};
-        videoMimeType = "video/webm";
+        mediaRecOptions = {mimeType: 'video/webm;codecs=h264'};
     }
     else if (MediaRecorder.isTypeSupported('video/mp4')) {
         // Nothing to do here
@@ -436,7 +435,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             streamArray.push(...destination.stream.getAudioTracks());
         }
         const combinedStream = new MediaStream(streamArray);
-        mediaRecorder = new MediaRecorder(combinedStream,
+        mediaRecorder = new MediaRecorder(
+            combinedStream,
             mediaRecOptions
         );
 
