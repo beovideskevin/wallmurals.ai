@@ -329,7 +329,7 @@ const restart = function() {
 document.addEventListener('DOMContentLoaded', async function() {
     if (MediaRecorder.isTypeSupported('video/webm')) {
         showDownloadBtn();
-        mediaRecOptions = {mimeType: 'video/mp4; codecs:h264, mp4a.40.2'};
+        mediaRecOptions = {mimeType: 'video/mp4'};
         videoMimeType = "video/mp4";
     }
     else if (MediaRecorder.isTypeSupported('video/mp4')) {
@@ -575,7 +575,7 @@ document.addEventListener('DOMContentLoaded', async function() {
      */
     document.getElementById("photoBtn").addEventListener('click', function() {
         // Only allow photos when the target is found
-        if (!onTarget && !isRecording) {
+        if (!onTarget || isRecording) {
             return;
         }
 
