@@ -17,12 +17,11 @@ const frameRate = 30; // FPS
 const vWidth = 480;
 const vHeight = 854;
 // List of codecs tested
-// video/mp4; codecs=H264  -->
-// video/mp4; codecs=avc1.42001f, mp4a.40.2  --> it records ok in both, you can only share like a second
-// video/mp4;
+// video/mp4; codecs=avc1.42001f, mp4a.40.2  --> it records ok in both,
+//                                               but in android you can only share like a second
 // video/webm; codecs=vp8, vorbis --> it records ok in android, you can not share it
-const mediaRecOptions = {mimeType: 'video/mp4; codecs=H264'};
-const videoMimeType = "video/mp4";
+var mediaRecOptions = {mimeType: 'video/mp4; codecs=avc1.42001f, mp4a.40.2'};
+var videoMimeType = "video/mp4";
 var isRecording = false;
 var recFrameId = null;
 var mediaRecorder = null;
@@ -329,6 +328,8 @@ const restart = function() {
 document.addEventListener('DOMContentLoaded', async function() {
     if (MediaRecorder.isTypeSupported('video/webm')) {
         showDownloadBtn();
+        mediaRecOptions = {mimeType: 'video/webm;'};
+        videoMimeType = "video/webm";
     }
     else if (MediaRecorder.isTypeSupported('video/mp4')) {
         // Nothing to do here
