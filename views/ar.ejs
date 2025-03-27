@@ -236,23 +236,22 @@
         vWarmupTolerance = <%= vWarmupTolerance %>;
 </script>
 
-<script src="/assets/libs/mp4-muxer/mp4-muxer.min.js"></script>
 <script src="/assets/libs/imagefilters/imagefilters.min.js"></script>
 <script src="/assets/libs/three/ar-image-three.prod.js"></script>
 <script type="module" src="<%= (node_env == "development") ? "/ar" : "/dist" %>/ar.js"></script>
 
 <!-- Google tag (gtag.js) -->
-<!--<script async src="https://www.googletagmanager.com/gtag/js?id=G-9EH5BJHSZ5"></script>-->
-<!--<script>-->
-<!--    window.dataLayer = window.dataLayer || [];-->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9EH5BJHSZ5"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
 
-<!--    function gtag() {-->
-<!--        dataLayer.push(arguments);-->
-<!--    }-->
+    function gtag() {
+        dataLayer.push(arguments);
+    }
 
-<!--    gtag('js', new Date());-->
+    gtag('js', new Date());
 
-<!--    gtag('config', 'G-9EH5BJHSZ5');-->
-<!--</script>-->
+    gtag('config', 'G-9EH5BJHSZ5');
+</script>
 </body>
 </html>

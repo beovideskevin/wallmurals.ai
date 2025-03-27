@@ -4,6 +4,7 @@ import { GLTFLoader } from "/ar/GLTFLoader.js";
 // Declarations
 const ttl = 30 * 60 * 1000; // 30 min in milliseconds
 var ready = false;
+var onTarget = false;
 var mindarThree = null;
 var elements = [];
 var hashLocation = "";
@@ -13,7 +14,6 @@ var currentlyPlayingVideo = null;
 var currentlyPlayingAudio = null;
 // Recording stuff
 const frameRate = 30; // FPS
-const bitRate = 1e6;
 const vWidth = 480;
 const vHeight = 854;
 var recFrameId = null;
@@ -32,14 +32,6 @@ var videoBlob = null;
 var recVideo = null;
 var mediaRecOptions = null;
 let recording = false;
-// MP$-Muxer stuff
-let muxer = null;
-let videoEncoder = null;
-let audioEncoder = null;
-let startTime = null;
-let audioTrack = null;
-let lastKeyFrame = null;
-let framesGenerated = 0;
 var videoMimeType = "video/webm";
 const photoMimeType = "image/png";
 const shutter = new Audio('/assets/sounds/shutter.mp3');
@@ -191,6 +183,7 @@ const setup = async function() {
 
                 // Set the events
                 anchor.onTargetFound = () => {
+                    onTarget = true;
                     if (window.location.hash != "") {
                         return;
                     }
@@ -207,6 +200,7 @@ const setup = async function() {
                     saveMetrics("targetfound");
                 }
                 anchor.onTargetLost = () => {
+                    onTarget = false;
                     if (elements[i].videoElement) {
                         elements[i].videoElement.pause();
                     }
@@ -245,6 +239,7 @@ const setup = async function() {
 
                 // Set the events
                 anchor.onTargetFound = () => {
+                    onTarget = true;
                     if (window.location.hash != "") {
                         return;
                     }
@@ -257,6 +252,7 @@ const setup = async function() {
                     saveMetrics("targetfound");
                 }
                 anchor.onTargetLost = () => {
+                    onTarget = false;
                     if (elements[i].audioElement) {
                         currentlyPlayingAudio = null;
                         elements[i].audioElement.pause();
@@ -411,182 +407,77 @@ document.addEventListener('DOMContentLoaded', async function() {
     /**
      * Saves the video and shows video wrapper
      */
-
-    function encodeVideoFrame () {
-        let elapsedTime = document.timeline.currentTime - startTime;
-        let frame = new VideoFrame(canvas, {
-            timestamp: framesGenerated * bitRate / frameRate, // Ensure equally-spaced frames every 1/30th of a second
-            duration: bitRate / frameRate
-        });
-        framesGenerated++;
-
-        // Ensure a video key frame at least every 5 seconds for good scrubbing
-        let needsKeyFrame = elapsedTime - lastKeyFrame >= 5000;
-        if (needsKeyFrame) lastKeyFrame = elapsedTime;
-
-        videoEncoder.encode(frame, { keyFrame: needsKeyFrame });
-        frame.close();
-    }
-
-    async function endRecording () {
-        audioTrack?.stop();
-
-        await videoEncoder?.flush();
-        await audioEncoder?.flush();
-        muxer.finalize();
-
-        let buffer = muxer.target.buffer;
-        videoBlob = new Blob([buffer], {type: "video/mp4" /*videoMimeType*/});
-        createAndShowVideo();
-
-        videoEncoder = null;
-        audioEncoder = null;
-        muxer = null;
-        startTime = null;
-    }
-
     document.getElementById("recVideoBtn").addEventListener('click', function() {
+        // Only allow recording when the target is found
+        if (!onTarget) {
+            return;
+        }
+
+        // Long init for the recording
         InitRefreshRecCanvas();
         recordedChunks = [];
         videoBlob = null;
-
         audioCtx = audioCtx || new AudioContext();
-        if (videoMimeType === "video/webm") {
-            if (elements[0].audioElement) {
-                if (audioTrack === null) {
-                    source = audioCtx.createMediaElementSource(elements[0].audioElement);
-                    source.connect(audioCtx.destination);
-                }
-                destination = audioCtx.createMediaStreamDestination();
-                source.connect(destination);
-                audioTrack = destination.stream.getAudioTracks()[0];
+        const canvasStream = canvas.captureStream(frameRate);
+        streamArray = [...canvasStream.getVideoTracks()];
+        for (const element of elements) {
+            if (source == null) {
+                source = audioCtx.createMediaElementSource(element.audioElement);
+                source.connect(audioCtx.destination);
             }
-
-            let audioSampleRate = audioTrack?.getSettings().sampleRate;
-            let audioNumberOfChannels = audioTrack?.getSettings().channelCount;
-
-            // Create an MP4 muxer with a video track and maybe an audio track
-            muxer = new Mp4Muxer.Muxer({
-                target: new Mp4Muxer.ArrayBufferTarget(),
-                video: {
-                    codec: 'avc',
-                    width: canvas.width,
-                    height: canvas.height,
-                    frameRate: frameRate
-                },
-                audio: audioTrack ? {
-                    codec: 'aac',
-                    sampleRate: audioSampleRate,
-                    numberOfChannels: audioNumberOfChannels
-                } : undefined,
-                // Puts metadata to the start of the file. Since we're using ArrayBufferTarget anyway, this makes no difference
-                // to memory footprint.
-                fastStart: 'in-memory',
-                // Because we're directly pumping a MediaStreamTrack's data into it, which doesn't start at timestamp = 0
-                firstTimestampBehavior: 'offset'
-            });
-
-            videoEncoder = new VideoEncoder({
-                output: (chunk, meta) => muxer.addVideoChunk(chunk, meta),
-                error: e => console.error(e)
-            });
-            videoEncoder.configure({
-                codec: "avc1.42001f", // "avc1.424028",
-                width: canvas.width,
-                height: canvas.height,
-                bitrate: bitRate
-            });
-
-            if (audioTrack) {
-                audioEncoder = new AudioEncoder({
-                    output: (chunk, meta) => muxer.addAudioChunk(chunk, meta),
-                    error: e => console.error(e)
-                });
-                audioEncoder.configure({
-                    codec: 'mp4a.40.2',
-                    numberOfChannels: audioNumberOfChannels,
-                    sampleRate: audioSampleRate,
-                    bitrate: 96000  // 128000
-                });
-
-                // Create a MediaStreamTrackProcessor to get AudioData chunks from the audio track
-                let trackProcessor = new MediaStreamTrackProcessor({ track: audioTrack });
-                let consumer = new WritableStream({
-                    write(audioData) {
-                        if (!recording) return;
-                        audioEncoder.encode(audioData);
-                        audioData.close();
-                    }
-                });
-                trackProcessor.readable.pipeTo(consumer);
-            }
-
-            startTime = document.timeline.currentTime;
-            lastKeyFrame = -Infinity;
-            framesGenerated = 0;
+            destination = audioCtx.createMediaStreamDestination();
+            source.connect(destination);
+            streamArray.push(...destination.stream.getAudioTracks());
         }
-        else  {
-            const canvasStream = canvas.captureStream(frameRate);
-            streamArray = [...canvasStream.getVideoTracks()];
-            for (const element of elements) {
-                if (source == null) {
-                    source = audioCtx.createMediaElementSource(element.audioElement);
-                    source.connect(audioCtx.destination);
-                }
-                destination = audioCtx.createMediaStreamDestination();
-                source.connect(destination);
-                streamArray.push(...destination.stream.getAudioTracks());
-            }
-            const combinedStream = new MediaStream(streamArray);
-            mediaRecorder = new MediaRecorder(combinedStream,
-                mediaRecOptions
-            );
+        const combinedStream = new MediaStream(streamArray);
+        mediaRecorder = new MediaRecorder(combinedStream,
+            mediaRecOptions
+        );
 
-            mediaRecorder.onerror = (event) => {
-                recording = false;
-                showRecBtn();
-                console.log(event);
+        mediaRecorder.onerror = (event) => {
+            recording = false;
+            showRecBtn();
+            console.log(event);
+            alert("There was an error recording the video :(");
+        };
+
+        mediaRecorder.addEventListener("dataavailable", function(event) {
+            if (event.data.size > 0) {
+                recordedChunks.push(event.data);
+            }
+        });
+
+        mediaRecorder.addEventListener("stop", function() {
+            if (recordedChunks.length == 0) {
+                console.log("No data was recorded!");
                 alert("There was an error recording the video :(");
-            };
+                return;
+            }
+            videoBlob = new Blob(recordedChunks, {type: videoMimeType});
+            createAndShowVideo();
+        });
 
-            mediaRecorder.addEventListener("dataavailable", function(event) {
-                if (event.data.size > 0) {
-                    recordedChunks.push(event.data);
-                }
-            });
-
-            mediaRecorder.addEventListener("stop", function() {
-                if (recordedChunks.length == 0) {
-                    console.log("No data was recorded!");
-                    alert("There was an error recording the video :(");
-                    return;
-                }
-                videoBlob = new Blob(recordedChunks, {type: videoMimeType});
-                createAndShowVideo();
-            });
+        // Unmute the audio, if not the recording will be empty
+        if (isMuted) {
+            isMuted = false;
+            if (currentlyPlayingAudio) {
+                currentlyPlayingAudio.play();
+            }
+            hideMuteBtn();
         }
-
-        recording = true;
-        hideRecBtn();
 
         // make poster image
         copyRenderedCanvas(copyContext);
         resizeAndCopyCopy(copyCanvas);
         poster = canvas.toDataURL();
 
-        if (videoMimeType === "video/webm") {
-            encodeVideoFrame();
-        }
-        else {
-            mediaRecorder.start();
-        }
-
+        // start recording
+        recording = true;
+        hideRecBtn();
+        mediaRecorder.start();
         recFrameId = setInterval(function() {
             copyRenderedCanvas(copyContext);
             resizeAndCopyCopy(copyCanvas);
-            if (videoMimeType === "video/webm") {
-                encodeVideoFrame();
-            }
         }, 1000 / frameRate);
     });
 
@@ -598,12 +489,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         recFrameId = null;
         recording = false;
         showRecBtn();
-        if (videoMimeType === "video/webm") {
-            endRecording();
-        }
-        else {
-            mediaRecorder.stop();
-        }
+        mediaRecorder.stop();
         if (currentlyPlayingAudio) {
             currentlyPlayingAudio.pause();
         }
@@ -639,9 +525,9 @@ document.addEventListener('DOMContentLoaded', async function() {
      */
     document.getElementById("shareVideoBtn").addEventListener('click', async function() {
         // Now we can share the video
-        const filename = /* artwork.tagline.replace(/\s/g, "-") + "-" + */ hashLocation + ".mp4";
+        const filename = artwork.tagline.replace(/\s/g, "-") + "-" + hashLocation + ".mp4";
         const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
-        const file = new File([videoBlob], sanitized, {type: "video/mp4" /*videoMimeType*/});
+        const file = new File([videoBlob], sanitized, {type: videoMimeType});
         if (navigator.canShare && navigator.canShare({files: [file]})) {
             try {
                 navigator.share({
@@ -666,7 +552,10 @@ document.addEventListener('DOMContentLoaded', async function() {
      * Saves the image and shows the photo wrapper
      */
     document.getElementById("photoBtn").addEventListener('click', function() {
-        shutter.play();
+        // Only allow photos when the target is found
+        if (!onTarget) {
+            return;
+        }
 
         // Create a canvas and draw the photo
         const photoCanvas = document.createElement('canvas');
@@ -681,9 +570,11 @@ document.addEventListener('DOMContentLoaded', async function() {
         photoWrapper.appendChild(photoCanvas);
         showPhoto();
 
+        // Silence the audio and make shutter click
         if (currentlyPlayingAudio) {
             currentlyPlayingAudio.pause();
         }
+        shutter.play();
 
         // Make copy for spark filters
         const sparkPhoto = document.createElement('canvas');
@@ -725,7 +616,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById("sharePhotoBtn").addEventListener('click', function() {
         const photoCanvas = document.getElementById("photoCanvas");
         photoCanvas.toBlob((blob) => {
-            const filename = /* artwork.tagline.replace(/\s/g, "-") + "-" + */ hashLocation + ".png";
+            const filename = artwork.tagline.replace(/\s/g, "-") + "-" + hashLocation + ".png";
             const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
             const file = new File([blob], sanitized, {type: photoMimeType});
             if (navigator.canShare && navigator.canShare({files: [file]})) {
@@ -791,7 +682,7 @@ window.addEventListener("hashchange", function() {
         restart();
     }
 
-    if (currentlyPlayingAudio && !isMuted) {
+    if (currentlyPlayingAudio) {
         currentlyPlayingAudio.play();
     }
 
