@@ -344,7 +344,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         showDownloadBtn();
         mediaRecOptions = {mimeType: 'video/webm; codecs=vp8, opus'};
         videoMimeType = "video/webm";
-        videoExt = ".webm"
+        videoExt = ".webm";
     }
     else if (MediaRecorder.isTypeSupported('video/mp4')) {
         // Nothing to do here
