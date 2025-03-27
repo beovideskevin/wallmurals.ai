@@ -14,8 +14,8 @@ var currentlyPlayingAudio = null;
 var isMuted = true;
 // Recording stuff
 const frameRate = 30; // FPS
-const vWidth = 480;
-const vHeight = 854;
+const vWidth = 720; // 480;
+const vHeight = 1280; // 854;
 // List of codecs tested
 // video/mp4; codecs=avc1.42001f, mp4a.40.2  --> it records ok in both,
 //                                               but in android you can only share like a second
@@ -329,8 +329,8 @@ const restart = function() {
 document.addEventListener('DOMContentLoaded', async function() {
     if (MediaRecorder.isTypeSupported('video/webm')) {
         showDownloadBtn();
-        mediaRecOptions = {mimeType: 'video/webm; codecs=vp8, opus'};
-        videoMimeType = "video/webm";
+        // mediaRecOptions = {mimeType: 'video/webm; codecs=vp8, opus'};
+        // videoMimeType = "video/webm";
     }
     else if (MediaRecorder.isTypeSupported('video/mp4')) {
         // Nothing to do here
