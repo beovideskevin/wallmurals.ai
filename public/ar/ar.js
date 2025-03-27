@@ -345,7 +345,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         // mediaRecOptions = {mimeType: 'video/webm; codecs=pcm'};
         // videoMimeType = "video/webm";
         // videoExt = ".webm"
-        mediaRecOptions = {mimeType: 'video/mp4;'};
+        mediaRecOptions = {mimeType: 'video/mp4;codecs="avc1,opus"'};
     }
     else if (MediaRecorder.isTypeSupported('video/mp4')) {
         // Nothing to do here
