@@ -335,8 +335,8 @@ const stop = async function () {
  * Restart the AR system
  */
 const restart = function() {
-    // stop();
-    // start();
+    stop();
+    start();
 }
 
 /**
