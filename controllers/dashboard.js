@@ -55,7 +55,14 @@ const storeArtwork = async function(req, res, next) {
         return;
     }
 
-    const animation = await collectFiles(req);
+    let animation = null;
+    try {
+        animation = await collectFiles(req);
+    }
+    catch(error) {
+        res.redirect('/dashboard/' + encodeURIComponent(error) + '/true');
+        return;
+    }
 
     if (animation.target === "") {
         res.redirect('/dashboard/' + encodeURIComponent("You must upload a target.") + '/true');
@@ -138,7 +145,14 @@ const updateArtwork = async function(req, res, next) {
         return;
     }
 
-    const animation = await collectFiles(req);
+    let animation = null;
+    try {
+        animation = await collectFiles(req);
+    }
+    catch(error) {
+        res.redirect('/dashboard/' + encodeURIComponent(error) + '/true');
+        return;
+    }
 
     if (animation.video !== "" && animation.model !== "") {
         res.redirect(`/dashboard/edit/${id}/` + encodeURIComponent("You can not have a video and a model at the same time.") + '/true');

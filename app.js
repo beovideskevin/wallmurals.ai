@@ -50,7 +50,7 @@ app.locals.author = process.env.AUTHOR;
 
 // AR settings
 app.locals.filterMinCF = process.env.filterMinCF || 0.001; // default: 0.001, online I have 0.00001, could be also 1
-app.locals.filterBeta = process.env.filterBeta || 1000; // default: 1000, online I have 1, could be also 10000
+app.locals.filterBeta = process.env.filterBeta || 1000; // default: 1000, online I have 0.1, could be also 10000
 app.locals.missTolerance = process.env.missTolerance || 5; // default 5, online I have 5
 app.locals.warmupTolerance = process.env.warmupTolerance || 5; // default 5, online I have 15
 

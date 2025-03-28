@@ -176,6 +176,9 @@ const collectFiles = async function(req) {
         // Video file
         const videoFile = req.files.video ? req.files.video : null;
         if (videoFile) {
+            if (videoFile.size > 25 * 1024 * 1024) {
+                throw new Error("Video size exceeds 25MB limit.");
+            }
             video = `/uploads/${user}/videos/${uuid}/` + sanitizeFilename(videoFile.name);
             videoFile.mv(`${baseDir}/public${video}`, err => {
                 if (err) {
@@ -198,6 +201,10 @@ const collectFiles = async function(req) {
         // Model file
         const modelFile = req.files.model ? req.files.model : null;
         if (modelFile) {
+            if (modelFile.size > 25 * 1024 * 1024) {
+                throw new Error("Model size exceeds 25MB limit.");
+            }
+
             if (modelFile.name.endsWith(".zip")) {
                 const directory = await unzipper.Open.file(modelFile.tempFilePath);
                 let dest = `${baseDir}/public/uploads/${user}/models/${uuid}/`;
