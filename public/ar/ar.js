@@ -12,6 +12,7 @@ var refresh = false;
 var currentlyPlayingVideo = null;
 var currentlyPlayingAudio = null;
 var isMuted = true;
+var itHasSound = false;
 // Recording stuff
 const frameRate = 30; // FPS
 const vSmallSide = 720; // 480;
@@ -167,6 +168,7 @@ const setup = async function() {
 
         // Read the audio
         if (artwork.animations[i].audio) {
+            itHasSound = true;
             showSoundBtn();
             elements[i].audioElement = new Audio(artwork.animations[i].audio);
         }
@@ -481,7 +483,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
 
         // Unmute the audio, if not the recording will be empty
-        if (isMuted) {
+        if (isMuted && itHasSound) {
             isMuted = false;
             if (currentlyPlayingAudio) {
                 currentlyPlayingAudio.play();
