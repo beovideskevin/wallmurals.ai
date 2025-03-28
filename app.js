@@ -32,16 +32,21 @@ app.locals.description = process.env.DESCRIPTION;
 app.locals.author = process.env.AUTHOR;
 
 
-/**
- Fom the docs at: https://hiukim.github.io/mind-ar-js-doc/quick-start/tracking-config/
+/*
+  Fom the docs at: https://hiukim.github.io/mind-ar-js-doc/quick-start/tracking-config/
 
- MindAR implements OneEuroFilter. There are two adjustable parameters called cutoff frequency (filterMinCF) and speed coefficient
- (filterBeta). In general, decreasing the value of filterMinCF can reduce the jittering and increasing the value of filterBeta
- reduce the delay. They are, however, somehow fighting against each others.
+  MindAR implements OneEuroFilter. There are two adjustable parameters called cutoff frequency (filterMinCF) and speed coefficient
+  (filterBeta). In general, decreasing the value of filterMinCF can reduce the jittering and increasing the value of filterBeta
+  reduce the delay. They are, however, somehow fighting against each others. They default values of filterMinCF and filterBeta
+  are 0.001 and 1000.
 
- They default values of filterMinCF and filterBeta are 0.001 and 1000. You can change them by specifying these parameters
- in mindar-image attribute. e.g.
- */
+  By default, there is a small intentional delay to trigger the target found event to avoid false positive. More specifically,
+  it requires the target image being detected in a continuos of warmupTolerance frames to be considered a success. The default
+  value of warmupTolerance is 5
+
+  Similar, there is also a small intentional delay to trigger the target lost event. It requires the target image being
+  un-detected in a continuous of missTolerance frames. The default value of missTolerance is 5
+*/
 
 // AR settings
 app.locals.filterMinCF = process.env.filterMinCF || 0.001; // default: 0.001, online I have 0.00001, could be also 1
