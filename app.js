@@ -31,6 +31,18 @@ app.locals.keywords = process.env.KEYWORDS;
 app.locals.description = process.env.DESCRIPTION;
 app.locals.author = process.env.AUTHOR;
 
+
+/**
+ Fom the docs at: https://hiukim.github.io/mind-ar-js-doc/quick-start/tracking-config/
+
+ MindAR implements OneEuroFilter. There are two adjustable parameters called cutoff frequency (filterMinCF) and speed coefficient
+ (filterBeta). In general, decreasing the value of filterMinCF can reduce the jittering and increasing the value of filterBeta
+ reduce the delay. They are, however, somehow fighting against each others.
+
+ They default values of filterMinCF and filterBeta are 0.001 and 1000. You can change them by specifying these parameters
+ in mindar-image attribute. e.g.
+ */
+
 // AR settings
 app.locals.filterMinCF = process.env.filterMinCF || 0.001; // default: 0.001, online I have 0.00001, could be also 1
 app.locals.filterBeta = process.env.filterBeta || 10000; // default: 1000, online I have 1, could be also 10000

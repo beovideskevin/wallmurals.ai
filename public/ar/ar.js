@@ -245,8 +245,11 @@ const setup = async function() {
                     modelElement.scene.position.set(0, -0.4, 0);
                 }
                 anchor.group.add(modelElement.scene);
-                let mixerElement = new window.MINDAR.IMAGE.THREE.AnimationMixer(modelElement.scene);
-                mixerElement.clipAction(modelElement.animations[0]).play();
+                let mixerElement = null;
+                if (modelElement.animations.length) {
+                    mixerElement = new window.MINDAR.IMAGE.THREE.AnimationMixer(modelElement.scene);
+                    mixerElement.clipAction(modelElement.animations[0]).play();
+                }
                 elements[i].mixerElement = mixerElement;
                 elements[i].modelElement = modelElement;
 
