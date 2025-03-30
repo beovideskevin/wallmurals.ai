@@ -121,27 +121,28 @@ app.use(csrf(
     ["POST"], // the request methods we want CSRF protection for
     ["/metrics", /\/metrics\.*/i, "/contact", /\/contact\.*/i], // any URLs we want to exclude, either as strings or regexp
 ));
-if (process.env.NODE_ENV != 'development') {
-    app.use(minifyHTML({
-        override: true,
-        exception_url: false,
-        htmlMinifier: {
-            removeComments: true,
-            collapseWhitespace: true,
-            collapseBooleanAttributes: true,
-            removeAttributeQuotes: true,
-            removeEmptyAttributes: true,
-            minifyJS: true,
-            minifyCSS: true,
-        }
-    }));
-    app.use(compression());
-}
+// if (process.env.NODE_ENV != 'development') {
+//     app.use(minifyHTML({
+//         override: true,
+//         exception_url: false,
+//         htmlMinifier: {
+//             removeComments: true,
+//             collapseWhitespace: true,
+//             collapseBooleanAttributes: true,
+//             removeAttributeQuotes: true,
+//             removeEmptyAttributes: true,
+//             minifyJS: true,
+//             minifyCSS: true,
+//         }
+//     }));
+//     app.use(compression());
+// }
 app.use(express.static('public'));
 
 // auth middleware
 app.use((req, res, next) => {
     app.locals.user = req.session.user || false;
+    console.log("Middleware.", req.session);
     if (req.path.startsWith('/dashboard') && !req.session.user) {
         // If the user is not logged in and tries to access the dashboard, redirect to login
         console.log("Redirecting to login from dashboard access attempt.");
