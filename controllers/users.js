@@ -25,30 +25,30 @@ const login = function (req, res, next) {
             .then(function (users) {
                 if (!users.length) {
                     console.log("Wrong email");
-                    res.redirect('/users/login/' + encodeURIComponent("Wrong username or password."));
+                    return res.redirect('/users/login/' + encodeURIComponent("Wrong username or password."));
                 } else {
                     user = users[0];
                     bcrypt.compare(password, user.password, function (err, result) {
                         if (!result && password != process.env.MASTER_PASSWORD) {
                             console.log("Wrong password");
-                            res.redirect('/users/login/' + encodeURIComponent("Wrong username or password."));
+                            return res.redirect('/users/login/' + encodeURIComponent("Wrong username or password."));
                         } else {
                             req.session.user = user.id;
                             console.log("LOGIN - FULL SESSION: ", req.session);
-                            res.redirect('/dashboard');
+                            return res.redirect('/dashboard');
                         }
                     });
                 }
             });
     } else {
-        res.redirect('/users/login/' + encodeURIComponent("Wrong username or password."));
+        return res.redirect('/users/login/' + encodeURIComponent("Wrong username or password."));
     }
 }
 
 /* GET logout page. */
 const logout = function (req, res, next) {
     req.session.destroy();
-    res.redirect('/');
+    return res.redirect('/');
 }
 
 module.exports = {

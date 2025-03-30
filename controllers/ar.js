@@ -6,18 +6,16 @@ const {checkViews, isCloseToPlace} = require('../helpers/utils');
 const aFrame = async function (req, res, next) {
     const route = sanitize(req.params.route);
     const uuid = uuidv4();
-
     const artwork = await Artwork.findOne({route: route});
     if (!artwork) {
         console.log("ROUTE NOT FOUND", req.params.route);
-        res.redirect('/ar');
-        return;
+        return res.redirect('/ar');
     }
 
-    if (!checkViews(artwork)) {
+    const allow = await checkViews(artwork);
+    if (!allow) {
         console.log("EXCESS VIEWS", req.params.id, artwork);
-        res.redirect('/');
-        return;
+        return res.redirect('/');
     }
 
     res.render('aframe', {
@@ -30,18 +28,16 @@ const aFrame = async function (req, res, next) {
 const arRoute = async function (req, res, next) {
     const route = sanitize(req.params.route);
     const uuid = uuidv4();
-
     const artwork = await Artwork.findOne({route: route});
     if (!artwork) {
         console.log("ROUTE NOT FOUND", req.params.route);
-        res.redirect('/ar');
-        return;
+        return res.redirect('/ar');
     }
 
-    if (!checkViews(artwork)) {
+    const allow = await checkViews(artwork);
+    if (!allow) {
         console.log("EXCESS VIEWS", req.params.id, artwork);
-        res.redirect('/');
-        return;
+        return res.redirect('/');
     }
 
     res.render('ar', {
@@ -54,30 +50,22 @@ const arRoute = async function (req, res, next) {
 const arId = async function (req, res, next) {
     const id = sanitize(req.params.id);
     const uuid = uuidv4();
+    const artwork = Artwork.findById(id);
+    if (!artwork) {
+        console.log("NOT FOUND ID", req.params.id);
+        return res.redirect('/ar');
+    }
 
-    Artwork.findById(id)
-        .then(function (artwork) {
-            if (!artwork) {
-                console.log("NOT FOUND ID", req.params.id);
-                res.redirect('/ar');
-                return;
-            }
+    const allow = await checkViews(artwork);
+    if (!allow) {
+        console.log("EXCESS VIEWS", req.params.id, artwork);
+        return res.redirect('/');
+    }
 
-            if (!checkViews(artwork)) {
-                console.log("EXCESS VIEWS", req.params.id, artwork);
-                res.redirect('/');
-                return;
-            }
-
-            res.render('ar', {
-                uuid: uuid,
-                artwork: JSON.stringify(artwork)
-            });
-        })
-        .catch(function(error) {
-            console.log("ERROR: " + error);
-            res.redirect('/');
-        });
+    res.render('ar', {
+        uuid: uuid,
+        artwork: JSON.stringify(artwork)
+    });
 }
 
 /* GET the artwork */
@@ -96,8 +84,7 @@ const arLoc = async function (req, res, next) {
 
     if (!lat || !lon || !uuid) {
         res.status(404);
-        res.json(null);
-        return;
+        return res.json(null);
     }
 
     const artworks = await Artwork.find({});
@@ -106,20 +93,18 @@ const arLoc = async function (req, res, next) {
             continue;
         }
         if (isCloseToPlace(lat, lon, artwork.lat, artwork.lon)) {
-            if (!checkViews(artwork)) {
+            const allow = await checkViews(artwork);
+            if (!allow) {
                 console.log("EXCESS VIEWS", req.params.lat, req.params.lon, artwork);
-                res.status(404);
-                res.json(null);
-                return;
+                break;
             }
 
             res.status(200);
-            res.json(artwork);
-            return;
+            return res.json(artwork);
         }
     }
     res.status(404);
-    res.json(null);
+    return res.json(null);
 }
 
 module.exports = {

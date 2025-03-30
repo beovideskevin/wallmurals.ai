@@ -107,7 +107,6 @@ const storeArtwork = async function(req, res, next) {
         }
         return res.redirect('/dashboard/' + encodeURIComponent("There was an error while creating the mural.") + "/true");
     });
-    return;
 }
 
 /* POST save artwork */
@@ -183,7 +182,6 @@ const updateArtwork = async function(req, res, next) {
             console.log("IT FAILED ", error);
             return res.redirect(`/dashboard/edit/${id}/` + encodeURIComponent("There was an error while updating the mural."));
         });
-    return;
 }
 
 /* POST delete artwork. */
@@ -263,7 +261,6 @@ const changePassword = async function(req, res, next) {
                 return res.redirect('/users/logout');
             });
     });
-    return;
 }
 
 /* POST close account */
@@ -301,7 +298,6 @@ const closeAccount = async function(req, res, next) {
         .catch(function (error) {
             return res.redirect('/users/logout');
         });
-    return;
 }
 
 const downgradePlan = function (req, res, next) {
@@ -319,8 +315,8 @@ const downgradePlan = function (req, res, next) {
                 ${user.phone} \n`;
             const mailOptions = {
                 from: 'info@wallmurals.ai',
-                to: 'thisisupperwestsidemurals@gmail.com',
-                cc: 'kevinbcasas@gmail.com',
+                to: 'kevinbcasas@gmail.com',
+                // cc: 'thisisupperwestsidemurals@gmail.com',
                 subject: "Downgrade Plan From WallMurals.ai",
                 text: text
             };
@@ -343,7 +339,6 @@ const downgradePlan = function (req, res, next) {
             console.log("IT FAILED ", error);
             return res.redirect('/dashboard/account/' + encodeURIComponent("There was an error while downgrading the plan.") + '/true');
         });
-    return;
 }
 
 const upgradePlan = function(req, res, next) {
@@ -361,8 +356,8 @@ const upgradePlan = function(req, res, next) {
                 ${user.phone} \n`;
             const mailOptions = {
                 from: 'info@wallmurals.ai',
-                to: 'thisisupperwestsidemurals@gmail.com',
-                cc: 'kevinbcasas@gmail.com',
+                to: 'kevinbcasas@gmail.com',
+                // cc: 'thisisupperwestsidemurals@gmail.com',
                 subject: "Upgrade Plan From WallMurals.ai",
                 text: text
             };
@@ -385,7 +380,6 @@ const upgradePlan = function(req, res, next) {
             console.log("IT FAILED", error);
             return res.redirect('/dashboard/account/' + encodeURIComponent("There was an error while upgrading the plan.") + '/true');
         });
-    return;
 }
 
 module.exports = {

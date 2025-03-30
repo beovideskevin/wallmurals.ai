@@ -9,15 +9,13 @@ const list = async function(req, res, next) {
 
     if (!req.session.user) {
         res.status(403);
-        res.json({});
-        return;
+        return res.json({});
     }
 
     const artworks = await Artwork.find({user: req.session.user});
     if (!artworks.length) {
         res.status(403);
-        res.json({});
-        return;
+        return res.json({});
     }
 
     const now = new Date();
@@ -91,7 +89,7 @@ const list = async function(req, res, next) {
     const metrics = {visits, engagement, interactions};
     res.set('Content-Type', 'application/json')
     res.status(200);
-    res.json(metrics);
+    return res.json(metrics);
 }
 
 /* POST save metrics. */
@@ -100,8 +98,7 @@ const save = async function(req, res, next) {
     if (!body.uuid || !body.id || !body.data || !body.metricType) {
         console.log("Bad form");
         res.status(400);
-        res.json({success: false});
-        return;
+        return res.json({success: false});
     }
 
     const metricType = sanitize(body.metricType);
@@ -112,13 +109,12 @@ const save = async function(req, res, next) {
     if (!artwork) {
         console.log("not found artwork!");
         res.status(400);
-        res.json({success: false});
-        return;
+        return res.json({success: false});
     }
     const user = artwork.user;
     saveMetric({metricType, user, id, data, uuid});
     res.status(200);
-    res.json({success: true});
+    return res.json({success: true});
 }
 
 module.exports = {

@@ -36,8 +36,8 @@ const getSubscriptionLastDate = function(day) {
 }
 
 checkViews = async function(artwork) {
-    const MAX_FREE_VIEWS = 1000;
-    const MAX_PRO_VIEWS = 100000;
+    const MAX_FREE_VIEWS = process.env.MAX_FREE_VIEWS;
+    const MAX_PRO_VIEWS = process.env.MAX_PRO_VIEWS;
 
     // Check the user exists and it is active
     let user = await User.findById(artwork.user);
@@ -66,8 +66,9 @@ checkViews = async function(artwork) {
         user: artwork.user,
         createdAt: { $gt: targetDate }
     });
-    if (count > max) {
-        console.log("MAX VIEWS REACHED: " + req.params.id);
+
+    if (count >= max) {
+        console.log("MAX VIEWS REACHED: " + artwork.id);
         return false;
     }
     return true;
