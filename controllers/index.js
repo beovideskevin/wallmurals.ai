@@ -37,7 +37,7 @@ const contact = async function (req, res, next) {
     const mailOptions = {
         from: 'info@wallmurals.ai',
         to: 'kevinbcasas@gmail.com',
-        // cc: 'thisisupperwestsidemurals@gmail.com',
+        cc: 'thisisupperwestsidemurals@gmail.com',
         subject: "Contact Email From WallMurals.ai",
         text: text
     };
