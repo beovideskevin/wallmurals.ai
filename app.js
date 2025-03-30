@@ -178,6 +178,7 @@ app.use(function (err, req, res, next) {
         res.render('error');
     } else {
         console.log("GLOBAL ERROR", req.path, err);
+        res.locals.message = "";
         res.locals.error = {};
         res.status(err.status || 500);
         res.render('error');
