@@ -85,7 +85,7 @@ if (process.env.NODE_ENV != 'development') {
     const sess = {
         store: redisStore,
         secret: process.env.SESSION_KEY,
-        resave: true,
+        resave: false,
         saveUninitialized: true,
         cookie: {
             secure: false,
@@ -144,10 +144,12 @@ app.use((req, res, next) => {
     app.locals.user = req.session.user || false;
     if (req.path.startsWith('/dashboard') && !req.session.user) {
         // If the user is not logged in and tries to access the dashboard, redirect to login
+        console.log("Redirecting to login from dashboard access attempt.");
         return res.redirect('/users/login');
     }
     else if (req.path.startsWith('/user/login') && req.session.user) {
         // If the user is already logged in and tries to access the login page, redirect to dashboard
+        console.log("Redirecting to dashboard from login.");
         return res.redirect('/dashboard');
     }
     next();
