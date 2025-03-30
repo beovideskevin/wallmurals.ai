@@ -85,7 +85,7 @@ if (process.env.NODE_ENV != 'development') {
     const sess = {
         store: redisStore,
         secret: process.env.SESSION_KEY,
-        resave: false,
+        resave: true,
         saveUninitialized: true,
         cookie: {
             secure: false,
