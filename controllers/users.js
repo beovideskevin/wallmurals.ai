@@ -8,6 +8,7 @@ const index = async function (req, res, next) {
     const message = req.params.message || "";
 
     res.render('login', {
+        csrf: req.csrfToken(),
         message: message
     });
 }

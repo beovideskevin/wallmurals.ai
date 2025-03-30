@@ -23,6 +23,10 @@ connectDB();
 
 const app = express();
 
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+
 // General SEO stuff for the website
 app.locals.node_env = process.env.NODE_ENV;
 app.locals.site = process.env.SITE;
@@ -30,7 +34,6 @@ app.locals.title = process.env.TITLE;
 app.locals.keywords = process.env.KEYWORDS;
 app.locals.description = process.env.DESCRIPTION;
 app.locals.author = process.env.AUTHOR;
-
 
 /*
   Fom the docs at: https://hiukim.github.io/mind-ar-js-doc/quick-start/tracking-config/
@@ -113,13 +116,11 @@ app.use(fileUpload({
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser(process.env.COOKIE_SECRET));
-app.use(
-    csrf(
-        process.env.CSRF, // secret -- must be 32 bits or chars in length
-        ["POST"], // the request methods we want CSRF protection for
-        ["/metrics", /\/metrics\.*/i, "/contact", /\/contact\.*/i], // any URLs we want to exclude, either as strings or regexp
-    )
-);
+app.use(csrf(
+    process.env.CSRF, // secret -- must be 32 bits or chars in length
+    ["POST"], // the request methods we want CSRF protection for
+    ["/metrics", /\/metrics\.*/i, "/contact", /\/contact\.*/i], // any URLs we want to exclude, either as strings or regexp
+));
 if (process.env.NODE_ENV != 'development') {
     app.use(minifyHTML({
         override: true,
@@ -139,25 +140,18 @@ if (process.env.NODE_ENV != 'development') {
 app.use(express.static('public'));
 
 // auth middleware
-app.use(
-    (req, res, next) => {
-        if (req.path.startsWith('/dashboard') && !req.session.user) {
-            // If the user is not logged in and tries to access the dashboard, redirect to login
-            return res.redirect('/users/login');
-        }
-        else if (req.path.startsWith('/user/login') && req.session.user) {
-            // If the user is already logged in and tries to access the login page, redirect to dashboard
-            return res.redirect('/dashboard');
-        }
-        res.locals.user = req.session.user || false;
-        res.locals.csrf = req.csrfToken();
-        next();
+app.use((req, res, next) => {
+    app.locals.user = req.session.user || false;
+    if (req.path.startsWith('/dashboard') && !req.session.user) {
+        // If the user is not logged in and tries to access the dashboard, redirect to login
+        return res.redirect('/users/login');
     }
-);
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+    else if (req.path.startsWith('/user/login') && req.session.user) {
+        // If the user is already logged in and tries to access the login page, redirect to dashboard
+        return res.redirect('/dashboard');
+    }
+    next();
+});
 
 // routes
 app.use('/ar', arRouter);
