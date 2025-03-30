@@ -179,10 +179,10 @@ app.use(function (err, req, res, next) {
         res.status(err.status || 500);
         res.render('error');
     } else {
-        console.log("GLOBAL REQ", req);
-        console.log("GLOBAL RES", res);
         console.log("GLOBAL ERROR", err);
-        res.redirect(req.session.user ? '/dashboard' : '/');
+        res.locals.error = {};
+        res.status(err.status || 500);
+        res.render('error');
     }
 });
 
