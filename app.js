@@ -7,7 +7,6 @@ const {RedisStore} = require('connect-redis');
 const path = require('path');
 const fileUpload = require('express-fileupload');
 const csrf = require('tiny-csrf');
-const cookieParser = require('cookie-parser');
 const minifyHTML = require('express-minify-html-2');
 const compression = require('compression');
 const logger = require('morgan');
@@ -115,7 +114,7 @@ app.use(fileUpload({
 }));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
-app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(express.static('public'));
 app.use(csrf(
     process.env.CSRF, // secret -- must be 32 bits or chars in length
     ["POST"], // the request methods we want CSRF protection for
@@ -137,12 +136,11 @@ if (process.env.NODE_ENV != 'development') {
     }));
     app.use(compression());
 }
-app.use(express.static('public'));
 
 // auth middleware
 app.use((req, res, next) => {
     app.locals.user = req.session.user || false;
-    console.log("Middleware.", req.session);
+    console.log("SESSION MIDDLEWARE", req.session);
     if (req.path.startsWith('/dashboard') && !req.session.user) {
         // If the user is not logged in and tries to access the dashboard, redirect to login
         console.log("Redirecting to login from dashboard access attempt.");
@@ -179,7 +177,7 @@ app.use(function (err, req, res, next) {
         res.status(err.status || 500);
         res.render('error');
     } else {
-        console.log("GLOBAL ERROR", err);
+        console.log("GLOBAL ERROR", req.path, err);
         res.locals.error = {};
         res.status(err.status || 500);
         res.render('error');
