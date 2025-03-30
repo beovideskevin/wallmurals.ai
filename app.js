@@ -6,6 +6,7 @@ const {createClient} = require('redis');
 const {RedisStore} = require('connect-redis');
 const path = require('path');
 const fileUpload = require('express-fileupload');
+const cookieParser = require('cookie-parser');
 const csrf = require('tiny-csrf');
 const minifyHTML = require('express-minify-html-2');
 const compression = require('compression');
@@ -115,6 +116,7 @@ app.use(fileUpload({
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(express.static('public'));
+app.use(cookieParser(process.env.SESSION_KEY));
 app.use(csrf(
     process.env.CSRF, // secret -- must be 32 bits or chars in length
     ["POST"], // the request methods we want CSRF protection for
