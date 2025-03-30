@@ -179,8 +179,7 @@ app.use(function (err, req, res, next) {
         res.status(err.status || 500);
         res.render('error');
     } else {
-        console.log(res.locals.message);
-        console.log(res.locals.error);
+        console.log(res.locals);
         res.redirect(req.session.user ? '/dashboard' : '/');
     }
 });
