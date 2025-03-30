@@ -26,8 +26,7 @@ const editArtwork = async function(req, res, next) {
 
     if (!artwork || artwork == []) {
         console.log("NOT FOUND ID: " + req.params.id);
-        res.redirect('/dashboard/' + encodeURIComponent("The artwork was not found by the id.") + '/true');
-        return;
+        return res.redirect('/dashboard/' + encodeURIComponent("The artwork was not found by the id.") + '/true');
     }
 
     const message = sanitize(req.params.message) || "";
@@ -47,14 +46,12 @@ const storeArtwork = async function(req, res, next) {
         const routeCheck = await Artwork.findOne({route: body.route});
         if (routeCheck) {
             console.log("ROUTE MUST BE UNIQUE", body.route);
-            res.redirect('/dashboard/' + encodeURIComponent("The route must be unique.") + '/true');
-            return;
+            return res.redirect('/dashboard/' + encodeURIComponent("The route must be unique.") + '/true');
         }
     }
 
     if (body.location === "") {
-        res.redirect('/dashboard/' + encodeURIComponent("You must enter a location for the mural.") + '/true');
-        return;
+        return res.redirect('/dashboard/' + encodeURIComponent("You must enter a location for the mural.") + '/true');
     }
 
     let animation = null;
@@ -62,23 +59,19 @@ const storeArtwork = async function(req, res, next) {
         animation = await collectFiles(req);
     }
     catch(error) {
-        res.redirect('/dashboard/' + encodeURIComponent(error) + '/true');
-        return;
+        return res.redirect('/dashboard/' + encodeURIComponent(error) + '/true');
     }
 
     if (animation.target === "") {
-        res.redirect('/dashboard/' + encodeURIComponent("You must upload a target.") + '/true');
-        return;
+        return res.redirect('/dashboard/' + encodeURIComponent("You must upload a target.") + '/true');
     }
 
     if (animation.video === "" && animation.model === "") {
-        res.redirect('/dashboard/' + encodeURIComponent("You must upload a video or a model.") + '/true');
-        return;
+        return res.redirect('/dashboard/' + encodeURIComponent("You must upload a video or a model.") + '/true');
     }
 
     if (animation.video !== "" && animation.model !== "") {
-        res.redirect('/dashboard/' + encodeURIComponent("You can not have a video and a model at the same time.") + '/true');
-        return;
+        return res.redirect('/dashboard/' + encodeURIComponent("You can not have a video and a model at the same time.") + '/true');
     }
 
     Artwork.create({
@@ -103,17 +96,18 @@ const storeArtwork = async function(req, res, next) {
         user: user
     }).then(function (newArtwork) {
         console.log("Artwork created!", newArtwork);
-        res.redirect('/dashboard/' + encodeURIComponent("The mural was created."));
+        return res.redirect('/dashboard/' + encodeURIComponent("The mural was created."));
     }).catch(function (error) {
-        if(error.name === 'ValidationError') {
+        if (error.name === 'ValidationError') {
             const messages = Object.values(error.errors).map(val => val.message);
             console.log("VALIDATION ERROR: " + messages);
         }
         else {
             console.log("ERROR: " + error);
         }
-        res.redirect('/dashboard/' + encodeURIComponent("There was an error while creating the mural.") + "/true");
+        return res.redirect('/dashboard/' + encodeURIComponent("There was an error while creating the mural.") + "/true");
     });
+    return;
 }
 
 /* POST save artwork */
@@ -121,30 +115,26 @@ const updateArtwork = async function(req, res, next) {
     const body = req.body;
     if (body.id == "")  {
         console.log("NO ARGS ", body);
-        res.redirect('/dashboard/' + encodeURIComponent("There was an error while saving the artwork.") + '/true');
-        return;
+        return res.redirect('/dashboard/' + encodeURIComponent("There was an error while saving the artwork.") + '/true');
     }
 
     const id = sanitize(body.id);
     const artwork = await Artwork.findById(id);
     if (!artwork || artwork == []) {
         console.log("NOT FOUND ID: " + req.params.id);
-        res.redirect(`/dashboard/edit/${id}/` + encodeURIComponent("The artwork was not found by the id.") + '/true');
-        return;
+        return res.redirect(`/dashboard/edit/${id}/` + encodeURIComponent("The artwork was not found by the id.") + '/true');
     }
 
     if (body.route !== "") {
         const routeCheck = await Artwork.findOne({route: body.route});
         if (routeCheck && routeCheck.id !== artwork.id) {
             console.log("ROUTE MUST BE UNIQUE", body.route);
-            res.redirect(`/dashboard/edit/${id}/` + encodeURIComponent("The route must be unique.") + '/true');
-            return;
+            return res.redirect(`/dashboard/edit/${id}/` + encodeURIComponent("The route must be unique.") + '/true');
         }
     }
 
     if (body.location === "") {
-        res.redirect('/dashboard/' + encodeURIComponent("You must enter a location for the mural.") + '/true');
-        return;
+        return res.redirect('/dashboard/' + encodeURIComponent("You must enter a location for the mural.") + '/true');
     }
 
     let animation = null;
@@ -152,13 +142,11 @@ const updateArtwork = async function(req, res, next) {
         animation = await collectFiles(req);
     }
     catch(error) {
-        res.redirect('/dashboard/' + encodeURIComponent(error) + '/true');
-        return;
+        return res.redirect('/dashboard/' + encodeURIComponent(error) + '/true');
     }
 
     if (animation.video !== "" && animation.model !== "") {
-        res.redirect(`/dashboard/edit/${id}/` + encodeURIComponent("You can not have a video and a model at the same time.") + '/true');
-        return;
+        return res.redirect(`/dashboard/edit/${id}/` + encodeURIComponent("You can not have a video and a model at the same time.") + '/true');
     }
 
     if (animation.video !== "") {
@@ -189,12 +177,13 @@ const updateArtwork = async function(req, res, next) {
     artwork.save()
         .then(function(artwork) {
             console.log("IT WORKS ", artwork);
-            res.redirect('/dashboard/' + encodeURIComponent("The mural was updated."));
+            return res.redirect('/dashboard/' + encodeURIComponent("The mural was updated."));
         })
         .catch(function(error) {
             console.log("IT FAILED ", error);
-            res.redirect(`/dashboard/edit/${id}/` + encodeURIComponent("There was an error while updating the mural."));
+            return res.redirect(`/dashboard/edit/${id}/` + encodeURIComponent("There was an error while updating the mural."));
         });
+    return;
 }
 
 /* POST delete artwork. */
@@ -202,8 +191,7 @@ const deleteArtwork = async function(req, res, next) {
     const body = req.body;
     if (body.id === "")  {
         console.log("NO ARGS ", body);
-        res.redirect('/dashboard/' + encodeURIComponent("There was an error while deleting the artwork.") + '/true');
-        return;
+        return res.redirect('/dashboard/' + encodeURIComponent("There was an error while deleting the artwork.") + '/true');
     }
 
     const id = sanitize(body.id);
@@ -211,12 +199,11 @@ const deleteArtwork = async function(req, res, next) {
 
     if (!artwork || artwork == []) {
         console.log("NOT FOUND ID: " + req.params.id);
-        res.redirect('/dashboard/' + encodeURIComponent("The artwork was not found by the id.") + '/true');
-        return;
+        return res.redirect('/dashboard/' + encodeURIComponent("The artwork was not found by the id.") + '/true');
     }
 
     console.log("IT WORKS");
-    res.redirect('/dashboard/' + encodeURIComponent("Mural deleted."));
+    return res.redirect('/dashboard/' + encodeURIComponent("Mural deleted."));
 }
 
 /* GET metrics page. */
@@ -242,14 +229,12 @@ const changePassword = async function(req, res, next) {
     const body = req.body;
     if (body.formNewPassword == "" || body.formNewPassword2 == ""){
         console.log("NO ARGS", body);
-        res.redirect('/dashboard/account/' + encodeURIComponent("There was an error while updating the password.") + '/true');
-        return;
+        return res.redirect('/dashboard/account/' + encodeURIComponent("There was an error while updating the password.") + '/true');
     }
 
     if (body.formNewPassword != body.formNewPassword2) {
         console.log("NO MATCH ", body);
-        res.redirect('/dashboard/account/' + encodeURIComponent("The passwords do not match. Please try again.") + '/true');
-        return;
+        return res.redirect('/dashboard/account/' + encodeURIComponent("The passwords do not match. Please try again.") + '/true');
     }
 
     const password = sanitize(body.formNewPassword);
@@ -257,8 +242,7 @@ const changePassword = async function(req, res, next) {
     bcrypt.hash(password, saltRounds, function(err, hash) {
         if (err) {
             console.log("HASH ERROR: " + err);
-            res.redirect('/dashboard/account/' + encodeURIComponent("There was an error while updating the password.") + '/true');
-            return;
+            return res.redirect('/dashboard/account/' + encodeURIComponent("There was an error while updating the password.") + '/true');
         }
 
         User.findById(req.session.user)
@@ -267,18 +251,19 @@ const changePassword = async function(req, res, next) {
                 user.save()
                     .then(function(user) {
                         console.log("IT WORKS ", user);
-                        res.redirect('/dashboard/account/' + encodeURIComponent("The password was updated."));
+                        return res.redirect('/dashboard/account/' + encodeURIComponent("The password was updated."));
                     })
                     .catch(function(error) {
                         console.log("IT FAILED ", error);
-                        res.redirect('/dashboard/account/' + encodeURIComponent("There was an error while updating the password.") + '/true');
+                        return res.redirect('/dashboard/account/' + encodeURIComponent("There was an error while updating the password.") + '/true');
                     });
             })
             .catch(function (error) {
                 console.log("IT FAILED ", error);
-                res.redirect('/users/logout');
+                return res.redirect('/users/logout');
             });
     });
+    return;
 }
 
 /* POST close account */
@@ -286,8 +271,7 @@ const closeAccount = async function(req, res, next) {
     const body = req.body;
     if (body.formPassword == "" || body.formReason == "") {
         console.log("NO ARGS", body);
-        res.redirect('/dashboard/account/' + encodeURIComponent("There was an error while updating the user.") + '/true');
-        return;
+        return res.redirect('/dashboard/account/' + encodeURIComponent("There was an error while updating the user.") + '/true');
     }
 
     const password = sanitize(body.formPassword);
@@ -301,22 +285,23 @@ const closeAccount = async function(req, res, next) {
                     user.save()
                         .then(function(user) {
                             console.log("IT WORKS ", user);
-                            res.redirect('/dashboard/account/' + encodeURIComponent("The account was closed. You can now log out."));
+                            return res.redirect('/dashboard/account/' + encodeURIComponent("The account was closed. You can now log out."));
                         })
                         .catch(function(error) {
                             console.log("IT FAILED ", error);
-                            res.redirect('/dashboard/account/' + encodeURIComponent("There was an error while updating the user.") + '/true');
+                            return res.redirect('/dashboard/account/' + encodeURIComponent("There was an error while updating the user.") + '/true');
                         });
                 }
                 else {
                     console.log("Passwords DO NOT match.");
-                    res.redirect('/dashboard/account/' + encodeURIComponent("The password is not correct. Please try again.") + '/true');
+                    return res.redirect('/dashboard/account/' + encodeURIComponent("The password is not correct. Please try again.") + '/true');
                 }
             });
         })
         .catch(function (error) {
-            res.redirect('/users/logout');
+            return res.redirect('/users/logout');
         });
+    return;
 }
 
 const downgradePlan = function (req, res, next) {
@@ -324,8 +309,7 @@ const downgradePlan = function (req, res, next) {
         .then(function(user) {
             if (!user) {
                 console.log("IT FAILED", req.session.user);
-                res.redirect('/dashboard/account/' + encodeURIComponent("The email was not sent. Please try again.") + '/true');
-                return;
+                return res.redirect('/dashboard/account/' + encodeURIComponent("The email was not sent. Please try again.") + '/true');
             }
 
             const text = `The user ${user.id} wants to downgrade the plan to FREE. \n
@@ -344,11 +328,11 @@ const downgradePlan = function (req, res, next) {
             gmail.sendMail(mailOptions, function(error, info){
                 if (error) {
                     console.log("EMAIL NOT SENT", error);
-                    res.redirect('/dashboard/account/' + encodeURIComponent("The email was not sent. Please try again.") + '/true');
+                    return res.redirect('/dashboard/account/' + encodeURIComponent("The email was not sent. Please try again.") + '/true');
                 }
                 else {
                     console.log('CONTACT EMAIL SENT: ' + info.response + ' TEXT: ' + text);
-                    res.redirect('/dashboard/account/' + encodeURIComponent("Thank you for reaching out." +
+                    return res.redirect('/dashboard/account/' + encodeURIComponent("Thank you for reaching out." +
                         " We will downgrade your plan to FREE." +
                         " A member of our team will contact to finish the process."
                     ));
@@ -357,8 +341,9 @@ const downgradePlan = function (req, res, next) {
         })
         .catch(function(error) {
             console.log("IT FAILED ", error);
-            res.redirect('/dashboard/account/' + encodeURIComponent("There was an error while downgrading the plan.") + '/true');
+            return res.redirect('/dashboard/account/' + encodeURIComponent("There was an error while downgrading the plan.") + '/true');
         });
+    return;
 }
 
 const upgradePlan = function(req, res, next) {
@@ -366,8 +351,7 @@ const upgradePlan = function(req, res, next) {
         .then(function(user) {
             if (!user) {
                 console.log("IT FAILED", req.session.user);
-                res.redirect('/dashboard/account/' + encodeURIComponent("The email was not sent. Please try again.") + '/true');
-                return;
+                return res.redirect('/dashboard/account/' + encodeURIComponent("The email was not sent. Please try again.") + '/true');
             }
 
             const text = `The user ${user.id} wants to upgrade the plan to PRO. \n
@@ -386,11 +370,11 @@ const upgradePlan = function(req, res, next) {
             gmail.sendMail(mailOptions, function(error, info){
                 if (error) {
                     console.log("EMAIL NOT SENT", error);
-                    res.redirect('/dashboard/account/' + encodeURIComponent("The email was not sent. Please try again.") + '/true');
+                    return res.redirect('/dashboard/account/' + encodeURIComponent("The email was not sent. Please try again.") + '/true');
                 }
                 else {
                     console.log('CONTACT EMAIL SENT: ' + info.response + ' TEXT: ' + text);
-                    res.redirect('/dashboard/account/' + encodeURIComponent("Thank you for reaching out." +
+                    return res.redirect('/dashboard/account/' + encodeURIComponent("Thank you for reaching out." +
                         " We will upgrade your plan to PRO." +
                         " A member of our team will contact you regarding the payment details."
                     ));
@@ -399,8 +383,9 @@ const upgradePlan = function(req, res, next) {
         })
         .catch(function(error) {
             console.log("IT FAILED", error);
-            res.redirect('/dashboard/account/' + encodeURIComponent("There was an error while upgrading the plan.") + '/true');
+            return res.redirect('/dashboard/account/' + encodeURIComponent("There was an error while upgrading the plan.") + '/true');
         });
+    return;
 }
 
 module.exports = {
