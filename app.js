@@ -121,22 +121,22 @@ app.use(csrf(
     ["POST"], // the request methods we want CSRF protection for
     ["/metrics", /\/metrics\.*/i, "/contact", /\/contact\.*/i], // any URLs we want to exclude, either as strings or regexp
 ));
-// if (process.env.NODE_ENV != 'development') {
-//     app.use(minifyHTML({
-//         override: true,
-//         exception_url: false,
-//         htmlMinifier: {
-//             removeComments: true,
-//             collapseWhitespace: true,
-//             collapseBooleanAttributes: true,
-//             removeAttributeQuotes: true,
-//             removeEmptyAttributes: true,
-//             minifyJS: true,
-//             minifyCSS: true,
-//         }
-//     }));
-//     app.use(compression());
-// }
+if (process.env.NODE_ENV != 'development') {
+    app.use(minifyHTML({
+        override: true,
+        exception_url: false,
+        htmlMinifier: {
+            removeComments: true,
+            collapseWhitespace: true,
+            collapseBooleanAttributes: true,
+            removeAttributeQuotes: true,
+            removeEmptyAttributes: true,
+            minifyJS: true,
+            minifyCSS: true,
+        }
+    }));
+    app.use(compression());
+}
 app.use(express.static('public'));
 
 // auth middleware
@@ -150,7 +150,7 @@ app.use((req, res, next) => {
     }
     else if (req.path.startsWith('/user/login') && req.session.user) {
         // If the user is already logged in and tries to access the login page, redirect to dashboard
-        console.log("Redirecting to dashboard from login.");
+        console.log("Redirecting to dashboard from login access attempt.");
         return res.redirect('/dashboard');
     }
     next();
@@ -179,6 +179,8 @@ app.use(function (err, req, res, next) {
         res.status(err.status || 500);
         res.render('error');
     } else {
+        console.log(res.locals.message);
+        console.log(res.locals.error);
         res.redirect(req.session.user ? '/dashboard' : '/');
     }
 });
