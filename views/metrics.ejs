@@ -50,23 +50,6 @@
                     container: document.getElementById("visitsContainer"),
                     data: [],
                     series: [],
-                    axes: [
-                        {
-                            type: "category",
-                            position: "bottom",
-                            title: {
-                                text: "Operating System",
-                            },
-                        },
-                        {
-                            type: "number",
-                            position: "left",
-                            title: {
-                                text: "Market Share (%)",
-                            },
-                            interval: { step: 20 },
-                        },
-                    ],
                 };
 
                 for (let i = 0; i < content.visits.length; i++) {
