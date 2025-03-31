@@ -297,7 +297,6 @@ const setup = async function() {
         refresh = false;
         restart();
     }
-    hideSplash();
 }
 
 /**
