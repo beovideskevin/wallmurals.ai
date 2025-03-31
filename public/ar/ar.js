@@ -448,6 +448,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         const canvasStream = canvas.captureStream(frameRate);
         streamArray = [...canvasStream.getVideoTracks()];
         for (const element of elements) {
+            if (!element.audioElement) {
+                continue; // no audio
+            }
             if (source == null) {
                 source = audioCtx.createMediaElementSource(element.audioElement);
                 source.connect(audioCtx.destination);
