@@ -83,6 +83,7 @@ const storeArtwork = async function(req, res, next) {
             chroma: body.chroma,
             scale: body.scale,
             position: body.position,
+            rotation: body.rotation,
             model: animation.model !== "" ? animation.model : "",
             audio: animation.audio !== "" ? animation.audio : ""
         }],
@@ -91,7 +92,6 @@ const storeArtwork = async function(req, res, next) {
         lon: body.lon,
         location: body.location,
         tagline: body.tagline,
-        website: body.website,
         route: body.route.replace("/", ""),
         user: user
     }).then(function (newArtwork) {
@@ -163,6 +163,7 @@ const updateArtwork = async function(req, res, next) {
         chroma: body.chroma,
         scale: body.scale,
         position: body.position,
+        rotation: body.rotation,
         model: animation.model !== "" ? animation.model : artwork.animations[0].model,
         audio: animation.audio !== "" ? animation.audio : artwork.animations[0].audio
     }];
@@ -172,7 +173,6 @@ const updateArtwork = async function(req, res, next) {
     artwork.location = body.location;
     artwork.tagline = body.tagline;
     artwork.route = body.route.replace("/", "");
-    artwork.website = body.website;
     artwork.save()
         .then(function(artwork) {
             console.log("IT WORKS ", artwork);

@@ -48,6 +48,16 @@
                         </div>
 
                         <div class="mb-2">
+                            <label for="formLatitude" class="block text-sm/normal font-semibold text-black mb-2">Latitude:</label>
+                            <input type="text" value="<%= artwork.lat %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="lat" id="formLatitude" placeholder="Type the latitude...">
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="formLongitude" class="block text-sm/normal font-semibold text-black mb-2">Longitude:</label>
+                            <input type="text" value="<%= artwork.lon %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="lon" id="formLongitude" placeholder="Type the longitude...">
+                        </div>
+
+                        <div class="mb-2">
                             <label for="formTarget" class="block text-sm/normal font-semibold text-black mb-2">Target:</label>
                             <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="target" id="formTarget">
                         </div>
@@ -58,23 +68,23 @@
                         </div>
 
                         <div class="mb-2">
-                            <label for="formAudio" class="block text-sm/normal font-semibold text-black mb-2">Audio:</label>
-                            <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="audio" id="formAudio">
-                        </div>
-
-                        <div class="mb-2">
                             <label for="formModel" class="block text-sm/normal font-semibold text-black mb-2">Model:</label>
                             <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="model" id="formModel">
                         </div>
 
                         <div class="mb-2">
                             <label for="formScale" class="block text-sm/normal font-semibold text-black mb-2">Scale:</label>
-                            <input type="text" value="<%= artwork.animations[0].scale %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="scale" id="formScale" placeholder="For models, type the scale as x,y,z...">
+                            <input type="text" value="<%= artwork.animations[0].scale %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="scale" id="formScale" placeholder="Type the scale (it also works for videos)...">
                         </div>
 
                         <div class="mb-2">
                             <label for="formPosition" class="block text-sm/normal font-semibold text-black mb-2">Position:</label>
                             <input type="text" value="<%= artwork.animations[0].position %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="position" id="formPosition" placeholder="For models, type the position as x,y,z...">
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="formRotation" class="block text-sm/normal font-semibold text-black mb-2">Rotation:</label>
+                            <input type="text" value="<%= artwork.animations[0].rotation %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="rotation" id="formRotation" placeholder="For models, type the rotation as x,y,z...">
                         </div>
 
                         <div class="mb-2">
@@ -98,23 +108,13 @@
                         </div>
 
                         <div class="mb-2">
-                            <label for="formLatitude" class="block text-sm/normal font-semibold text-black mb-2">Latitude:</label>
-                            <input type="text" value="<%= artwork.lat %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="lat" id="formLatitude" placeholder="Type the latitude...">
-                        </div>
-
-                        <div class="mb-2">
-                            <label for="formLongitude" class="block text-sm/normal font-semibold text-black mb-2">Longitude:</label>
-                            <input type="text" value="<%= artwork.lon %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="lon" id="formLongitude" placeholder="Type the longitude...">
+                            <label for="formAudio" class="block text-sm/normal font-semibold text-black mb-2">Audio:</label>
+                            <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="audio" id="formAudio">
                         </div>
 
                         <div class="mb-2">
                             <label for="formTagline" class="block text-sm/normal font-semibold text-black mb-2">Tagline:</label>
                             <input type="text" value="<%= artwork.tagline %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="tagline" id="formTagline" placeholder="Type the tagline...">
-                        </div>
-
-                        <div class="mb-2">
-                            <label for="formWebsite" class="block text-sm/normal font-semibold text-black mb-2">Website:</label>
-                            <input type="text" value="<%= artwork.website %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="website" id="formWebsite" placeholder="Type the website...">
                         </div>
 
                         <div class="hidden flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert" id="outerMessage">

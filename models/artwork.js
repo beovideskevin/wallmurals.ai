@@ -46,6 +46,10 @@ const artworkSchema = mongoose.Schema(
             position: {
                 type: String,
                 required: false,
+            },
+            rotation: {
+                type: String,
+                required: false,
             }
         }],
         location: {
@@ -65,11 +69,6 @@ const artworkSchema = mongoose.Schema(
         tagline: {
             type: String,
             required: false,
-        },
-        website: {
-            type: String,
-            required: false,
-            default: 'https://www.wallmurals.ai/ar'
         },
         user: {
             type: mongoose.Schema.Types.ObjectId,

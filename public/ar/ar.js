@@ -248,6 +248,10 @@ const setup = async function() {
                 else {
                     modelElement.scene.position.set(0, 0, 0);
                 }
+                if (artwork.animations[i].rotation) {
+                    const [x,y,z] = artwork.animations[i].rotation.split(",");
+                    modelElement.scene.rotation.set(x, y, z);
+                }
                 anchor.group.add(modelElement.scene);
                 let mixerElement = null;
                 if (modelElement.animations.length) {
