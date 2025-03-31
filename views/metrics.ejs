@@ -54,7 +54,7 @@
 
                 for (let i = 0; i < content.visits.length; i++) {
                     visitsOptions.series.push(
-                        { type: 'line', xKey: 'month', yKey: content.visits[i].id, yName: content.visits[i].location },
+                        { type: 'bar', xKey: 'month', yKey: content.visits[i].id, yName: content.visits[i].location },
                     );
                     content.visits[i].data.forEach(function (dataPoint) {
                         let data = {
