@@ -49,12 +49,29 @@
                 const visitsOptions = { 
                     container: document.getElementById("visitsContainer"),
                     data: [],
-                    series: []
+                    series: [],
+                    axes: [
+                        {
+                            type: "category",
+                            position: "bottom",
+                            title: {
+                                text: "Operating System",
+                            },
+                        },
+                        {
+                            type: "number",
+                            position: "left",
+                            title: {
+                                text: "Market Share (%)",
+                            },
+                            interval: { step: 20 },
+                        },
+                    ],
                 };
 
                 for (let i = 0; i < content.visits.length; i++) {
                     visitsOptions.series.push(
-                        { type: 'bar', xKey: 'month', yKey: content.visits[i].id, yName: content.visits[i].location },
+                        { type: 'line', xKey: 'month', yKey: content.visits[i].id, yName: content.visits[i].location },
                     );
                     content.visits[i].data.forEach(function (dataPoint) {
                         let data = {

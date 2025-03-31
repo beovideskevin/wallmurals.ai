@@ -6,13 +6,25 @@ const Metric = require('../models/metric');
 const User = require('../models/user');
 
 getMonthNameArray = function () {
-    let fullArray = [];
-    const now = new Date();
-    for (let month = 0; month < 12; month++) {
-        now.setMonth(month); // Month is 0-indexed
-        fullArray.push(now.toLocaleString('default', { month: 'long' }));
-    }
-    return fullArray;
+    return [
+        'January',   'February',
+        'March',     'April',
+        'May',       'June',
+        'July',      'August',
+        'September', 'October',
+        'November',  'December'
+    ];
+
+    // This fails when day is 29, to 31, because February doesn't has those days.
+    // So it now.setMonth returns March :)
+    // let fullArray = [];
+    // const now = new Date();
+    // for (let month = 0; month < 12; month++) {
+    //     now.setMonth(month); // Month is 0-indexed
+    //     fullArray.push(now.toLocaleString('default', { month: 'long' }));
+    // }
+    // console.log(fullArray);
+    // return fullArray;
 }
 
 const getSubscriptionLastDate = function(day) {
