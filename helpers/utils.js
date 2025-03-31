@@ -74,27 +74,6 @@ checkViews = async function(artwork) {
     return true;
 }
 
-saveMetric = (values) => {
-    const {metricType, user, id, data, uuid} = values;
-    Metric.create({
-        type: metricType,
-        data: data,
-        uuid: uuid,
-        artwork: id,
-        user: user
-    }).then(function (newMetric) {
-        console.log("Metric created!", newMetric);
-    }).catch(function (error) {
-        if(error.name === 'ValidationError') {
-            const messages = Object.values(error.errors).map(val => val.message);
-            console.log("VALIDATION ERROR: " + messages);
-        } 
-        else {
-            console.log("ERROR: " + error);
-        }
-    });
-}
-
 const isCloseToPlace = function (userLat, userLon, targetLat, targetLon) {
     const MIN_DISTANCE = 200; // min distance in meters
     const METERS_PER_KILOMETER = 1000; // 1000 meter per kilometer
@@ -275,7 +254,6 @@ module.exports = {
     getSubscriptionLastDate,
     getMonthNameArray,
     checkViews,
-    saveMetric,
     isCloseToPlace,
     collectFiles,
 };

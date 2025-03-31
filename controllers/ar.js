@@ -1,4 +1,5 @@
-var sanitize = require('mongo-sanitize');
+const mongoose = require('mongoose');
+const sanitize = require('mongo-sanitize');
 const {v4: uuidv4} = require('uuid');
 const Artwork = require('../models/artwork');
 const {checkViews, isCloseToPlace} = require('../helpers/utils');
@@ -48,8 +49,13 @@ const arRoute = async function (req, res, next) {
 
 /* GET the artwork by id */
 const arId = async function (req, res, next) {
-    const id = sanitize(req.params.id);
     const uuid = uuidv4();
+    const id = sanitize(req.params.id);
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        console.log("BAD ID", id);
+        return res.redirect('/ar');
+    }
+
     const artwork = await Artwork.findById(id);
     if (!artwork) {
         console.log("NOT FOUND ID", req.params.id);

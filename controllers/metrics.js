@@ -1,7 +1,8 @@
-var sanitize = require('mongo-sanitize');
+const mongoose = require('mongoose');
+const sanitize = require('mongo-sanitize');
 const Metric = require('../models/metric');
 const Artwork = require('../models/artwork');
-const { getMonthNameArray, saveMetric } = require('../helpers/utils');
+const { getMonthNameArray } = require('../helpers/utils');
 
 /* GET metrics listing. */
 const list = async function(req, res, next) {
@@ -102,17 +103,38 @@ const save = async function(req, res, next) {
     }
 
     const metricType = sanitize(body.metricType);
-    const id = sanitize(body.id);
     const data = sanitize(body.data);
     const uuid = sanitize(body.uuid);
+    const id = sanitize(body.id);
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        console.log("BAD ID", id);
+        res.status(400);
+        return res.json({success: false});
+    }
     const artwork = await Artwork.findById(id);
     if (!artwork) {
-        console.log("not found artwork!");
+        console.log("NO ARTWORK FOUND", id);
         res.status(400);
         return res.json({success: false});
     }
     const user = artwork.user;
-    saveMetric({metricType, user, id, data, uuid});
+    Metric.create({
+        type: metricType,
+        data: data,
+        uuid: uuid,
+        artwork: id,
+        user: user
+    }).then(function (newMetric) {
+        console.log("Metric created!", newMetric);
+    }).catch(function (error) {
+        if(error.name === 'ValidationError') {
+            const messages = Object.values(error.errors).map(val => val.message);
+            console.log("VALIDATION ERROR: " + messages);
+        }
+        else {
+            console.log("ERROR: " + error);
+        }
+    });
     res.status(200);
     return res.json({success: true});
 }
