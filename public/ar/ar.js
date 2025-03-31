@@ -665,7 +665,7 @@ document.addEventListener('DOMContentLoaded', async function() {
      * Downloads the video (for android users only)
      */
     document.getElementById("downloadPhotoBtn").addEventListener('click', function() {
-        const data = photoCanvas.toDataURL("image/jpeg", 1.0)
+        const data = photoCanvas.toDataURL("image/jpeg", 1.0);
         const link = document.createElement('a');
         const filename = artwork.tagline.replace(/\s/g, "-") + "-" + hashLocation;
         const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
