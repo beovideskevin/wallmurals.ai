@@ -47,57 +47,58 @@ var videoBlob = null;
 var recVideo = null;
 var worker = null;
 // Photo stuff
+var photoCanvas = null;
 const photoMimeType = "image/png";
 const shutter = new Audio('/assets/sounds/shutter.mp3');
-var sparkImageData = null;
-var sparkIndex = 0;
-const sparkFilters= [
-    {   // enrich
-        filter: () => {
-            return window.ImageFilters.Enrich(sparkImageData);
-        }
-    },
-    {   // brightness
-        filter: () => {
-            let brightness = -20;
-            let contrast = 20;
-            return window.ImageFilters.BrightnessContrastPhotoshop (sparkImageData, brightness, contrast);
-        }
-    },
-    {   // brightness 2
-        filter: () => {
-            let brightness = 20;
-            let contrast = -10;
-            return window.ImageFilters.BrightnessContrastPhotoshop (sparkImageData, brightness, contrast);
-        }
-    },
-    {   // posterize
-        filter: () => {
-            let levels = 32;
-            return window.ImageFilters.Posterize(sparkImageData, levels);
-        }
-    },
-    {   // emboss
-        filter: () => {
-            return window.ImageFilters.Emboss(sparkImageData);
-        }
-    },
-    {   // sepia
-        filter: () => {
-            return window.ImageFilters.Sepia(sparkImageData);
-        }
-    },
-    {   //gray scale
-        filter: () => {
-            return window.ImageFilters.GrayScale(sparkImageData);
-        }
-    },
-    {   // none
-        filter: () => {
-            return sparkImageData;
-        }
-    },
-];
+// var sparkImageData = null;
+// var sparkIndex = 0;
+// const sparkFilters= [
+//     {   // enrich
+//         filter: () => {
+//             return window.ImageFilters.Enrich(sparkImageData);
+//         }
+//     },
+//     {   // brightness
+//         filter: () => {
+//             let brightness = -20;
+//             let contrast = 20;
+//             return window.ImageFilters.BrightnessContrastPhotoshop (sparkImageData, brightness, contrast);
+//         }
+//     },
+//     {   // brightness 2
+//         filter: () => {
+//             let brightness = 20;
+//             let contrast = -10;
+//             return window.ImageFilters.BrightnessContrastPhotoshop (sparkImageData, brightness, contrast);
+//         }
+//     },
+//     {   // posterize
+//         filter: () => {
+//             let levels = 32;
+//             return window.ImageFilters.Posterize(sparkImageData, levels);
+//         }
+//     },
+//     {   // emboss
+//         filter: () => {
+//             return window.ImageFilters.Emboss(sparkImageData);
+//         }
+//     },
+//     {   // sepia
+//         filter: () => {
+//             return window.ImageFilters.Sepia(sparkImageData);
+//         }
+//     },
+//     {   //gray scale
+//         filter: () => {
+//             return window.ImageFilters.GrayScale(sparkImageData);
+//         }
+//     },
+//     {   // none
+//         filter: () => {
+//             return sparkImageData;
+//         }
+//     },
+// ];
 
 /**
  * Loads the video
@@ -608,7 +609,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
 
         // Create a canvas and draw the photo
-        const photoCanvas = document.createElement('canvas');
+        photoCanvas = document.createElement('canvas');
         photoCanvas.setAttribute("id", "photoCanvas");
         const {renderer} = mindarThree;
         photoCanvas.width = renderer.domElement.width;
@@ -627,14 +628,14 @@ document.addEventListener('DOMContentLoaded', async function() {
         shutter.play();
 
         // Make copy for spark filters
-        const sparkPhoto = document.createElement('canvas');
-        sparkPhoto.setAttribute("id", "sparkPhoto");
-        const sparkContext = sparkPhoto.getContext('2d');
-        sparkPhoto.width = photoCanvas.width;
-        sparkPhoto.height = photoCanvas.height;
-        sparkContext.drawImage(photoCanvas, 0, 0, photoCanvas.width, photoCanvas.height);
-        sparkImageData = sparkContext.getImageData(0, 0, photoCanvas.width, photoCanvas.height);
-        sparkIndex = 0;
+        // const sparkPhoto = document.createElement('canvas');
+        // sparkPhoto.setAttribute("id", "sparkPhoto");
+        // const sparkContext = sparkPhoto.getContext('2d');
+        // sparkPhoto.width = photoCanvas.width;
+        // sparkPhoto.height = photoCanvas.height;
+        // sparkContext.drawImage(photoCanvas, 0, 0, photoCanvas.width, photoCanvas.height);
+        // sparkImageData = sparkContext.getImageData(0, 0, photoCanvas.width, photoCanvas.height);
+        // sparkIndex = 0;
 
         // Set the hashtag of the page
         hashLocation = Date.now();
@@ -653,11 +654,25 @@ document.addEventListener('DOMContentLoaded', async function() {
     /**
      * Apply filters
      */
-    document.getElementById("sparkPhotoBtn").addEventListener('click', function() {
-        const photoCanvas = document.getElementById("photoCanvas");
-        const ctx = photoCanvas.getContext('2d');
-        ctx.putImageData(sparkFilters[sparkIndex].filter(), 0, 0);
-        sparkIndex = ++sparkIndex >= sparkFilters.length ? 0 : sparkIndex;
+    // document.getElementById("sparkPhotoBtn").addEventListener('click', function() {
+    //     const photoCanvas = document.getElementById("photoCanvas");
+    //     const ctx = photoCanvas.getContext('2d');
+    //     ctx.putImageData(sparkFilters[sparkIndex].filter(), 0, 0);
+    //     sparkIndex = ++sparkIndex >= sparkFilters.length ? 0 : sparkIndex;
+    // });
+
+    /**
+     * Downloads the video (for android users only)
+     */
+    document.getElementById("downloadPhotoBtn").addEventListener('click', function() {
+        const data = photoCanvas.toDataURL("image/jpeg", 1.0)
+        const link = document.createElement('a');
+        const filename = artwork.tagline.replace(/\s/g, "-") + "-" + hashLocation;
+        const sanitized = filename.replace(/[/\\?%*:|"<>]/g, '-');
+        link.download = sanitized + '.jpg';
+        link.href = data;
+        link.click();
+        link.remove();
     });
 
     /**
