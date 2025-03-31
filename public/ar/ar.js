@@ -152,7 +152,7 @@ const setup = async function() {
 
     // Set up the AR system
     mindarThree = new window.MINDAR.IMAGE.MindARThree(defaults);
-    const { renderer, scene, camera } = mindarThree;
+    const { scene } = mindarThree;
     
     const light = new window.MINDAR.IMAGE.THREE.HemisphereLight( 0xffffff, 0xbbbbff, 1 );
     scene.add(light);
@@ -290,6 +290,24 @@ const setup = async function() {
     }
 
     // Start the AR system
+    start();
+
+    // While there is a pending refresh, if the user is rotating the phone like a mad man
+    while (refresh) {
+        refresh = false;
+        restart();
+    }
+    hideSplash();
+}
+
+/**
+ * Start the AR system
+ */
+const start = async function() {
+    if (!mindarThree) {
+        return;
+    }
+    const { renderer, scene, camera } = mindarThree;
     await mindarThree.start();
     const clock = new window.MINDAR.IMAGE.THREE.Clock();
     renderer.setAnimationLoop(() => {
@@ -301,35 +319,18 @@ const setup = async function() {
         }
         renderer.render(scene, camera);
     });
-
-    // There is a pending refresh
-    if (refresh) {
-        refresh = false;
-        restart();
-    }
-
+    hideSplash();
     ready = true;
-    hideSplash();
-}
-
-/**
- * Start the AR system
- */
-const start = async function() {
-    if (!mindarThree) {
-        return;
-    }
-    await mindarThree.start();
-    hideSplash();
 }
 
 /**
  * Stop the AR system
  */
-const stop = async function () {
+const stop = function () {
     if (!mindarThree) {
         return;
     }
+    ready = false;
     showSplash();
     if (currentlyPlayingVideo) {
         currentlyPlayingVideo.pause();
@@ -337,7 +338,8 @@ const stop = async function () {
     if (currentlyPlayingAudio) {
         currentlyPlayingAudio.pause();
     }
-    await mindarThree.stop();
+    mindarThree.stop();
+    mindarThree.renderer.setAnimationLoop(null);
 }
 
 /**

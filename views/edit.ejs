@@ -43,7 +43,7 @@
                         </div>
 
                         <div class="mb-2">
-                            <label for="formLocation" class="block text-sm/normal font-semibold text-black mb-2">Title (location):</label>
+                            <label for="formLocation" class="block text-sm/normal font-semibold text-black mb-2">Title (or address):</label>
                             <input type="text" value="<%= artwork.location %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="location" id="formLocation" placeholder="Type the location..." required="">
                         </div>
 
@@ -165,7 +165,6 @@
             }
 
             let formLocation = document.getElementById("formLocation");
-            let formTagline = document.getElementById("formTagline");
             return formLocation.value != "";
         }
     </script>
