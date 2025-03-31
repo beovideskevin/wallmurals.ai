@@ -233,8 +233,10 @@ const setup = async function() {
         if (artwork.animations[i].model) {
             loadGLTF(artwork.animations[i].model).then(function(modelElement) {
                 if (artwork.animations[i].scale) {
-                    const [x,y,z] = artwork.animations[i].scale.split(",");
-                    modelElement.scene.scale.set(x, y, z);
+                    const s = artwork.animations[i].scale;
+                    modelElement.scene.scale.set(s, s, s);
+                    // const [x,y,z] = artwork.animations[i].scale.split(",");
+                    // modelElement.scene.scale.set(x, y, z);
                 }
                 else {
                     modelElement.scene.scale.set(0.1, 0.1, 0.1);
@@ -244,7 +246,7 @@ const setup = async function() {
                     modelElement.scene.position.set(x, y, z);
                 }
                 else {
-                    modelElement.scene.position.set(0, -0.4, 0);
+                    modelElement.scene.position.set(0, 0, 0);
                 }
                 anchor.group.add(modelElement.scene);
                 let mixerElement = null;
