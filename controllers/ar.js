@@ -50,7 +50,7 @@ const arRoute = async function (req, res, next) {
 const arId = async function (req, res, next) {
     const id = sanitize(req.params.id);
     const uuid = uuidv4();
-    const artwork = Artwork.findById(id);
+    const artwork = await Artwork.findById(id);
     if (!artwork) {
         console.log("NOT FOUND ID", req.params.id);
         return res.redirect('/ar');

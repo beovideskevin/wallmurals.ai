@@ -40,7 +40,7 @@ checkViews = async function(artwork) {
     const MAX_PRO_VIEWS = process.env.MAX_PRO_VIEWS;
 
     // Check the user exists and it is active
-    let user = await User.findById(artwork.user);
+    const user = await User.findById(artwork.user);
     if (!user) {
         console.log("User not found when checking artwork view: " + artwork.user);
         return false;
