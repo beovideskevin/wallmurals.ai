@@ -293,7 +293,7 @@ const setup = async function() {
     start();
 
     // While there is a pending refresh, if the user is rotating the phone like a mad man
-    while (refresh) {
+    if (refresh) {
         refresh = false;
         restart();
     }
