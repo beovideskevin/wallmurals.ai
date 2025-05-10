@@ -36,7 +36,7 @@ Subscription.findOne({user:user, active: true})
             user: user,
             active: true
         }).then(function (newSubscription) {
-            console.log(newSubscription);
+            console.log("SUBSCRIPTION", newSubscription);
             process.exit(1);
         }).catch(function(error) {
             console.log("IT FAILED ", error);

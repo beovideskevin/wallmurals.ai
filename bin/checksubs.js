@@ -30,7 +30,7 @@ Subscription.find({user: user})
         else {
             console.log("FREE");
         }
-        console.log(subscriptions);
+        console.log("SUBSCRIPTION", subscriptions);
         process.exit(1);
     })
     .catch(function(error) {

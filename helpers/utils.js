@@ -1,4 +1,6 @@
 const fs = require('fs');
+const path = require('path');
+const crypto = require('node:crypto');
 const unzipper = require('unzipper');
 const {v4: uuidv4} = require('uuid');
 const Subscription = require('../models/subscription');
@@ -147,8 +149,10 @@ const collectFiles = async function(req) {
         // Target file
         const targetFile = req.files.target ? req.files.target : null;
         if (targetFile) {
+            if (targetFile.size > 25 * 1024 * 1024) {
+                throw new Error("Target file size exceeds 25MB limit.");
+            }
             target = `/uploads/${user}/targets/${uuid}/` + sanitizeFilename(targetFile.name);
-
             if (targetFile.name.endsWith(".mind")) {
                 targetFile.mv(`${baseDir}/public${target}`, err => {
                     if (err) {
@@ -169,7 +173,7 @@ const collectFiles = async function(req) {
         const videoFile = req.files.video ? req.files.video : null;
         if (videoFile) {
             if (videoFile.size > 25 * 1024 * 1024) {
-                throw new Error("Video size exceeds 25MB limit.");
+                throw new Error("Video file size exceeds 25MB limit.");
             }
             video = `/uploads/${user}/videos/${uuid}/` + sanitizeFilename(videoFile.name);
             videoFile.mv(`${baseDir}/public${video}`, err => {
@@ -182,6 +186,9 @@ const collectFiles = async function(req) {
         // Poster file
         const posterFile = req.files.poster ? req.files.poster : null;
         if (posterFile) {
+            if (targetFile.size > 25 * 1024 * 1024) {
+                throw new Error("Poster file size exceeds 25MB limit.");
+            }
             poster = `/uploads/${user}/posters/${uuid}/` + sanitizeFilename(posterFile.name);
             posterFile.mv(`${baseDir}/public${poster}`, err => {
                 if (err) {
@@ -196,12 +203,10 @@ const collectFiles = async function(req) {
             if (modelFile.size > 25 * 1024 * 1024) {
                 throw new Error("Model size exceeds 25MB limit.");
             }
-
             if (modelFile.name.endsWith(".zip")) {
                 const directory = await unzipper.Open.file(modelFile.tempFilePath);
                 let dest = `${baseDir}/public/uploads/${user}/models/${uuid}/`;
                 await directory.extract({ path: dest });
-
                 if (directory.files.length === 1 && directory.files[0].type == "Directory") {
                     dest += directory.files[0].path + "/";
                     const mainFile = fs.readdirSync(dest).find(
@@ -239,6 +244,9 @@ const collectFiles = async function(req) {
         // Audio file
         const audioFile = req.files.audio ? req.files.audio : null;
         if (audioFile) {
+            if (audioFile.size > 25 * 1024 * 1024) {
+                throw new Error("Audio file size exceeds 25MB limit.");
+            }
             audio = `/uploads/${user}/audios/${uuid}/` + sanitizeFilename(audioFile.name);
             audioFile.mv(`${baseDir}/public${audio}`, err => {
                 if (err) {
@@ -252,14 +260,22 @@ const collectFiles = async function(req) {
 }
 
 function sanitizeFilename(filename) {
-    // Remove control characters and reserved characters
-    const sanitized = filename.replace(/[\x00-\x1f\x80-\x9f/\\?%*:|"<>]/g, "");
-    // Replace spaces with underscores or hyphens
-    const noSpaces = sanitized.replace(/\s/g, "_");
-    // Remove or replace other potentially problematic characters as needed
-    const furtherSanitized = noSpaces.replace(/[\[\]{}'`;]/g, "");
-    // Truncate to a reasonable length (e.g., 255 characters)
-    return furtherSanitized.slice(0, 255);
+    // // Remove control characters and reserved characters
+    // const sanitized = filename.replace(/[\x00-\x1f\x80-\x9f/\\?%*:|"<>]/g, "");
+    // // Replace spaces with underscores or hyphens
+    // const noSpaces = sanitized.replace(/\s/g, "_");
+    // // Remove or replace other potentially problematic characters as needed
+    // const furtherSanitized = noSpaces.replace(/[\[\]{}'`;]/g, "");
+    // // Truncate to a reasonable length (e.g., 255 characters)
+    // return furtherSanitized.slice(0, 255);
+
+    const extension = path.extname(filename).toLowerCase();
+    const name = generateRandomFilename();
+    return `${name}.${extension}`;
+}
+
+function generateRandomFilename(length = 16) {
+    return crypto.randomBytes(Math.ceil(length / 2)).toString('hex').slice(0, length);
 }
 
 module.exports = {

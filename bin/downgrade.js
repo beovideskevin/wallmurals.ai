@@ -31,7 +31,7 @@ Subscription.findOne({user:user, active: true})
         subscription.active = false;
         subscription.save()
             .then(function(subscription) {
-                console.log(subscription);
+                console.log("SUBSCRIPTION", subscription);
                 process.exit(1);
             })
             .catch(function(error) {
