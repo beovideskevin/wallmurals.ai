@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const { noCacheRequest } = require('../helpers/utils');
 const {
   index,
   login,
@@ -13,6 +14,6 @@ router.post('/login', login);
 router.get('/logout', logout);
 
 /* GET users listing. */
-router.get('/login/:message?', index);
+router.get('/login/:message?', noCacheRequest, index);
 
 module.exports = router;
