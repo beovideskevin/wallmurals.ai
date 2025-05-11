@@ -271,11 +271,19 @@ function sanitizeFilename(filename) {
 
     const extension = path.extname(filename).toLowerCase();
     const name = generateRandomFilename();
-    return `${name}.${extension}`;
+    return `${name}${extension}`;
 }
 
 function generateRandomFilename(length = 16) {
     return crypto.randomBytes(Math.ceil(length / 2)).toString('hex').slice(0, length);
+}
+
+const noCacheRequest = function(req, res, next) {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    res.set('Surrogate-Control', 'no-store');
+    next();
 }
 
 module.exports = {
@@ -284,4 +292,5 @@ module.exports = {
     checkViews,
     isCloseToPlace,
     collectFiles,
+    noCacheRequest
 };
