@@ -183,7 +183,7 @@ const setup = async function() {
                     scale = artwork.animations[i].scale;
                 }
                 let geometry = new window.MINDAR.IMAGE.THREE.PlaneGeometry(scale, scale * (artwork.animations[i].height / artwork.animations[i].width));
-                let material = artwork.animations[i].chroma == null || artwork.animations[i].chroma == 'null'
+                let material = artwork.animations[i].chroma == null || artwork.animations[i].chroma == 'null' || artwork.animations[i].chroma == ''
                     ? new window.MINDAR.IMAGE.THREE.MeshBasicMaterial({ map: texture })
                     : createChromaMaterial(texture, artwork.animations[i].chroma);
                 let plane = new window.MINDAR.IMAGE.THREE.Mesh(geometry, material);
