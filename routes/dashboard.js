@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const { noCacheRequest } = require('../helpers/utils');
+// const { noCacheRequest } = require('../helpers/utils');
 const {
     index,
     storeArtwork,
@@ -25,7 +25,7 @@ router.get('/downgradeplan', downgradePlan);
 router.get('/upgradeplan', upgradePlan);
 
 /* GET account page. */
-router.get('/account/:message?/:error?', noCacheRequest, account);
+router.get('/account/:message?/:error?', account);
 
 /* POST change password. */
 router.post('/changepassword', changePassword);
@@ -34,7 +34,7 @@ router.post('/changepassword', changePassword);
 router.post('/closeaccount', closeAccount);
 
 /* GET dashboard edit page. */
-router.get('/edit/:id/:message?', noCacheRequest, editArtwork);
+router.get('/edit/:id/:message?', editArtwork);
 
 /* POST dashboard new artwork. */
 router.post('/new', storeArtwork);
@@ -46,6 +46,6 @@ router.post('/edit', updateArtwork);
 router.post('/delete', deleteArtwork);
 
 /* GET dashboard page. */
-router.get('/:message?/:error?', noCacheRequest, index);
+router.get('/:message?/:error?', index);
 
 module.exports = router;
