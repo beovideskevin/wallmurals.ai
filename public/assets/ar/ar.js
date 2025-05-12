@@ -1,5 +1,5 @@
-import { createChromaMaterial } from '/ar/chroma-video.js';
-import { GLTFLoader } from "/ar/GLTFLoader.js";
+import { createChromaMaterial } from '/assets/ar/chroma-video.js';
+import { GLTFLoader } from "/assets/ar/GLTFLoader.js";
 
 // Declarations
 const ttl = 30 * 60 * 1000; // 30 min in milliseconds

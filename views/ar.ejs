@@ -39,7 +39,7 @@
     <link href="/assets/icons/icons-48x48.png" rel="shortcut icon">
 
     <!-- AR Css -->
-    <link href="<%= (node_env == "development") ? "/ar" : "/dist" %>/ar.css" rel="stylesheet" type="text/css">
+    <link href="<%= (node_env == "development") ? "/assets/ar" : "/dist" %>/ar.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
@@ -261,9 +261,9 @@
         vWarmupTolerance = <%= vWarmupTolerance %>;
 </script>
 
-<script src="/assets/libs/imagefilters/imagefilters.min.js"></script>
+<!-- <script src="/assets/libs/imagefilters/imagefilters.min.js"></script> -->
 <script src="/assets/libs/three/ar-image-three.prod.js"></script>
-<script type="module" src="<%= (node_env == "development") ? "/ar" : "/dist" %>/ar.js"></script>
+<script type="module" src="<%= (node_env == "development") ? "/assets/ar" : "/dist" %>/ar.js"></script>
 
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-9EH5BJHSZ5"></script>

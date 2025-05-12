@@ -13,10 +13,10 @@ const paths = {
     },
     src: {
         css: {
-            files: './public/ar/*.css'
+            files: './public/assets/ar/*.css'
         },
         js: {
-            files: './public/ar/*.js'
+            files: './public/assets/ar/*.js'
         }
     }
 };
