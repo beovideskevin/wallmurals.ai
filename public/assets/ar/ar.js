@@ -213,6 +213,7 @@ const setup = async function() {
                             elements[i].audioElement.play();
                         }
                     }
+                    hideScanning();
                     saveMetrics("targetfound");
                 }
                 anchor.onTargetLost = () => {
@@ -224,7 +225,7 @@ const setup = async function() {
                         currentlyPlayingAudio = null;
                         elements[i].audioElement.pause();
                     }
-                    mindarThree.ui.showScanning();
+                    showScanning();
                     saveMetrics("targetlost");
                 }
             });
@@ -274,6 +275,7 @@ const setup = async function() {
                             elements[i].audioElement.play();
                         }
                     }
+                    hideScanning();
                     saveMetrics("targetfound");
                 }
                 anchor.onTargetLost = () => {
@@ -282,7 +284,7 @@ const setup = async function() {
                         currentlyPlayingAudio = null;
                         elements[i].audioElement.pause();
                     }
-                    mindarThree.ui.showScanning();
+                    showScanning();
                     saveMetrics("targetlost");
                 }
             });   
@@ -871,6 +873,19 @@ function hideSplash()
     document.getElementById("splash").style.display = "none";
 }
 
+function showScanning()
+{
+    if (!isRecording) {
+        document.getElementById("arBtnsWrapper").style.display = "none";
+    }
+    mindarThree.ui.showScanning();
+}
+
+function hideScanning()
+{
+    document.getElementById("arBtnsWrapper").style.display = "flex";
+}
+
 function showSoundBtn() {
     document.getElementById("noSoundBtn").style.display = "none";
     document.getElementById("muteBtn").style.display = "block";
@@ -932,9 +947,6 @@ function showARHideAll()
 
     // Hide photo wrapper and btns wrapper
     hidePhoto();
-
-    // Show main controls
-    document.getElementById("arBtnsWrapper").style.display = "flex";
 }
 
 function showRecBtn() 
