@@ -115,9 +115,7 @@ app.use(fileUpload({
 }));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
-if (process.env.NODE_ENV == 'development') {
-    app.use(express.static('public'));
-}
+app.use(express.static('public'));
 app.use(cookieParser(process.env.SESSION_KEY));
 app.use(csrf(
     process.env.CSRF, // secret -- must be 32 bits or chars in length
