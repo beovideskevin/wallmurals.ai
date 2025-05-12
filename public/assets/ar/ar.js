@@ -353,19 +353,19 @@ const restart = function() {
  * This is where everything starts
  */
 document.addEventListener('DOMContentLoaded', async function() {
-    if (MediaRecorder.isTypeSupported('video/webm')) {
-        showDownloadBtn();
-        mediaRecOptions = {mimeType: 'video/webm; codecs=vp8, opus'};
-        videoMimeType = "video/webm";
-        videoExt = ".webm";
-    }
-    else if (MediaRecorder.isTypeSupported('video/mp4')) {
-        // Nothing to do here
-    }
-    else {
-        console.error("no suitable mimetype found for this device");
-        document.getElementById("recVideoBtn").style.display = "none";
-    }
+    // if (MediaRecorder.isTypeSupported('video/webm')) {
+    //     showDownloadBtn();
+    //     mediaRecOptions = {mimeType: 'video/webm; codecs=vp8, opus'};
+    //     videoMimeType = "video/webm";
+    //     videoExt = ".webm";
+    // }
+    // else if (MediaRecorder.isTypeSupported('video/mp4')) {
+    //     // Nothing to do here
+    // }
+    // else {
+    //     console.error("no suitable mimetype found for this device");
+    //     document.getElementById("recVideoBtn").style.display = "none";
+    // }
 
     // Get the show started
     window.location.hash = "";
