@@ -949,6 +949,10 @@ function showARHideAll()
 
     // Hide photo wrapper and btns wrapper
     hidePhoto();
+
+    if (onTarget) {
+        document.getElementById("arBtnsWrapper").style.display = "flex";
+    }
 }
 
 function showRecBtn() 
