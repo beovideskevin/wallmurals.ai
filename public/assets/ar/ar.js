@@ -258,7 +258,7 @@ const setup = async function() {
                 let mixerElement = null;
                 if (modelElement.animations.length) {
                     mixerElement = new window.MINDAR.IMAGE.THREE.AnimationMixer(modelElement.scene);
-                    mixerElement.clipAction(modelElement.animations[0]).play();
+                    mixerElement.clipAction(modelElement.animations[1]).play();
                 }
                 elements[i].mixerElement = mixerElement;
                 elements[i].modelElement = modelElement;
