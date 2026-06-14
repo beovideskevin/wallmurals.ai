@@ -7,4 +7,3 @@ This is the website I built for this business. It comes with a web app that allo
 Check our website: [WallMuarls.ai](https://www.wallmurals.ai/)
 
 How does it work? Scan the QR Code on the signage near the artwork to launch the experience. It is all in the web. No application installation needed (friction-less). The viewer records a video or takes a photo. Others can get inside the frame, almost like if they were inside the mural… And then shares it online. 
-

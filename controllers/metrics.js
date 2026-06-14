@@ -1,7 +1,8 @@
-var sanitize = require('mongo-sanitize');
+const mongoose = require('mongoose');
+const sanitize = require('mongo-sanitize');
 const Metric = require('../models/metric');
 const Artwork = require('../models/artwork');
-const { getMonthNameArray, saveMetric } = require('../helpers/utils');
+const { getMonthNameArray } = require('../helpers/utils');
 
 /* GET metrics listing. */
 const list = async function(req, res, next) {
@@ -9,15 +10,13 @@ const list = async function(req, res, next) {
 
     if (!req.session.user) {
         res.status(403);
-        res.json({});
-        return;
+        return res.json({});
     }
 
     const artworks = await Artwork.find({user: req.session.user});
     if (!artworks.length) {
         res.status(403);
-        res.json({});
-        return;
+        return res.json({});
     }
 
     const now = new Date();
@@ -41,7 +40,7 @@ const list = async function(req, res, next) {
             let countVisits = await Metric.countDocuments({
                 type: "open",
                 artwork: artwork.id,
-                createdAt: { $gt: startDate, $lte: endDate } 
+                createdAt: { $gte: startDate, $lte: endDate }
             });
             visitsData.push({month: monthsArray[month], count: countVisits});
 
@@ -54,12 +53,17 @@ const list = async function(req, res, next) {
             engagementData.push({month: monthsArray[month], count: countEngagement});
 
             // Interactions
-            let countInteractions = await Metric.countDocuments({
+            let countVideoInteractions = await Metric.countDocuments({
                 type: "sharevideo",
                 artwork: artwork.id,
                 createdAt: { $gt: startDate, $lte: endDate } 
             });
-            interactionsData.push({month: monthsArray[month], count: countInteractions});
+            let countPhotoInteractions = await Metric.countDocuments({
+                type: "sharephoto",
+                artwork: artwork.id,
+                createdAt: { $gt: startDate, $lte: endDate }
+            });
+            interactionsData.push({month: monthsArray[month], count: countVideoInteractions + countPhotoInteractions});
         }
         // Visits
         visits.push({
@@ -86,7 +90,7 @@ const list = async function(req, res, next) {
     const metrics = {visits, engagement, interactions};
     res.set('Content-Type', 'application/json')
     res.status(200);
-    res.json(metrics);
+    return res.json(metrics);
 }
 
 /* POST save metrics. */
@@ -95,35 +99,44 @@ const save = async function(req, res, next) {
     if (!body.uuid || !body.id || !body.data || !body.metricType) {
         console.log("Bad form");
         res.status(400);
-        res.json({success: false});
-        return;
+        return res.json({success: false});
     }
 
     const metricType = sanitize(body.metricType);
-    const id = sanitize(body.id);
     const data = sanitize(body.data);
     const uuid = sanitize(body.uuid);
+    const id = sanitize(body.id);
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        console.log("BAD ID", id);
+        res.status(400);
+        return res.json({success: false});
+    }
     const artwork = await Artwork.findById(id);
     if (!artwork) {
-        console.log("not found artwork!");
+        console.log("NO ARTWORK FOUND", id);
         res.status(400);
-        res.json({success: false});
-        return;
+        return res.json({success: false});
     }
     const user = artwork.user;
-    Metric.find({uuid: uuid}).then(function (metrics) {
-        // If the uuid is fake or bad return 400
-        if (!metrics.length) {
-            console.log("not found metric!");
-            res.status(400);
-            res.json({success: false});
-            return;
+    Metric.create({
+        type: metricType,
+        data: data,
+        uuid: uuid,
+        artwork: id,
+        user: user
+    }).then(function (newMetric) {
+        console.log("Metric created!", newMetric);
+    }).catch(function (error) {
+        if(error.name === 'ValidationError') {
+            const messages = Object.values(error.errors).map(val => val.message);
+            console.log("VALIDATION ERROR: " + messages);
         }
-        // All good, save the metric
-        saveMetric({metricType, user, id, data, uuid});
-        res.status(200);
-        res.json({success: true});
+        else {
+            console.log("ERROR: " + error);
+        }
     });
+    res.status(200);
+    return res.json({success: true});
 }
 
 module.exports = {

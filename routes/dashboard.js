@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+// const { noCacheRequest } = require('../helpers/utils');
 const {
     index,
     storeArtwork,
@@ -9,11 +10,19 @@ const {
     metrics,
     account,
     changePassword,
-    closeAccount
+    closeAccount,
+    downgradePlan,
+    upgradePlan
 } = require('../controllers/dashboard');
 
 /* GET metrics page. */
 router.get('/metrics', metrics);
+
+/* GET metrics page. */
+router.get('/downgradeplan', downgradePlan);
+
+/* GET metrics page. */
+router.get('/upgradeplan', upgradePlan);
 
 /* GET account page. */
 router.get('/account/:message?/:error?', account);

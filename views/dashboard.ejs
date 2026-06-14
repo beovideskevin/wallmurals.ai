@@ -81,7 +81,11 @@
                         <a href="/ar/id/<%= artwork.id %>" target="_blank">wallmurals.ai/ar/id/<%= artwork.id %></a>
                     </div>
 
-                    <div class="mb-2 overflow-hidden"><h3>Location:</h3> <%= artwork.location %></div>
+                    <div class="mb-2 overflow-hidden"><h3>Title (or address):</h3> <%= artwork.location %></div>
+
+                    <div class="mb-2 overflow-hidden"><h3>Latitude:</h3> <%= artwork.lat %></div>
+
+                    <div class="mb-2 overflow-hidden"><h3>Longitude:</h3> <%= artwork.lon %></div>
 
                     <%
                         let videos = [];
@@ -91,6 +95,9 @@
                         let width = [];
                         let height = [];
                         let chroma = [];
+                        let scale = [];
+                        let position = [];
+                        let rotation = [];
 
                         artwork.animations.forEach(function (animation) { 
                             if (animation.video) {
@@ -114,6 +121,15 @@
                             if (animation.chroma) {
                                 chroma.push(animation.chroma);
                             }
+                            if (animation.scale) {
+                                scale.push(animation.scale);
+                            }
+                            if (animation.position) {
+                                position.push(animation.position);
+                            }
+                            if (animation.rotation) {
+                                rotation.push(animation.rotation);
+                            }
                         }); 
                     %>
 
@@ -123,7 +139,11 @@
 
                     <div class="mb-2 overflow-hidden"><h3>Models:</h3> <%- models.join("<br>") %> </div>
 
-                    <div class="mb-2 overflow-hidden"><h3>Audios:</h3> <%- audios.join("<br>") %> </div>
+                    <div class="mb-2"><h3>Scale (for model and video):</h3><%- scale.join("<br>") %></div>
+
+                    <div class="mb-2"><h3>Position:</h3><%- position.join("<br>") %></div>
+
+                    <div class="mb-2"><h3>Rotation:</h3><%- rotation.join("<br>") %></div>
 
                     <div class="mb-2 overflow-hidden"><h3>Videos:</h3> <%- videos.join("<br>") %> </div>
 
@@ -133,14 +153,9 @@
 
                     <div class="mb-2"><h3>Height:</h3><%- height.join("<br>") %></div>
 
-                    <div class="mb-2 overflow-hidden"><h3>Latitude:</h3> <%= artwork.lat %></div>
-
-                    <div class="mb-2 overflow-hidden"><h3>Longitude:</h3> <%= artwork.lon %></div>
-
                     <div class="mb-2 overflow-hidden"><h3>Tagline:</h3> <%= artwork.tagline %></div>
 
-                    <div class="mb-2 overflow-hidden"><h3>Website:</h3> <%= artwork.website %></div>
-
+                    <div class="mb-2 overflow-hidden"><h3>Audios:</h3> <%- audios.join("<br>") %> </div>
 
                     <div class="flex flex-wrap items-center justify-center text-center gap-3 artworkBtns">
                         <a class="w-1/2 py-2 px-6 rounded-md text-baseitems-center justify-center border border-primary text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium" href="/dashboard/edit/<%= artwork.id %>">Edit Mural</a>
@@ -194,28 +209,58 @@
                 <div class="shadow-2xl rounded-xl bg-white p-6">
                     <div class="gap-6 mt-8 grid grid-cols-1 md:grid-cols-2">
                         <div class="mb-2">
+                            <label for="formRoute" class="block text-sm/normal font-semibold text-black mb-2">Quick link:</label>
+                            <input type="text" value="" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="route" id="formRoute" placeholder="Type the direct route...">
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="formLocation" class="block text-sm/normal font-semibold text-black mb-2">Title (or address):</label>
+                            <input type="text" value="" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="location" id="formLocation" placeholder="Type the location..." required>
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="formLatitude" class="block text-sm/normal font-semibold text-black mb-2">Latitude:</label>
+                            <input type="text" value="" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="lat" id="formLatitude" placeholder="Type the latitude...">
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="formLongitude" class="block text-sm/normal font-semibold text-black mb-2">Longitude:</label>
+                            <input type="text" value="" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="lon" id="formLongitude" placeholder="Type the longitude...">
+                        </div>
+
+                        <div class="mb-2">
                             <label for="formTarget" class="block text-sm/normal font-semibold text-black mb-2">Target:</label>
-                            <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="target" id="formTarget" required="">
+                            <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="target" id="formTarget" accept="image/png, image/jpeg, image/jpg, image/gif, image/webp, .mind" required>
                         </div>
 
                         <div class="mb-2">
                             <label for="formPoster" class="block text-sm/normal font-semibold text-black mb-2">Poster:</label>
-                            <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="poster" id="formPoster">
+                            <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="poster" id="formPoster" accept="image/png, image/jpeg, image/jpg, image/gif, image/webp">
                         </div>
 
                         <div class="mb-2">
                             <label for="formModel" class="block text-sm/normal font-semibold text-black mb-2">Model:</label>
-                            <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="model" id="formModel">
+                            <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="model" id="formModel" accept=".gltf, .gltfz, .glb, .glb2, .gl">
                         </div>
 
                         <div class="mb-2">
-                            <label for="formAudio" class="block text-sm/normal font-semibold text-black mb-2">Audio:</label>
-                            <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="audio" id="formAudio">
+                            <label for="formScale" class="block text-sm/normal font-semibold text-black mb-2">Scale (for model and video):</label>
+                            <input type="text" value="" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="scale" id="formScale" placeholder="Type the scale (it also works for videos)...">
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="formPosition" class="block text-sm/normal font-semibold text-black mb-2">Position:</label>
+                            <input type="text" value="" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="position" id="formPosition" placeholder="For models, type the position as x,y,z...">
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="formRotation" class="block text-sm/normal font-semibold text-black mb-2">Rotation:</label>
+                            <input type="text" value="" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="rotation" id="formRotation" placeholder="For models, type the rotation as x,y,z...">
                         </div>
 
                         <div class="mb-2">
                             <label for="formVideo" class="block text-sm/normal font-semibold text-black mb-2">Video:</label>
-                            <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="video" id="formVideo">
+                            <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="video" id="formVideo" accept="video/mp4,video/x-m4v,video/*">
                         </div>
 
                         <div class="mb-2">
@@ -234,33 +279,13 @@
                         </div>
 
                         <div class="mb-2">
-                            <label for="formRoute" class="block text-sm/normal font-semibold text-black mb-2">Quick link:</label>
-                            <input type="text" value="" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="route" id="formRoute" placeholder="Type the direct route...">
-                        </div>
-
-                        <div class="mb-2">
-                            <label for="formLocation" class="block text-sm/normal font-semibold text-black mb-2">Location:</label>
-                            <input type="text" value="" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="location" id="formLocation" placeholder="Type the location..." required="">
-                        </div>
-
-                        <div class="mb-2">
-                            <label for="formLatitude" class="block text-sm/normal font-semibold text-black mb-2">Latitude:</label>
-                            <input type="text" value="" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="lat" id="formLatitude" placeholder="Type the latitude...">
-                        </div>
-
-                        <div class="mb-2">
-                            <label for="formLongitude" class="block text-sm/normal font-semibold text-black mb-2">Longitude:</label>
-                            <input type="text" value="" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="lon" id="formLongitude" placeholder="Type the longitude...">
+                            <label for="formAudio" class="block text-sm/normal font-semibold text-black mb-2">Audio:</label>
+                            <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="audio" id="formAudio" accept="audio/vorbis, audio/wav, audio/mp3, audio/mpeg, audio/aac, audio/ogg, audio/flac, audio/webm">
                         </div>
 
                         <div class="mb-2">
                             <label for="formTagline" class="block text-sm/normal font-semibold text-black mb-2">Tagline:</label>
-                            <input type="text" value="" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="tagline" id="formTagline" placeholder="Type the tagline..." required="">
-                        </div>
-
-                        <div class="mb-2">
-                            <label for="formWebsite" class="block text-sm/normal font-semibold text-black mb-2">Website:</label>
-                            <input type="text" value="" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="website" id="formWebsite" placeholder="Type the website...">
+                            <input type="text" value="" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="tagline" id="formTagline" placeholder="Type the tagline...">
                         </div>
 
                         <div class="hidden flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert" id="outerMessage">
@@ -329,8 +354,7 @@
             }
 
             let formLocation = document.getElementById("formLocation");
-            let formTagline = document.getElementById("formTagline");
-            return formLocation.value != "" && formTagline.value != "";
+            return formLocation.value != "";
         }
 
         document.addEventListener('DOMContentLoaded', async function() {
@@ -346,6 +370,7 @@
                         text: "https://www.wallmurals.ai/ar/id/<%= artwork.id %>",
                         width: 500,
                         height: 500,
+                        // logo: false, Logo is somewhat experimental, if people don't want it, remove it
                     });
 
                     // Generate the save button after the qr code image src is ready
@@ -358,7 +383,7 @@
                         link.download = 'WallMuralAiQR.png';
                         link.innerHTML = 'Download QR';
                         qrBtn.appendChild(link);
-                    }, 50, qrdivs[index], qrdowns[index]);
+                    }, 350, qrdivs[index], qrdowns[index]);
 
                     ++index;
             <% 

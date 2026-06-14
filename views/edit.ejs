@@ -38,28 +38,58 @@
 
                     <div class="gap-6 mt-8 grid grid-cols-1 md:grid-cols-2">
                         <div class="mb-2">
+                            <label for="formRoute" class="block text-sm/normal font-semibold text-black mb-2">Quick link:</label>
+                            <input type="text" value="<%= artwork.route %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="route" id="formRoute" placeholder="Type the direct route...">
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="formLocation" class="block text-sm/normal font-semibold text-black mb-2">Title (or address):</label>
+                            <input type="text" value="<%= artwork.location %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="location" id="formLocation" placeholder="Type the location..." required>
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="formLatitude" class="block text-sm/normal font-semibold text-black mb-2">Latitude:</label>
+                            <input type="text" value="<%= artwork.lat %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="lat" id="formLatitude" placeholder="Type the latitude...">
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="formLongitude" class="block text-sm/normal font-semibold text-black mb-2">Longitude:</label>
+                            <input type="text" value="<%= artwork.lon %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="lon" id="formLongitude" placeholder="Type the longitude...">
+                        </div>
+
+                        <div class="mb-2">
                             <label for="formTarget" class="block text-sm/normal font-semibold text-black mb-2">Target:</label>
-                            <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="target" id="formTarget">
+                            <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="target" id="formTarget" accept="image/png, image/jpeg, image/jpg, image/gif, image/webp, .mind" required>
                         </div>
 
                         <div class="mb-2">
                             <label for="formPoster" class="block text-sm/normal font-semibold text-black mb-2">Poster:</label>
-                            <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="poster" id="formPoster">
+                            <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="poster" id="formPoster" accept="image/png, image/jpeg, image/jpg, image/gif, image/webp">
                         </div>
 
                         <div class="mb-2">
                             <label for="formModel" class="block text-sm/normal font-semibold text-black mb-2">Model:</label>
-                            <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="model" id="formModel">
+                            <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="model" id="formModel" accept=".gltf, .gltfz, .glb, .glb2, .gl">
                         </div>
 
                         <div class="mb-2">
-                            <label for="formAudio" class="block text-sm/normal font-semibold text-black mb-2">Audio:</label>
-                            <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="audio" id="formAudio">
+                            <label for="formScale" class="block text-sm/normal font-semibold text-black mb-2">Scale (for model and video):</label>
+                            <input type="text" value="<%= artwork.animations[0].scale %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="scale" id="formScale" placeholder="Type the scale (it also works for videos)...">
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="formPosition" class="block text-sm/normal font-semibold text-black mb-2">Position:</label>
+                            <input type="text" value="<%= artwork.animations[0].position %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="position" id="formPosition" placeholder="For models, type the position as x,y,z...">
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="formRotation" class="block text-sm/normal font-semibold text-black mb-2">Rotation:</label>
+                            <input type="text" value="<%= artwork.animations[0].rotation %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="rotation" id="formRotation" placeholder="For models, type the rotation as x,y,z...">
                         </div>
 
                         <div class="mb-2">
                             <label for="formVideo" class="block text-sm/normal font-semibold text-black mb-2">Video:</label>
-                            <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="video" id="formVideo">
+                            <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="video" id="formVideo" accept="video/mp4, video/x-m4v, video/*">
                         </div>
 
                         <div class="mb-2">
@@ -78,33 +108,13 @@
                         </div>
 
                         <div class="mb-2">
-                            <label for="formRoute" class="block text-sm/normal font-semibold text-black mb-2">Quick link:</label>
-                            <input type="text" value="<%= artwork.route %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="route" id="formRoute" placeholder="Type the direct route...">
-                        </div>
-
-                        <div class="mb-2">
-                            <label for="formLocation" class="block text-sm/normal font-semibold text-black mb-2">Location:</label>
-                            <input type="text" value="<%= artwork.location %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="location" id="formLocation" placeholder="Type the location..." required="">
-                        </div>
-
-                        <div class="mb-2">
-                            <label for="formLatitude" class="block text-sm/normal font-semibold text-black mb-2">Latitude:</label>
-                            <input type="text" value="<%= artwork.lat %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="lat" id="formLatitude" placeholder="Type the latitude...">
-                        </div>
-
-                        <div class="mb-2">
-                            <label for="formLongitude" class="block text-sm/normal font-semibold text-black mb-2">Longitude:</label>
-                            <input type="text" value="<%= artwork.lon %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="lon" id="formLongitude" placeholder="Type the longitude...">
+                            <label for="formAudio" class="block text-sm/normal font-semibold text-black mb-2">Audio:</label>
+                            <input type="file" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="audio" id="formAudio" accept="audio/vorbis, audio/wav, audio/mp3, audio/mpeg, audio/aac, audio/ogg, audio/flac, audio/webm">
                         </div>
 
                         <div class="mb-2">
                             <label for="formTagline" class="block text-sm/normal font-semibold text-black mb-2">Tagline:</label>
-                            <input type="text" value="<%= artwork.tagline %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="tagline" id="formTagline" placeholder="Type the tagline..." required="">
-                        </div>
-
-                        <div class="mb-2">
-                            <label for="formWebsite" class="block text-sm/normal font-semibold text-black mb-2">Website:</label>
-                            <input type="text" value="<%= artwork.website %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="website" id="formWebsite" placeholder="Type the website...">
+                            <input type="text" value="<%= artwork.tagline %>" class="block w-full text-sm rounded-md py-3 px-4 border-gray-200 focus:border-gray-300 focus:ring-transparent" name="tagline" id="formTagline" placeholder="Type the tagline...">
                         </div>
 
                         <div class="hidden flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert" id="outerMessage">
@@ -155,8 +165,7 @@
             }
 
             let formLocation = document.getElementById("formLocation");
-            let formTagline = document.getElementById("formTagline");
-            return formLocation.value != "" && formTagline.value != "";
+            return formLocation.value != "";
         }
     </script>
 </body>

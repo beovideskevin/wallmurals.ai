@@ -1,17 +1,32 @@
 const fs = require('fs');
+const path = require('path');
+const crypto = require('node:crypto');
 const unzipper = require('unzipper');
 const {v4: uuidv4} = require('uuid');
 const Subscription = require('../models/subscription');
 const Metric = require('../models/metric');
+const User = require('../models/user');
 
 getMonthNameArray = function () {
-    let fullArray = [];
-    const now = new Date();
-    for (let month = 0; month < 12; month++) {
-        now.setMonth(month); // Month is 0-indexed
-        fullArray.push(now.toLocaleString('default', { month: 'long' }));
-    }
-    return fullArray;
+    return [
+        'January',   'February',
+        'March',     'April',
+        'May',       'June',
+        'July',      'August',
+        'September', 'October',
+        'November',  'December'
+    ];
+
+    // This fails when day is 29, to 31, because February doesn't has those days.
+    // So it now.setMonth returns March :)
+    // let fullArray = [];
+    // const now = new Date();
+    // for (let month = 0; month < 12; month++) {
+    //     now.setMonth(month); // Month is 0-indexed
+    //     fullArray.push(now.toLocaleString('default', { month: 'long' }));
+    // }
+    // console.log(fullArray);
+    // return fullArray;
 }
 
 const getSubscriptionLastDate = function(day) {
@@ -35,15 +50,27 @@ const getSubscriptionLastDate = function(day) {
 }
 
 checkViews = async function(artwork) {
-    const MAX_FREE_VIEWS = 1000;
-    const MAX_PRO_VIEWS = 100000;
+    const MAX_FREE_VIEWS = process.env.MAX_FREE_VIEWS;
+    const MAX_PRO_VIEWS = process.env.MAX_PRO_VIEWS;
 
+    // Check the user exists and it is active
+    const user = await User.findById(artwork.user);
+    if (!user) {
+        console.log("User not found when checking artwork view: " + artwork.user);
+        return false;
+    }
+    if (!user.active) {
+        console.log("User is not active when checking artwork view: " + artwork.id);
+        return false;
+    }
+
+    // Check the view for the artwork
     let max = MAX_FREE_VIEWS;
     let targetDate = getSubscriptionLastDate(1);
-    let subscriptions = await Subscription.find({user: artwork.user, active: true});
-    if (subscriptions.length) {
+    let subscriptions = await Subscription.findOne({user: artwork.user, active: true});
+    if (subscriptions) {
         max = MAX_PRO_VIEWS;
-        let start = new Date(subscriptions[0].start);
+        let start = new Date(subscriptions.start);
         // @TODO implement better deal here
         let day = start.getDate() > 28 ? 28 : start.getDate();
         targetDate = getSubscriptionLastDate(day);
@@ -53,43 +80,12 @@ checkViews = async function(artwork) {
         user: artwork.user,
         createdAt: { $gt: targetDate }
     });
-    if (count > max) {
-        console.log("MAX VIEWS REACHED: " + req.params.id);
+
+    if (count >= max) {
+        console.log("MAX VIEWS REACHED: " + artwork.id);
         return false;
     }
     return true;
-}
-
-saveMetric = (values) => {
-    const {metricType, user, id, data, uuid} = values;
-    Metric.create({
-        type: metricType,
-        data: data,
-        uuid: uuid,
-        artwork: id,
-        user: user
-    }).then(function (newMetric) {
-        console.log("Metric created!", newMetric);
-    }).catch(function (error) {
-        if(error.name === 'ValidationError') {
-            const messages = Object.values(error.errors).map(val => val.message);
-            console.log("VALIDATION ERROR: " + messages);
-        } 
-        else {
-            console.log("ERROR: " + error);
-        }
-    });
-}
-
-const openMetric = function(req, user, id, uuid) {
-    const forwardedFor = req.headers['x-forwarded-for'] || req.connection.remoteAddress || "no IP";
-    saveMetric({
-        metricType: "open",
-        data: forwardedFor,
-        uuid: uuid,
-        id: id,
-        user: user
-    });
 }
 
 const isCloseToPlace = function (userLat, userLon, targetLat, targetLon) {
@@ -153,8 +149,10 @@ const collectFiles = async function(req) {
         // Target file
         const targetFile = req.files.target ? req.files.target : null;
         if (targetFile) {
+            if (targetFile.size > 25 * 1024 * 1024) {
+                throw new Error("Target file size exceeds 25MB limit.");
+            }
             target = `/uploads/${user}/targets/${uuid}/` + sanitizeFilename(targetFile.name);
-
             if (targetFile.name.endsWith(".mind")) {
                 targetFile.mv(`${baseDir}/public${target}`, err => {
                     if (err) {
@@ -168,13 +166,15 @@ const collectFiles = async function(req) {
                     .then(module => {
                         module.run([targetFile.tempFilePath], `${baseDir}/public${target}`);
                     });
-                // @TODO handle errors
             }
         }
 
         // Video file
         const videoFile = req.files.video ? req.files.video : null;
         if (videoFile) {
+            if (videoFile.size > 25 * 1024 * 1024) {
+                throw new Error("Video file size exceeds 25MB limit.");
+            }
             video = `/uploads/${user}/videos/${uuid}/` + sanitizeFilename(videoFile.name);
             videoFile.mv(`${baseDir}/public${video}`, err => {
                 if (err) {
@@ -186,6 +186,9 @@ const collectFiles = async function(req) {
         // Poster file
         const posterFile = req.files.poster ? req.files.poster : null;
         if (posterFile) {
+            if (targetFile.size > 25 * 1024 * 1024) {
+                throw new Error("Poster file size exceeds 25MB limit.");
+            }
             poster = `/uploads/${user}/posters/${uuid}/` + sanitizeFilename(posterFile.name);
             posterFile.mv(`${baseDir}/public${poster}`, err => {
                 if (err) {
@@ -197,11 +200,13 @@ const collectFiles = async function(req) {
         // Model file
         const modelFile = req.files.model ? req.files.model : null;
         if (modelFile) {
+            if (modelFile.size > 25 * 1024 * 1024) {
+                throw new Error("Model size exceeds 25MB limit.");
+            }
             if (modelFile.name.endsWith(".zip")) {
                 const directory = await unzipper.Open.file(modelFile.tempFilePath);
                 let dest = `${baseDir}/public/uploads/${user}/models/${uuid}/`;
                 await directory.extract({ path: dest });
-
                 if (directory.files.length === 1 && directory.files[0].type == "Directory") {
                     dest += directory.files[0].path + "/";
                     const mainFile = fs.readdirSync(dest).find(
@@ -239,6 +244,9 @@ const collectFiles = async function(req) {
         // Audio file
         const audioFile = req.files.audio ? req.files.audio : null;
         if (audioFile) {
+            if (audioFile.size > 25 * 1024 * 1024) {
+                throw new Error("Audio file size exceeds 25MB limit.");
+            }
             audio = `/uploads/${user}/audios/${uuid}/` + sanitizeFilename(audioFile.name);
             audioFile.mv(`${baseDir}/public${audio}`, err => {
                 if (err) {
@@ -252,22 +260,37 @@ const collectFiles = async function(req) {
 }
 
 function sanitizeFilename(filename) {
-    // Remove control characters and reserved characters
-    const sanitized = filename.replace(/[\x00-\x1f\x80-\x9f/\\?%*:|"<>]/g, "");
-    // Replace spaces with underscores or hyphens
-    const noSpaces = sanitized.replace(/\s/g, "_");
-    // Remove or replace other potentially problematic characters as needed
-    const furtherSanitized = noSpaces.replace(/[\[\]{}'`;]/g, "");
-    // Truncate to a reasonable length (e.g., 255 characters)
-    return furtherSanitized.slice(0, 255);
+    // // Remove control characters and reserved characters
+    // const sanitized = filename.replace(/[\x00-\x1f\x80-\x9f/\\?%*:|"<>]/g, "");
+    // // Replace spaces with underscores or hyphens
+    // const noSpaces = sanitized.replace(/\s/g, "_");
+    // // Remove or replace other potentially problematic characters as needed
+    // const furtherSanitized = noSpaces.replace(/[\[\]{}'`;]/g, "");
+    // // Truncate to a reasonable length (e.g., 255 characters)
+    // return furtherSanitized.slice(0, 255);
+
+    const extension = path.extname(filename).toLowerCase();
+    const name = generateRandomFilename();
+    return `${name}${extension}`;
+}
+
+function generateRandomFilename(length = 16) {
+    return crypto.randomBytes(Math.ceil(length / 2)).toString('hex').slice(0, length);
+}
+
+const noCacheRequest = function(req, res, next) {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    res.set('Surrogate-Control', 'no-store');
+    next();
 }
 
 module.exports = {
     getSubscriptionLastDate,
     getMonthNameArray,
     checkViews,
-    saveMetric,
-    openMetric,
     isCloseToPlace,
-    collectFiles
+    collectFiles,
+    noCacheRequest
 };

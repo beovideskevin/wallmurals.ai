@@ -3,16 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
+    <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />
+	
     <title><%= title %></title>
     <meta name="description" content="<%= description %>"/>
     <meta name="keywords" content="<%= keywords %>"/>
     <meta name="author" content="<%= author %>"/>
     <link rel="canonical" href="https://www.wallmurals.ai/">
-
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
-    <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />
 
     <meta property="og:type" content="website" />
     <meta property="og:title" content="<%= title %>" />
@@ -21,11 +20,11 @@
     <meta property="og:locale" content="es_ES" />
     <meta property="og:url" content="https://www.wallmurals.ai" />
     <meta property="og:image" content="https://www.wallmurals.ai/assets/images/default.jpg"/>
-    <!-- <meta property="og:image:type" content="image/png" />
-    <meta property="og:image:width" content="480" />
-    <meta property="og:image:height" content="640" /> -->
-    <meta property="article:publisher" content="<%= author %>" />
-    <meta property="article:author" content="<%= author %>" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="1200" />
+    <meta property="article:publisher" content="https://www.facebook.com/<%= author %>" />
+    <!-- <meta property="article:author" content="https://www.facebook.com/<%= author %>" /> -->
     
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="<%= site %>" />
@@ -94,8 +93,8 @@
             .youVideo {
                 width: 640px;
                 height: 360px;
-            }   
-        } 
+            }
+        }
     </style>
 </head>
 <body>
@@ -121,11 +120,11 @@
                         </li>
 
                         <li class="nav-item mx-1.5 transition-all text-dark lg:text-white group-[&.is-sticky]:text-dark duration-300 hover:text-primary [&.active]:!text-primary group-[&.is-sticky]:[&.active]:text-primary">
-                            <a class="nav-link inline-flex items-center text-sm lg:text-base font-medium py-0.5 px-2 capitalize" href="#inspire">Inspire</a>
+                            <a class="nav-link inline-flex items-center text-sm lg:text-base font-medium py-0.5 px-2 capitalize" href="#what">What</a>
                         </li>
 
                         <li class="nav-item mx-1.5 transition-all text-dark lg:text-white group-[&.is-sticky]:text-dark duration-300 hover:text-primary [&.active]:!text-primary group-[&.is-sticky]:[&.active]:text-primary">
-                            <a class="nav-link inline-flex items-center text-sm lg:text-base font-medium py-0.5 px-2 capitalize" href="#convenient">Convenient</a>
+                            <a class="nav-link inline-flex items-center text-sm lg:text-base font-medium py-0.5 px-2 capitalize" href="#how">How</a>
                         </li>
 
                         <li class="nav-item mx-1.5 transition-all text-dark lg:text-white group-[&.is-sticky]:text-dark duration-300 hover:text-primary [&.active]:!text-primary group-[&.is-sticky]:[&.active]:text-primary">
@@ -137,7 +136,7 @@
                         </li>
 
                         <li class="nav-item mx-1.5 transition-all text-dark lg:text-white group-[&.is-sticky]:text-dark duration-300 hover:text-primary [&.active]:!text-primary group-[&.is-sticky]:[&.active]:text-primary">
-                            <a class="nav-link inline-flex items-center text-sm lg:text-base font-medium py-0.5 px-2 capitalize" href="#about">About</a>
+                            <a class="nav-link inline-flex items-center text-sm lg:text-base font-medium py-0.5 px-2 capitalize" href="#about">Videos</a>
                         </li>
 
                         <li class="nav-item mx-1.5 transition-all text-dark lg:text-white group-[&.is-sticky]:text-dark duration-300 hover:text-primary [&.active]:!text-primary group-[&.is-sticky]:[&.active]:text-primary">
@@ -145,7 +144,7 @@
                         </li>
                     </ul>
                     <div class="ms-auto shrink block gap-2 lg:hidden mt-4 text-center">
-                        <a href="/users" class="py-2 px-6 inline-flex items-center gap-2 rounded-md text-base text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium">
+                        <a href="/users/login" class="py-2 px-6 inline-flex items-center gap-2 rounded-md text-base text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium">
                             <i data-lucide="log-in" class="h-4 w-4 fill-white/40"></i>
                             <span class="block">Login</span>
                         </a>
@@ -153,10 +152,17 @@
                 </div>
 
                 <div class="ms-auto shrink hidden lg:inline-flex gap-2">
-                    <a href="/users" class="py-2 px-6 inline-flex items-center gap-2 rounded-md text-base text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium">
-                        <i data-lucide="log-in" class="h-4 w-4 fill-white/40"></i>
-                        <span class="block">Login</span>
-                    </a>
+                    <% if (user) { %>
+                        <a href="/dashboard" class="py-2 px-6 inline-flex items-center gap-2 rounded-md text-base text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium">
+                            <i data-lucide="log-in" class="h-4 w-4 fill-white/40"></i>
+                            <span class="block">Dashboard</span>
+                        </a>
+                    <% } else { %>
+                        <a href="/users/login" class="py-2 px-6 inline-flex items-center gap-2 rounded-md text-base text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium">
+                            <i data-lucide="log-in" class="h-4 w-4 fill-white/40"></i>
+                            <span class="block">Login</span>
+                        </a>
+                    <% } %>
                 </div>
             </div>
         </div>
@@ -173,7 +179,7 @@
                 <div class="text-sm max-w-3xl mx-auto text-center">
                     <h1 class="text-3xl md:text-5xl/tight lg:text-6xl/tight text-white tracking-normal capitalize leading-normal font-bold max-w-2xl mt-4">Stunning Murals, <span class="text-primary">Interactive Magic!</span></h1>
                     <div class="max-w-xl mx-auto">
-                        <p class="text-base font-medium text-white leading-7 mt-2 capitalize">Empower your clients to create content around your brand and publish it on social media.</p>
+                        <p class="text-base font-medium text-white leading-7 mt-2 capitalize">We create murals using Artificial Intelligence and Augmented Reality.</p>
                     </div>
                     <div class="flex flex-wrap items-center justify-center mt-9 text-center gap-3">
 <!--                        <a href="#pricing" class="py-2 px-6 text-white rounded-md border border-white text-base hover:border-white hover:bg-white hover:text-primary transition-all duration-500 font-medium">See Pricing</a>-->
@@ -185,12 +191,12 @@
         </div>
     </section>
 
-    <!-- Inspire Start -->
-    <section id="inspire" class="py-20">
+    <!-- What Start -->
+    <section id="what" class="py-20">
         <div class="container">
             <div class="max-w-2xl mx-auto text-center">
-                <span class="text-sm text-primary uppercase font-semibold tracking-wider text-default-950">Inspire</span>
-                <h2 class="text-3xl md:text-4xl/tight font-semibold text-black mt-4">Augmented Reality</h2>
+                <span class="text-sm text-primary uppercase font-semibold tracking-wider text-default-950">What</span>
+                <h2 class="text-3xl md:text-4xl/tight font-semibold text-black mt-4">What is it?</h2>
                 <p class="text-base font-medium mt-4 text-muted"><br></p>
             </div>
 
@@ -216,7 +222,8 @@
                     </div>
                     <div>
                         <h4 class="text-xl font-semibold">The future is here</h4>
-                        <p class="text-base font-normal text-gray-500 mt-2 text-justify me-2">Although AR technology has existed for years, its adoption in the urban art scene is still in its early stages. 
+                        <p class="text-base font-normal text-gray-500 mt-2 text-justify me-2">
+                            Artificial Intelligence has come to reimagine how we create and consume content, and although Augmented Reality has existed for years, its adoption in the urban art scene is still in its early stages.
                             We foresee a wave of new art forms emerging, transforming public spaces into interactive and immersive experiences. </p>
                     </div>
                 </div>
@@ -229,14 +236,14 @@
                     </div>
                     <div>
                         <h4 class="text-xl font-semibold">Inspire your audience</h4>
-                        <p class="text-base font-normal text-gray-500 mt-2 text-justify me-2">Empower fans to engage with your brand and create content around it. 
+                        <p class="text-base font-normal text-gray-500 mt-2 text-justify me-2">Empower fans to engage with your brand and create content around it by sharing on social media.
                             A well-conceptualized mural not only captivates viewers but also amplifies a campaign’s reach digitally, spreading organically across social networks. </p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    <!-- Inspire End -->
+    <!-- What End -->
 
     <section class="relative py-20 bg-cover bg-no-repeat bg-center" style="background-image: url('/assets/images/home/parallax.png');" data-jarallax data-speed="0.20">
         <div class="absolute inset-0 w-full h-full bg-gray-900/70"></div>
@@ -248,13 +255,13 @@
         </div>
     </section>
 
-    <!-- Convenient Start -->
-    <section id="convenient" class="py-20">
+    <!-- How Start -->
+    <section id="how" class="py-20">
         <div class="container">
             <div class="grid lg:grid-cols-2 items-center gap-6">
                 <div class="lg:ms-5 mx-auto">
                     <div class="text-center lg:text-start">
-                        <span class="text-sm text-primary uppercase font-semibold tracking-wider text-default-950">Convenient</span>
+                        <span class="text-sm text-primary uppercase font-semibold tracking-wider text-default-950">How</span>
                     </div>
                     <h2 class="text-3xl md:text-4xl/tight font-semibold text-black mt-4 text-center lg:text-start">How does it work?</h2>
                     <p class="text-base font-normal text-muted mt-6 text-justify mx-2">Our software is running entirely on the cloud, with no need for application download. Simply scan the QR code signage, point your smartphone or tablet at the mural, and watch as the artwork comes to life, transforming into an immersive digital experience right before your eyes.</p>
@@ -302,7 +309,7 @@
             </div>
         </div>
     </section>
-    <!-- Convenient End -->
+    <!-- How End -->
 
     <!-- Finder's fee Start -->
     <section class="py-20 bg-gray-50">
@@ -324,7 +331,7 @@
                 <div>
                     <span class="text-sm text-primary uppercase font-semibold tracking-wider text-default-950">Pricing</span>
                 </div>
-                <h2 class="text-3xl md:text-4xl/tight font-semibold text-black mt-4">We need to keep the lights on and the servers running.</h2>
+                <h2 class="text-3xl md:text-4xl/tight font-semibold text-black mt-4">We need to keep the servers spinning</h2>
             </div>
 
             <div class="grid grid-cols-1 mt-8">
@@ -345,7 +352,7 @@
                     </div>
                 </div>
 
-                <p class="text-muted text-base mx-auto mt-5">Save up to 40% with Annual Plan.</p>
+                <p class="text-muted text-base mx-auto mt-5">Save up to 50% with Annual Plan.</p>
 
                 <div id="StarterContent">
                     <div class="mt-14" id="start-month" role="tabpanel" aria-labelledby="start-month-tab">
@@ -370,7 +377,7 @@
                                     <ul class="text-center">
                                         <li class="flex items-center justify-start py-2">
                                             <i data-lucide="check" class="text-primary text-lg align-middle me-2"></i>
-                                            <h5 class="font-medium">1,000 views/month</h5>
+                                            <h5 class="font-medium">10,000 views/month</h5>
                                         </li>
                                         <li class="flex items-center justify-start py-2">
                                             <i data-lucide="check" class="text-primary text-lg align-middle me-2"></i>
@@ -397,9 +404,9 @@
                                         <sup class="text-3xl align-middle">$</sup>
                                         <span data-hs-toggle-count='{
                                             "target": "#toggle-count",
-                                            "min": 160,
-                                            "max": 99
-                                          }' >160</span>
+                                            "min": 99,
+                                            "max": 49
+                                          }' >99</span>
                                     </h2>
                                     <span class="text-base font-medium text-muted">per month</span>
                                 </div>
@@ -408,11 +415,11 @@
                                     <ul class="text-center text-black">
                                         <li class="flex items-center justify-start py-2">
                                             <i data-lucide="check" class="text-primary text-lg align-middle me-2"></i>
-                                            <h5 class="font-medium">100,000 views/month</h5>
+                                            <h5 class="font-medium">Unlimited views/month</h5>
                                         </li>
                                         <li class="flex items-center justify-start py-2">
                                             <i data-lucide="check" class="text-primary text-lg align-middle me-2"></i>
-                                            <h5 class="font-medium">10 Gb Storage</h5>
+                                            <h5 class="font-medium">Unlimited Storage</h5>
                                         </li>
                                         <li class="flex items-center justify-start py-2">
                                             <i data-lucide="check" class="text-primary text-lg align-middle me-2"></i>
@@ -488,7 +495,7 @@
                             <h2 class="text-base font-semibold" id="accordion-collapse-heading-0">
                                 <button type="button" class="flex justify-between items-center px-5 py-4 w-full font-semibold text-lg text-start" data-accordion-target="#accordion-collapse-body-0" aria-expanded="true"
                                     aria-controls="accordion-collapse-body-0">
-                                    <span>Where are you located?</span>
+                                    <span>Why work with us?</span>
                                     <svg data-accordion-icon class="size-4 rotate-180 shrink-0" fill="currentColor"
                                         viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                         <path fill-rule="evenodd"
@@ -500,7 +507,8 @@
                             <div id="accordion-collapse-body-0" class="hidden"
                                 aria-labelledby="accordion-collapse-heading-0">
                                 <div class="px-5 pb-5">
-                                    <p class="text-muted text-base font-normal">We offer our services Nationwide. We are based in Georgia, but we proudly serve clients across the U.S. with a commitment to excellence.</p>
+                                    <p class="text-muted text-base font-normal">We deliver a complete product, from design to painting to the augmented reality animation, ready to stun the viewer. Or we can take your design and bring it to life. You will also leverage our expertise, where creative vision meets brand strategy, and +10 years experience working with global brands.
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -509,7 +517,7 @@
                             <h2 class="text-base font-semibold" id="accordion-collapse-heading-1">
                                 <button type="button" class="flex justify-between items-center px-5 py-4 w-full font-semibold text-lg text-start" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true"
                                     aria-controls="accordion-collapse-body-1">
-                                    <span>Why work with us?</span>
+                                    <span>What is augmented reality artwork?</span>
                                     <svg data-accordion-icon class="size-4 rotate-180 shrink-0" fill="currentColor"
                                         viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                         <path fill-rule="evenodd"
@@ -521,15 +529,7 @@
                             <div id="accordion-collapse-body-1" class="hidden"
                                 aria-labelledby="accordion-collapse-heading-1">
                                 <div class="px-5 pb-5">
-                                    <p class="text-muted text-base font-normal">We have worked with over 100 top brands in the past 10 years. <br><br>
-                                        <ul class="ms-8" style="list-style: circle;">
-                                            <li class="text-justify"><b>Fully Insured:</b> Rest assured knowing your project is protected with comprehensive insurance coverage.</li>
-                                            <li class="text-justify"><b>Expert Craftsmanship:</b> Our skilled artists deliver high-quality, detailed work that stands the test of time.</li>
-                                            <li class="text-justify"><b>Versatile Styles:</b> We offer a range of styles, from realistic to graphic, tailored to your vision and space.</li>
-                                            <li class="text-justify"><b>Customized Approach:</b> Each mural is uniquely designed to reflect your brand, home, or personal style.</li>
-                                            <li class="text-justify"><b>Great Customer Service:</b> We prioritize communication and collaboration, ensuring your experience is seamless and enjoyable.</li>
-                                            <li class="text-justify"><b>Turning Challenges into Reality:</b> No project is too challenging for us; we thrive on transforming ambitious ideas into stunning realities.</li>
-                                        </ul>
+                                    <p class="text-muted text-base font-normal">Augmented Reality artwork enhances the real world by overlaying digital content, typically experienced through mobile devices. Face filters on apps like Snapchat, Instagram, and Facebook are some of the most familiar uses.
                                     </p>
                                 </div>
                             </div>
@@ -539,7 +539,7 @@
                             <h2 class="text-base font-semibold" id="accordion-collapse-heading-2">
                                 <button type="button" class="flex justify-between items-center px-5 py-4 w-full font-semibold text-lg text-start" data-accordion-target="#accordion-collapse-body-2" aria-expanded="true"
                                     aria-controls="accordion-collapse-body-2">
-                                    <span>What services do you offer as an Atlanta mural artist?</span>
+                                    <span>What media can you feature in an AR experience?</span>
                                     <svg data-accordion-icon class="size-4 rotate-180 shrink-0" fill="currentColor"
                                         viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                         <path fill-rule="evenodd"
@@ -551,7 +551,8 @@
                             <div id="accordion-collapse-body-2" class="hidden"
                                 aria-labelledby="accordion-collapse-heading-2">
                                 <div class="px-5 pb-5">
-                                    <p class="text-muted text-base font-normal text-justify">As a mural artist based in Atlanta, I specialize in creating custom murals for both residential and commercial spaces. Whether you're looking to enhance your home or add a unique touch to your business, I can help bring your vision to life.</p>
+                                    <p class="text-muted text-base font-normal text-justify">Photos, video clips, audio files, brand logos, 2D & 3D animations, external links, calls to action, interactive buttons, UI elements, and advanced production-quality visual effects.
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -560,7 +561,7 @@
                             <h2 class="text-base font-semibold" id="accordion-collapse-heading-3">
                                 <button type="button" class="flex justify-between items-center px-5 py-4 w-full font-semibold text-lg text-start" data-accordion-target="#accordion-collapse-body-3" aria-expanded="false"
                                     aria-controls="accordion-collapse-body-3">
-                                    <span>How do I commission a mural in the Upper West Side?</span>
+                                    <span>Which artworks can be enhanced with AR?</span>
                                     <svg data-accordion-icon class="size-4 shrink-0" fill="currentColor"
                                         viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                         <path fill-rule="evenodd"
@@ -572,28 +573,8 @@
                             <div id="accordion-collapse-body-3" class="hidden"
                                 aria-labelledby="accordion-collapse-heading-3">
                                 <div class="px-5 pb-5">
-                                    <p class="text-muted text-base font-normal text-justify">Commissioning a mural in the Upper West Side is easy! Simply reach out through my website or social media to discuss your ideas, and we can set up a consultation to explore designs and pricing.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="relative overflow-hidden">
-                            <h2 class="text-base font-semibold" id="accordion-collapse-heading-4">
-                                <button type="button" class="flex justify-between items-center px-5 py-4 w-full font-semibold text-lg text-start" data-accordion-target="#accordion-collapse-body-4" aria-expanded="false"
-                                    aria-controls="accordion-collapse-body-4">
-                                    <span>Can you provide examples of your mural work in Atlanta?</span>
-                                    <svg data-accordion-icon class="size-4 shrink-0" fill="currentColor"
-                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd"
-                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                            clip-rule="evenodd"></path>
-                                    </svg>
-                                </button>
-                            </h2>
-                            <div id="accordion-collapse-body-4" class="hidden"
-                                aria-labelledby="accordion-collapse-heading-4">
-                                <div class="px-5 pb-5">
-                                    <p class="text-muted text-base font-normal text-justify">Absolutely! You can view my portfolio on my website, where I showcase a variety of murals throughout Atlanta, including colorful pieces in the Upper West Side.</p>
+                                    <p class="text-muted text-base font-normal text-justify">As long as an artwork has a reliable image tracker, it can be animated through augmented reality. Even existing murals can be retrofitted with interactive AR elements. Breathe new life into an old mural and drive foot traffic to it.
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -602,7 +583,7 @@
                             <h2 class="text-base font-semibold" id="accordion-collapse-heading-5">
                                 <button type="button" class="flex justify-between items-center px-5 py-4 w-full font-semibold text-lg text-start" data-accordion-target="#accordion-collapse-body-5" aria-expanded="false"
                                     aria-controls="accordion-collapse-body-5">
-                                    <span>What is the process for creating a mural?</span>
+                                    <span>What’s the process for creating a mural?</span>
                                     <svg data-accordion-icon class="size-4 shrink-0" fill="currentColor"
                                         viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                         <path fill-rule="evenodd"
@@ -614,7 +595,8 @@
                             <div id="accordion-collapse-body-5" class="hidden"
                                 aria-labelledby="accordion-collapse-heading-5">
                                 <div class="px-5 pb-5">
-                                    <p class="text-muted text-base font-normal text-justify">The mural creation process begins with a consultation to discuss your ideas and preferences. After that, I’ll provide a design proposal, and once approved, I’ll schedule a time for the painting. I ensure that each project is tailored to fit the space perfectly.</p>
+                                    <p class="text-muted text-base font-normal text-justify">It all starts with a consultation to explore your ideas and vision. I’ll then develop a design proposal for your approval. Once finalized, we’ll schedule a time for the painting. Every mural is thoughtfully crafted to suit the space and reflect your unique style.
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -623,7 +605,7 @@
                             <h2 class="text-base font-semibold" id="accordion-collapse-heading-6">
                                 <button type="button" class="flex justify-between items-center px-5 py-4 w-full font-semibold text-lg text-start" data-accordion-target="#accordion-collapse-body-6" aria-expanded="false"
                                     aria-controls="accordion-collapse-body-6">
-                                    <span>Do you work on outdoor murals as well?</span>
+                                    <span>Do you work on outdoor and indoor murals as well?</span>
                                     <svg data-accordion-icon class="size-4 shrink-0" fill="currentColor"
                                         viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                         <path fill-rule="evenodd"
@@ -635,7 +617,8 @@
                             <div id="accordion-collapse-body-6" class="hidden"
                                 aria-labelledby="accordion-collapse-heading-6">
                                 <div class="px-5 pb-5">
-                                    <p class="text-muted text-base font-normal text-justify">Yes, I create stunning outdoor murals that can beautify any space. Whether it’s a backyard, community wall, or storefront, my murals are designed to withstand the elements while adding character to your property.</p>
+                                    <p class="text-muted text-base font-normal text-justify">We create stunning indoor and outdoor murals that can transform any space. Whether it’s a living room, office, backyard, community wall, or storefront, our murals are designed to enhance their environment and, when outdoors, withstand the elements while adding lasting character to your property.
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -644,7 +627,7 @@
                             <h2 class="text-base font-semibold" id="accordion-collapse-heading-7">
                                 <button type="button" class="flex justify-between items-center px-5 py-4 w-full font-semibold text-lg text-start" data-accordion-target="#accordion-collapse-body-7" aria-expanded="false"
                                     aria-controls="accordion-collapse-body-7">
-                                    <span>How far in advance should I book your mural services?</span>
+                                    <span>What are the benefits of augmented reality murals?</span>
                                     <svg data-accordion-icon class="size-4 shrink-0" fill="currentColor"
                                         viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                         <path fill-rule="evenodd"
@@ -656,7 +639,8 @@
                             <div id="accordion-collapse-body-7" class="hidden"
                                 aria-labelledby="accordion-collapse-heading-7">
                                 <div class="px-5 pb-5">
-                                    <p class="text-muted text-base font-normal text-justify">It’s best to book your mural services as early as possible to ensure availability. Typically, a few weeks to several months in advance is ideal, depending on the scope and complexity of the project.</p>
+                                    <p class="text-muted text-base font-normal text-justify">AR murals help brands captivate audiences through today’s most engaging form of content. It enhances brand visibility as the interactive component drives foot traffic to the mural. Enable fans and followers to market for you, sharing engaging branded content in social media. Turn your mural into a landmark, and empower your fans to engage on a deeper level with your brand through interactivity. These immersive installations let fans step inside the artwork, play games, and interact with animated characters and dynamic environments — transforming viewers into active participants and content creators. Inspire your audience to create content around your brand and share it online.
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -665,7 +649,7 @@
                             <h2 class="text-base font-semibold" id="accordion-collapse-heading-8">
                                 <button type="button" class="flex justify-between items-center px-5 py-4 w-full font-semibold text-lg text-start" data-accordion-target="#accordion-collapse-body-8" aria-expanded="false"
                                     aria-controls="accordion-collapse-body-8">
-                                    <span>How can I measure the ROI of my Augmented Reality Murals & Experiences?</span>
+                                    <span>How can I measure the ROI of my augmented reality murals & experiences?</span>
                                     <svg data-accordion-icon class="size-4 shrink-0" fill="currentColor"
                                         viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                         <path fill-rule="evenodd"
@@ -677,33 +661,7 @@
                             <div id="accordion-collapse-body-8" class="hidden"
                                 aria-labelledby="accordion-collapse-heading-8">
                                 <div class="px-5 pb-5">
-                                    <p class="text-muted text-base font-normal text-justify">Detailed metrics data is provided for each AR experience to measure performance and ROI. These metrics include impressions, opens, captures, saves, shares, and more. Another effective way of measuring ROI is to implement an offer or call to action within the AR experience, and compare this data to the goals of the campaign.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="relative overflow-hidden">
-                            <h2 class="text-base font-semibold" id="accordion-collapse-heading-9">
-                                <button type="button" class="flex justify-between items-center px-5 py-4 w-full font-semibold text-lg text-start" data-accordion-target="#accordion-collapse-body-9" aria-expanded="false"
-                                    aria-controls="accordion-collapse-body-9">
-                                    <span>What are the Benefits of Augmented Reality Murals?</span>
-                                    <svg data-accordion-icon class="size-4 shrink-0" fill="currentColor"
-                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd"
-                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                            clip-rule="evenodd"></path>
-                                    </svg>
-                                </button>
-                            </h2>
-                            <div id="accordion-collapse-body-9" class="hidden"
-                                aria-labelledby="accordion-collapse-heading-9">
-                                <div class="px-5 pb-5">
-                                    <p class="text-muted text-base font-normal text-justify">AR Murals help brands capture audiences with the leading form of content. It enhances brand visibility: <br><br>
-                                        <ul class="ms-8" style="list-style: circle;">
-                                            <li>50% reduction in cost per engagement</li>
-                                            <li>4x time spent looking at ads with AR filters</li>
-                                            <li>10x engagement with ads using AR</li>
-                                        </ul>
+                                    <p class="text-muted text-base font-normal text-justify">Comprehensive metrics are provided for each AR experience to assess performance and ROI. This includes data on impressions, opens, captures, saves, and shares. To further measure ROI, you can include offers or calls to action within the AR experience and compare the results against campaign goals.
                                     </p>
                                 </div>
                             </div>
@@ -720,8 +678,8 @@
         <div class="container">
             <div class="">
                 <div class="text-center max-w-xl mx-auto">
-                    <span class="text-sm text-primary uppercase font-semibold tracking-wider text-default-950">About</span>
-                    <h2 class="text-3xl md:text-4xl/tight font-semibold mt-4">Check the latest of our company.</h2>
+                    <span class="text-sm text-primary uppercase font-semibold tracking-wider text-default-950">Videos</span>
+                    <h2 class="text-3xl md:text-4xl/tight font-semibold mt-4">Check also our partner's website <a href="https://www.upperwestsidemurals.com/" target="_blank" style="text-decoration: underline;">Upper Westside Murals</a></h2>
                 </div>
             </div>
             <div class="flex mt-14 items-center justify-center gap-6 flex-col sm:flex-row">
@@ -744,7 +702,7 @@
                     <div class="sm-text text-center md:text-start">
                         <span class="text-sm text-primary uppercase font-semibold tracking-wider text-default-950 mb-6">Contact Us</span>
                     </div>
-                    <h2 class="text-3xl md:text-4xl/tight font-semibold mt-4 text-center md:text-start">Let's talk about your mural.</h2>
+                    <h2 class="text-3xl md:text-4xl/tight font-semibold mt-4 text-center md:text-start">Let's talk about your mural</h2>
 
                     <div class="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-start mt-10">
                         <div class="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">

@@ -1,30 +1,46 @@
-var sanitize = require('mongo-sanitize');
+const mongoose = require('mongoose');
+const sanitize = require('mongo-sanitize');
 const {v4: uuidv4} = require('uuid');
 const Artwork = require('../models/artwork');
-const {checkViews, openMetric, isCloseToPlace} = require('../helpers/utils');
+const {checkViews, isCloseToPlace} = require('../helpers/utils');
+
+const aFrame = async function (req, res, next) {
+    const route = sanitize(req.params.route);
+    const uuid = uuidv4();
+    const artwork = await Artwork.findOne({route: route});
+    if (!artwork) {
+        console.log("ROUTE NOT FOUND", req.params.route);
+        return res.redirect('/ar');
+    }
+
+    const allow = await checkViews(artwork);
+    if (!allow) {
+        console.log("EXCESS VIEWS", req.params.id, artwork);
+        return res.redirect('/');
+    }
+
+    res.render('aframe', {
+        uuid: uuid,
+        artwork: JSON.stringify(artwork)
+    });
+}
 
 /* GET the artwork by route */
 const arRoute = async function (req, res, next) {
     const route = sanitize(req.params.route);
     const uuid = uuidv4();
-
     const artwork = await Artwork.findOne({route: route});
     if (!artwork) {
         console.log("ROUTE NOT FOUND", req.params.route);
-        res.redirect('/ar');
-        return;
+        return res.redirect('/ar');
     }
 
-    if (!checkViews(artwork)) {
-        // @TODO send email to admin and user
+    const allow = await checkViews(artwork);
+    if (!allow) {
         console.log("EXCESS VIEWS", req.params.id, artwork);
-        res.redirect('/home');
-        return;
+        return res.redirect('/');
     }
 
-    openMetric(req, artwork.user, artwork.id, uuid);
-
-    // Cache-Control: max-age=3600
     res.render('ar', {
         uuid: uuid,
         artwork: JSON.stringify(artwork)
@@ -33,40 +49,33 @@ const arRoute = async function (req, res, next) {
 
 /* GET the artwork by id */
 const arId = async function (req, res, next) {
-    const id = sanitize(req.params.id);
     const uuid = uuidv4();
+    const id = sanitize(req.params.id);
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        console.log("BAD ID", id);
+        return res.redirect('/ar');
+    }
 
-    Artwork.findById(id)
-        .then(function (artwork) {
-            if (!artwork) {
-                console.log("NOT FOUND ID", req.params.id);
-                res.redirect('/ar');
-                return;
-            }
+    const artwork = await Artwork.findById(id);
+    if (!artwork) {
+        console.log("NOT FOUND ID", req.params.id);
+        return res.redirect('/ar');
+    }
 
-            if (!checkViews(artwork)) {
-                // @TODO send email to admin and user
-                console.log("EXCESS VIEWS", req.params.id, artwork);
-                res.redirect('/home');
-                return;
-            }
+    const allow = await checkViews(artwork);
+    if (!allow) {
+        console.log("EXCESS VIEWS", req.params.id, artwork);
+        return res.redirect('/');
+    }
 
-            openMetric(req, artwork.user, artwork.id, uuid);
-
-            // Cache-Control: max-age=3600
-            res.render('ar', {
-                uuid: uuid,
-                artwork: JSON.stringify(artwork)
-            });
-        })
-        .catch(function(error) {
-            console.log("ERROR: " + error);
-            res.redirect('/home');
-        });
+    res.render('ar', {
+        uuid: uuid,
+        artwork: JSON.stringify(artwork)
+    });
 }
 
 /* GET the artwork */
-const ar = async function (req, res, next) {
+const ar = function (req, res, next) {
     res.render('ar', {
         uuid: uuidv4(),
         artwork: JSON.stringify(null)
@@ -81,8 +90,7 @@ const arLoc = async function (req, res, next) {
 
     if (!lat || !lon || !uuid) {
         res.status(404);
-        res.json(null);
-        return;
+        return res.json(null);
     }
 
     const artworks = await Artwork.find({});
@@ -91,22 +99,18 @@ const arLoc = async function (req, res, next) {
             continue;
         }
         if (isCloseToPlace(lat, lon, artwork.lat, artwork.lon)) {
-            if (!checkViews(artwork)) {
-                // @TODO send email to admin and user
+            const allow = await checkViews(artwork);
+            if (!allow) {
                 console.log("EXCESS VIEWS", req.params.lat, req.params.lon, artwork);
-                res.status(404);
-                res.json(null);
-                return;
+                break;
             }
 
-            openMetric(req, artwork.user, artwork.id, uuid);
             res.status(200);
-            res.json(artwork);
-            return;
+            return res.json(artwork);
         }
     }
     res.status(404);
-    res.json(null);
+    return res.json(null);
 }
 
 module.exports = {
@@ -114,4 +118,5 @@ module.exports = {
     arRoute,
     arId,
     ar,
+    aFrame,
 };

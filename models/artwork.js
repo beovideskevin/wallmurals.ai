@@ -38,6 +38,18 @@ const artworkSchema = mongoose.Schema(
             audio: {
                 type: String,
                 required: false,
+            },
+            scale: {
+                type: String,
+                required: false,
+            },
+            position: {
+                type: String,
+                required: false,
+            },
+            rotation: {
+                type: String,
+                required: false,
             }
         }],
         location: {
@@ -57,11 +69,6 @@ const artworkSchema = mongoose.Schema(
         tagline: {
             type: String,
             required: false,
-        },
-        website: {
-            type: String,
-            required: false,
-            default: 'https://www.wallmurals.ai/'
         },
         user: {
             type: mongoose.Schema.Types.ObjectId,

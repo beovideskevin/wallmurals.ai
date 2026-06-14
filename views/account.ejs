@@ -36,7 +36,7 @@
             <% } %>
             
             <h2 class="text-3xl md:text-4xl/tight font-semibold mt-4 mb-8 text-center">Your current subscription: <%= (plan?.type || "Free" ) %></h2>
-                
+
             <div id="planContainer" class="grid grid-cols-1 bg-white p-6">
                 <div class="flex justify-center">
                     <div id="toggle-count" class="p-1 inline-block border border-gray-200 rounded-lg">
@@ -55,7 +55,7 @@
                     </div>
                 </div>
 
-                <p class="text-muted text-base mx-auto mt-5">Save up to 40% with Annual Plan.</p>
+                <p class="text-muted text-base mx-auto mt-5">Save up to 50% with Annual Plan.</p>
 
                 <div id="StarterContent">
                     <div class="mt-14" id="start-month" role="tabpanel" aria-labelledby="start-month-tab">
@@ -89,9 +89,12 @@
                                 </div>
 
                                 <% if (plan) { %>
-                                    <div class="flex justify-center px-10 pb-10">
-                                        <button class="py-2 px-6 inline-flex rounded-md text-base items-center justify-center border border-primary text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium w-full">Downgrade to FREE</button>
-                                    </div> 
+                                <div class="flex justify-center px-10 pb-10">
+                                    <a href="/dashboard/downgradeplan"
+                                       class="py-2 px-6 inline-flex rounded-md text-base items-center justify-center border border-primary text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium w-full">
+                                        Send request to downgrade
+                                    </a>
+                                </div>
                                 <% } %>
                             </div>
                                 
@@ -104,9 +107,9 @@
                                         <sup class="text-3xl align-middle">$</sup>
                                         <span data-hs-toggle-count='{
                                             "target": "#toggle-count",
-                                            "min": 160,
-                                            "max": 99
-                                        }' >160</span>
+                                            "min": 99,
+                                            "max": 49
+                                        }' >99</span>
                                     </h2>
                                     <span class="text-base font-medium text-muted">per month</span>
                                 </div>
@@ -129,9 +132,12 @@
                                 </div>
 
                                 <% if (!plan) { %>
-                                    <div class="flex justify-center px-10 pb-10">
-                                        <button class="py-2 px-6 inline-flex rounded-md text-base items-center justify-center border border-primary text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium w-full">Upgrade to Professional</button>
-                                    </div>
+                                <div class="flex justify-center px-10 pb-10">
+                                    <a href="/dashboard/upgradeplan"
+                                       class="py-2 px-6 inline-flex rounded-md text-base items-center justify-center border border-primary text-white bg-primary hover:bg-primaryDark transition-all duration-500 font-medium w-full">
+                                        Send request to upgrade
+                                    </a>
+                                </div>
                                 <% } %>
                             </div>
                         </div>
@@ -141,7 +147,7 @@
         </div>
     </section>
 
-    <section class="relative pt-10 pb-20" id="passwordSection"> 
+    <section class="relative <% if (plan) { %> pt-32 <% } else { %> pt-10 <% } %> pb-20" id="passwordSection">
         <div class="container">
             <h2 class="text-3xl md:text-4xl/tight font-semibold mt-4 mb-8 text-center">Change your password</h2>
 
