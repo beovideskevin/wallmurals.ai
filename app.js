@@ -68,7 +68,7 @@ app.use(logger('dev'));
 if (process.env.NODE_ENV != 'development') {
     // Initialize client.
     let redisClient = createClient({
-        url: 'redis://127.0.0.1:6379',
+        url: `redis://:${process.env.REDIS_PASS}@redis:6379`,
     });
     redisClient.connect().then(() => {
         console.log('Connected to Redis with options');
