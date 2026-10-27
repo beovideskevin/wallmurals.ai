@@ -1,23 +1,49 @@
 # Wall Murals AI
 
-Wall Murals AI creates interactive mural experiences with artificial intelligence
-and augmented reality. Visitors scan a QR code near an artwork and open the
-experience directly in their browser—no app installation required.
+Wall Murals AI creates interactive murals that combine artificial intelligence,
+augmented reality, and physical artwork. The platform can support the full
+creative process—from mural design and painting through AR animation—or bring
+an existing mural to life with an interactive digital layer.
 
-The experience can place digital content over a mural, allowing visitors to
-record videos or take photos and share the result online. The web application
-also includes authenticated tools for managing artworks and viewing metrics.
+AR experiences run in the cloud and require no app installation. Visitors scan
+a QR code near the artwork, point a smartphone or tablet at the mural, and
+watch digital content appear in the real world. They can capture photos and
+videos, interact with animated content, and share the experience on social
+media.
+
+For brands and artists, each experience can include photos, video, audio,
+logos, 2D and 3D animations, external links, calls to action, interactive
+buttons, and other visual effects. The platform also provides engagement data
+such as impressions, opens, captures, saves, and shares to help measure
+campaign performance and return on investment.
 
 Visit the live website at [wallmurals.ai](https://www.wallmurals.ai/).
+
+![Wall Murals AI homepage](./public/assets/images/home/readme-preview.png)
 
 ## Features
 
 - Browser-based augmented-reality experiences for murals
+- QR-based experiences that work on smartphones and tablets without an app
+- Interactive photos, videos, audio, logos, animations, links, and calls to action
+- Social sharing and audience engagement around branded artwork
+- Performance metrics for measuring impressions, opens, captures, saves, and shares
 - Artwork and AR content management through a protected dashboard
 - Account, subscription-plan, and usage-metrics pages
 - MongoDB persistence
 - Redis-backed sessions outside development
 - EJS server-rendered views with Express
+
+## How it works
+
+1. **Scan the QR code** — Open the cloud experience directly in a mobile
+   browser.
+2. **Point at the mural** — The artwork acts as the image tracker for the AR
+   content.
+3. **Interact and capture** — View the animation, create a photo or video, and
+   engage with calls to action.
+4. **Share and measure** — Share the result on social media and review
+   experience metrics to evaluate reach and engagement.
 
 ## Requirements
 
